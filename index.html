@@ -1083,17 +1083,17 @@
         starParticles = new THREE.Points(starGeo, starMat);
         scene.add(starParticles);
 
-        // Constellation nodes
+        // Constellation nodes (pulled inward so they fit cleanly on narrow mobile screens)
         constellationGroup = new THREE.Group();
         const nodeCoords = [
-          { x: -5, y: 3, z: 2 },
-          { x: -2, y: 5, z: 1 },
-          { x: 3, y: 4, z: 3 },
-          { x: 5, y: 0, z: 2 },
-          { x: 1, y: -3, z: 4 }
+          { x: -3.6, y: 2.5, z: 2 },
+          { x: -1.6, y: 3.8, z: 1 },
+          { x:  2.2, y: 3.2, z: 3 },
+          { x:  3.6, y: 0.0, z: 2 },
+          { x:  0.8, y: -2.4, z: 4 }
         ];
 
-        const nodeGeo = new THREE.SphereGeometry(0.26, 12, 12);
+        const nodeGeo = new THREE.SphereGeometry(0.32, 16, 16);
         const nodeMat = new THREE.MeshBasicMaterial({ color: 0xF4D03F });
 
         nodeCoords.forEach((coord, idx) => {
@@ -1116,10 +1116,32 @@
         constellationGroup.add(new THREE.LineSegments(lineGeo, lineMat));
         scene.add(constellationGroup);
 
+        updateResponsiveLayout();
         window.addEventListener('resize', onWindowResize);
       } catch (e) {
         console.error("Three.js init error:", e);
       }
+    }
+
+    function updateResponsiveLayout() {
+      if (!camera) return;
+      const aspect = window.innerWidth / window.innerHeight;
+
+      // On mobile portrait (aspect < 1.0), push camera back so horizontal field of view accommodates all star nodes
+      let targetZ = 18;
+      if (aspect < 1.0) {
+        targetZ = Math.max(18, Math.min(28, 12.5 / aspect));
+      }
+
+      if (!isBlackoutActive) {
+        camera.position.z = targetZ;
+      }
+
+      // Scale Moon & Constellation group on narrow portrait screens
+      const scale = aspect < 0.65 ? 0.75 : (aspect < 0.9 ? 0.85 : 1.0);
+      if (moonMesh) moonMesh.scale.set(scale, scale, scale);
+      if (atmosphereMesh) atmosphereMesh.scale.set(scale, scale, scale);
+      if (constellationGroup) constellationGroup.scale.set(scale, scale, scale);
     }
 
     function onWindowResize() {
@@ -1127,6 +1149,8 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+
+      updateResponsiveLayout();
 
       if (auroraCanvas) { auroraCanvas.width = window.innerWidth; auroraCanvas.height = window.innerHeight; }
       if (rippleCanvas) { rippleCanvas.width = window.innerWidth; rippleCanvas.height = window.innerHeight; }
@@ -1559,25 +1583,43 @@
     const raycaster = new THREE.Raycaster();
     const mouseVector = new THREE.Vector2();
 
+    function checkStarNodeHit(clientX, clientY) {
+      if ($cardModal && $cardModal.classList.contains('active')) return false;
+      const overlay = document.getElementById('start-overlay');
+      if (overlay && overlay.style.display !== 'none' && overlay.style.opacity !== '0') return false;
+      if (!camera || starNodes.length === 0) return false;
+
+      mouseVector.x = (clientX / window.innerWidth) * 2 - 1;
+      mouseVector.y = -(clientY / window.innerHeight) * 2 + 1;
+
+      // Increase raycaster threshold for touch friendliness
+      raycaster.setFromCamera(mouseVector, camera);
+      const intersects = raycaster.intersectObjects(starNodes);
+
+      if (intersects.length > 0) {
+        const hitNode = intersects[0].object;
+        const idx = hitNode.userData.index;
+        openMemoryModal(idx, clientX, clientY);
+        triggerHaptic([20, 40]);
+        return true;
+      }
+      return false;
+    }
+
     function initInteractionEvents() {
-      window.addEventListener('click', (e) => {
-        if ($cardModal && $cardModal.classList.contains('active')) return;
-        const overlay = document.getElementById('start-overlay');
-        if (overlay && overlay.style.display !== 'none' && overlay.style.opacity !== '0') return;
-        if (!camera || starNodes.length === 0) return;
+      let lastTouchTime = 0;
 
-        mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouseVector, camera);
-        const intersects = raycaster.intersectObjects(starNodes);
-
-        if (intersects.length > 0) {
-          const hitNode = intersects[0].object;
-          const idx = hitNode.userData.index;
-          openMemoryModal(idx, e.clientX, e.clientY);
-          triggerHaptic([20, 40]);
+      window.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'touch') {
+          lastTouchTime = Date.now();
+          checkStarNodeHit(e.clientX, e.clientY);
         }
+      }, { passive: true });
+
+      window.addEventListener('click', (e) => {
+        // Prevent duplicate trigger if pointerdown already handled a touch event
+        if (Date.now() - lastTouchTime < 300) return;
+        checkStarNodeHit(e.clientX, e.clientY);
       });
 
       if ($modalClose) $modalClose.addEventListener('click', closeMemoryModal);
