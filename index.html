@@ -842,7 +842,7 @@
             </svg>
           </button>
           <div class="sound-track-labels">
-            <span class="sound-now-playing" id="track-name">LOFI NIGHT BEATS</span>
+            <span class="sound-now-playing" id="track-name">SOFT RAIN ON GLASS</span>
             <span class="sound-status" id="track-status">GENERATIVE AUDIO SYNTH</span>
           </div>
         </div>
@@ -850,8 +850,8 @@
       </div>
 
       <div class="track-pills">
-        <button class="track-pill active" data-preset="lofi">LOFI NIGHT BEATS</button>
-        <button class="track-pill" data-preset="rain">SOFT RAIN ON GLASS</button>
+        <button class="track-pill active" data-preset="rain">SOFT RAIN ON GLASS</button>
+        <button class="track-pill" data-preset="lofi">LOFI NIGHT BEATS</button>
         <button class="track-pill" data-preset="fire">WARM FIREPLACE</button>
       </div>
 
@@ -910,8 +910,8 @@
       overlay.style.opacity = '0';
       setTimeout(() => { overlay.style.display = 'none'; }, 600);
 
-      // Start audio
-      try { playGenerativeTrack('lofi'); } catch (err) { console.warn("Audio start:", err); }
+      // Start audio (Default: Soft Rain on Glass)
+      try { playGenerativeTrack('rain'); } catch (err) { console.warn("Audio start:", err); }
       try { triggerHaptic([30]); } catch (err) { }
 
       // Run entrance animation
@@ -1502,6 +1502,46 @@
         rippleCtx.restore();
       }
 
+    /* Crisp Vector SVG Canvas Path Helpers */
+    const SVG_HEART_PATH = (typeof Path2D !== 'undefined') ? new Path2D('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z') : null;
+    const SVG_SPARKLE_PATH = (typeof Path2D !== 'undefined') ? new Path2D('M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z') : null;
+
+    function drawCanvasSVGHeart(ctx, x, y, size, color, alpha) {
+      if (!ctx) return;
+      ctx.save();
+      ctx.globalAlpha = alpha !== undefined ? Math.max(0, alpha) : 1.0;
+      ctx.translate(x, y);
+      const scale = size / 24;
+      ctx.scale(scale, scale);
+      ctx.translate(-12, -12);
+      ctx.fillStyle = color || '#FF75B5';
+      if (SVG_HEART_PATH) {
+        ctx.fill(SVG_HEART_PATH);
+      } else {
+        ctx.font = `${size}px sans-serif`;
+        ctx.fillText('💖', 0, 12);
+      }
+      ctx.restore();
+    }
+
+    function drawCanvasSVGSparkle(ctx, x, y, size, color, alpha) {
+      if (!ctx) return;
+      ctx.save();
+      ctx.globalAlpha = alpha !== undefined ? Math.max(0, alpha) : 1.0;
+      ctx.translate(x, y);
+      const scale = size / 24;
+      ctx.scale(scale, scale);
+      ctx.translate(-12, -12);
+      ctx.fillStyle = color || '#F4D03F';
+      if (SVG_SPARKLE_PATH) {
+        ctx.fill(SVG_SPARKLE_PATH);
+      } else {
+        ctx.font = `${size}px sans-serif`;
+        ctx.fillText('✨', 0, 12);
+      }
+      ctx.restore();
+    }
+
       // --- METEOR SHOWER ---
       if (meteorCtx && (meteors.length > 0 || cuteSparkles.length > 0)) {
         meteorCtx.save();
@@ -1521,7 +1561,7 @@
               size: Math.random() * 10 + 6,
               alpha: 0.9,
               color: m.color,
-              symbol: Math.random() > 0.4 ? '✨' : '💖'
+              isHeart: Math.random() > 0.4
             });
           }
 
@@ -1542,24 +1582,25 @@
           meteorCtx.stroke();
 
           if (m.isHeartHead) {
-            meteorCtx.globalAlpha = 1;
-            meteorCtx.font = '14px sans-serif';
-            meteorCtx.fillText('💖', m.x - 7, m.y + 5);
+            drawCanvasSVGHeart(meteorCtx, m.x, m.y, 16, m.color || '#FF75B5', 1.0);
           }
 
-          if (m.y > window.innerHeight + 50 || m.x < -100) {
+          // Strict 360-degree boundary cleanup (prevents hero comets moving in any direction from sticking!)
+          if (m.y > window.innerHeight + 150 || m.y < -250 || m.x > window.innerWidth + 250 || m.x < -250) {
             meteors.splice(i, 1);
           }
         }
 
         for (let i = cuteSparkles.length - 1; i >= 0; i--) {
           const s = cuteSparkles[i];
-          s.x += s.vx; s.y += s.vy; s.alpha -= 0.02;
+          s.x += s.vx; s.y += s.vy; s.alpha -= 0.03;
           if (s.alpha <= 0) { cuteSparkles.splice(i, 1); continue; }
 
-          meteorCtx.globalAlpha = Math.max(0, s.alpha);
-          meteorCtx.font = `${s.size}px sans-serif`;
-          meteorCtx.fillText(s.symbol, s.x, s.y);
+          if (s.isHeart || s.symbol === '💖') {
+            drawCanvasSVGHeart(meteorCtx, s.x, s.y, s.size, s.color || '#FF75B5', s.alpha);
+          } else {
+            drawCanvasSVGSparkle(meteorCtx, s.x, s.y, s.size, s.color || '#F4D03F', s.alpha);
+          }
         }
 
         meteorCtx.restore();
@@ -1594,7 +1635,7 @@
        H. WEB AUDIO SYNTHESIZER ENGINE
        ====================================================================== */
     let audioCtx = null, masterGain = null, analyser = null, currentSynthNodes = [];
-    let isPlayingAudio = false, activePreset = 'lofi';
+    let isPlayingAudio = false, activePreset = 'rain';
 
     function initWebAudio() {
       if (audioCtx) return;
@@ -1881,7 +1922,7 @@
           size: Math.random() * 14 + 10,
           alpha: 1.0,
           color: Math.random() > 0.5 ? '#FF75B5' : '#F4D03F',
-          symbol: Math.random() > 0.3 ? '💖' : '✨'
+          isHeart: Math.random() > 0.3
         });
       }
 
