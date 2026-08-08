@@ -683,6 +683,28 @@
       color: var(--starlight-gold);
     }
 
+    /* Flashing Love Banner on Reignite */
+    .love-flash-banner {
+      position: fixed;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      z-index: 10000;
+      font-family: var(--font-display);
+      font-size: clamp(28px, 8vw, 60px);
+      font-weight: 900;
+      letter-spacing: 5px;
+      background: linear-gradient(135deg, #FFF, var(--starlight-gold), var(--cute-pink));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 25px rgba(255, 117, 181, 0.95)) drop-shadow(0 0 45px rgba(244, 208, 63, 0.8));
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      text-align: center;
+    }
+
     /* ==========================================================================
        10. START OVERLAY
        ========================================================================== */
@@ -866,6 +888,9 @@
     </div>
     <button class="reignite-btn" id="reignite-btn">REIGNITE THE UNIVERSE</button>
   </div>
+
+  <!-- Flashing Love Banner Overlay -->
+  <div id="love-flash-banner" class="love-flash-banner">I LOVE YAAA! 💖✨</div>
 
   <!-- ====================================================================
        SCRIPT ENGINE
@@ -1829,31 +1854,90 @@
       }, 1800);
     }
 
-    function reigniteUniverse() {
-      isBlackoutActive = false;
-      isMeteorActive = false;
-      meteors = [];
-      cuteSparkles = [];
+    function triggerReigniteCometAndFlash(clickX, clickY) {
+      const startX = clickX || (window.innerWidth / 2);
+      const startY = clickY || (window.innerHeight * 0.75);
 
-      if ($blackoutScreen) $blackoutScreen.classList.remove('active');
+      // 1. Hero transition comet flying diagonally past the reignite button location
+      meteors.push({
+        x: startX - 80,
+        y: startY + 40,
+        length: 180,
+        speed: 24,
+        angle: -Math.PI / 3.5, // Flying up and right
+        color: '#FF75B5',
+        tailColor: 'rgba(255, 117, 181, 0)',
+        thickness: 4.5,
+        isHeartHead: true
+      });
 
-      if (typeof gsap !== 'undefined') {
-        gsap.to($boMsg1, { opacity: 0, y: 15, duration: 0.4 });
-        gsap.to($boMsg2, { opacity: 0, y: 15, duration: 0.4 });
-        gsap.to($reigniteBtn, { opacity: 0, duration: 0.4 });
+      // 2. Extra sparkle burst of hearts around button
+      for (let i = 0; i < 18; i++) {
+        cuteSparkles.push({
+          x: startX + (Math.random() - 0.5) * 160,
+          y: startY + (Math.random() - 0.5) * 60,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5 - 2,
+          size: Math.random() * 14 + 10,
+          alpha: 1.0,
+          color: Math.random() > 0.5 ? '#FF75B5' : '#F4D03F',
+          symbol: Math.random() > 0.3 ? '💖' : '✨'
+        });
+      }
 
-        if (camera && starParticles && moonMesh) {
-          gsap.to(camera.position, { z: 18, duration: 1.8, ease: "power2.out" });
-          gsap.to(starParticles.scale, { x: 1, y: 1, z: 1, duration: 1.8 });
-          gsap.to(moonMesh.material, { opacity: 1, duration: 1.8 });
+      playStarfallChimes();
+      triggerHaptic([30, 60, 90]);
+
+      // 3. Flash "I LOVE YAAA! 💖✨" Banner
+      const banner = document.getElementById('love-flash-banner');
+      if (banner && typeof gsap !== 'undefined') {
+        gsap.killTweensOf(banner);
+        gsap.fromTo(banner,
+          { opacity: 0, scale: 0.5, y: -20 },
+          {
+            opacity: 1, scale: 1.15, y: 0, duration: 0.5, ease: "back.out(1.7)",
+            onComplete: () => {
+              gsap.to(banner, {
+                scale: 1.3, opacity: 0, duration: 0.8, delay: 1.1, ease: "power2.in"
+              });
+            }
+          }
+        );
+      }
+    }
+
+    function reigniteUniverse(e) {
+      const clickX = e && e.clientX ? e.clientX : window.innerWidth / 2;
+      const clickY = e && e.clientY ? e.clientY : window.innerHeight * 0.75;
+
+      triggerReigniteCometAndFlash(clickX, clickY);
+
+      setTimeout(() => {
+        isBlackoutActive = false;
+        isMeteorActive = false;
+        meteors = [];
+        cuteSparkles = [];
+
+        if ($blackoutScreen) $blackoutScreen.classList.remove('active');
+
+        if (typeof gsap !== 'undefined') {
+          gsap.to($boMsg1, { opacity: 0, y: 15, duration: 0.4 });
+          gsap.to($boMsg2, { opacity: 0, y: 15, duration: 0.4 });
+          gsap.to($reigniteBtn, { opacity: 0, duration: 0.4 });
+
+          if (camera && starParticles && moonMesh) {
+            gsap.to(camera.position, { z: 16, duration: 1.8, ease: "power2.out" });
+            gsap.to(starParticles.scale, { x: 1, y: 1, z: 1, duration: 1.8 });
+            gsap.to(moonMesh.material, { opacity: 1, duration: 1.8 });
+          }
         }
-      }
 
-      if (masterGain && audioCtx && isPlayingAudio) {
-        masterGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-      }
-      sleepProgress = 0;
-      if ($sleepProgress) $sleepProgress.style.width = '0%';
+        if (masterGain && audioCtx && isPlayingAudio) {
+          masterGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        }
+        sleepProgress = 0;
+        if ($sleepProgress) $sleepProgress.style.width = '0%';
+      }, 500);
     }
 
     /* ======================================================================
