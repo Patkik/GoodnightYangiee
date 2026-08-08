@@ -24,29 +24,32 @@
        1. CORE DESIGN SYSTEM & TOKENS
        ========================================================================== */
     :root {
-      --bg-obsidian:     #0B0C10;
-      --bg-indigo:       #1F2833;
-      --aurora-emerald:  #45A29E;
-      --aurora-violet:   #7B2CBF;
-      --starlight-gold:  #F4D03F;
-      --cute-pink:       #FF75B5;
-      --gold-glow:       rgba(244, 208, 63, 0.45);
-      --warm-white:      #FEFCF3;
-      --glass-bg:        rgba(15, 23, 42, 0.7);
-      --glass-border:    rgba(244, 208, 63, 0.2);
-      --font-display:    'Cinzel Decorative', serif;
-      --font-heading:    'Space Grotesk', sans-serif;
-      --font-body:       'Plus Jakarta Sans', sans-serif;
+      --bg-obsidian: #0B0C10;
+      --bg-indigo: #1F2833;
+      --aurora-emerald: #45A29E;
+      --aurora-violet: #7B2CBF;
+      --starlight-gold: #F4D03F;
+      --cute-pink: #FF75B5;
+      --gold-glow: rgba(244, 208, 63, 0.45);
+      --warm-white: #FEFCF3;
+      --glass-bg: rgba(15, 23, 42, 0.7);
+      --glass-border: rgba(244, 208, 63, 0.2);
+      --font-display: 'Cinzel Decorative', serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       overflow: hidden;
@@ -93,10 +96,23 @@
     }
 
     @keyframes css-float {
-      0%   { opacity: 0; transform: translateY(0) scale(0.8); }
-      15%  { opacity: 0.7; }
-      85%  { opacity: 0.5; }
-      100% { opacity: 0; transform: translateY(-100vh) scale(1.2); }
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.8);
+      }
+
+      15% {
+        opacity: 0.7;
+      }
+
+      85% {
+        opacity: 0.5;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-100vh) scale(1.2);
+      }
     }
 
     /* ==========================================================================
@@ -142,7 +158,9 @@
       transition: opacity 0.8s ease;
     }
 
-    .filigree.visible { opacity: 0.4; }
+    .filigree.visible {
+      opacity: 0.4;
+    }
 
     .filigree svg {
       width: 100%;
@@ -152,10 +170,28 @@
       stroke-width: 1.2;
     }
 
-    .f-tl { top: 14px; left: 14px; }
-    .f-tr { top: 14px; right: 14px; transform: scaleX(-1); }
-    .f-bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
-    .f-br { bottom: 14px; right: 14px; transform: scale(-1); }
+    .f-tl {
+      top: 14px;
+      left: 14px;
+    }
+
+    .f-tr {
+      top: 14px;
+      right: 14px;
+      transform: scaleX(-1);
+    }
+
+    .f-bl {
+      bottom: 14px;
+      left: 14px;
+      transform: scaleY(-1);
+    }
+
+    .f-br {
+      bottom: 14px;
+      right: 14px;
+      transform: scale(-1);
+    }
 
     /* ==========================================================================
        5. UI CONTAINER & HEADER
@@ -174,7 +210,9 @@
       transition: opacity 0.6s ease;
     }
 
-    #app-ui.visible { opacity: 1; }
+    #app-ui.visible {
+      opacity: 1;
+    }
 
     header {
       padding: 20px 24px;
@@ -186,7 +224,10 @@
       opacity: 0;
     }
 
-    .brand { display: flex; flex-direction: column; }
+    .brand {
+      display: flex;
+      flex-direction: column;
+    }
 
     .brand-title {
       font-family: var(--font-display);
@@ -316,8 +357,15 @@
     }
 
     @keyframes bounce-float {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(6px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(6px);
+      }
     }
 
     /* ==========================================================================
@@ -495,7 +543,9 @@
       scrollbar-width: none;
     }
 
-    .track-pills::-webkit-scrollbar { display: none; }
+    .track-pills::-webkit-scrollbar {
+      display: none;
+    }
 
     .track-pill {
       padding: 5px 10px;
@@ -704,10 +754,18 @@
   <div class="css-stars" id="css-stars"></div>
 
   <!-- SVG Corner Filigrees -->
-  <div class="filigree f-tl"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
-  <div class="filigree f-tr"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
-  <div class="filigree f-bl"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
-  <div class="filigree f-br"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
+  <div class="filigree f-tl"><svg viewBox="0 0 100 100">
+      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
+    </svg></div>
+  <div class="filigree f-tr"><svg viewBox="0 0 100 100">
+      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
+    </svg></div>
+  <div class="filigree f-bl"><svg viewBox="0 0 100 100">
+      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
+    </svg></div>
+  <div class="filigree f-br"><svg viewBox="0 0 100 100">
+      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
+    </svg></div>
 
   <!-- Canvases -->
   <canvas id="webgl-canvas"></canvas>
@@ -719,7 +777,8 @@
   <div id="start-overlay" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">
     <div class="start-title">Project Nocturne</div>
     <div class="start-subtitle">A Starlight Transmission for Yangiee</div>
-    <button class="start-btn" id="init-btn" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">Wake The Universe</button>
+    <button class="start-btn" id="init-btn" onclick="dismissStartOverlay(event)"
+      ontouchend="dismissStartOverlay(event)">Wake The Universe</button>
   </div>
 
   <!-- Main UI Layer -->
@@ -743,7 +802,7 @@
       <div class="scroll-indicator" id="scroll-prompt">
         <span>TAP STARS FOR MEMORIES</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M19 12l-7 7-7-7"/>
+          <path d="M12 5v14M19 12l-7 7-7-7" />
         </svg>
       </div>
     </div>
@@ -754,10 +813,10 @@
         <div class="sound-track-info">
           <button class="sound-play-toggle" id="audio-toggle">
             <svg id="play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
+              <path d="M8 5v14l11-7z" />
             </svg>
             <svg id="pause-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
-              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
             </svg>
           </button>
           <div class="sound-track-labels">
@@ -779,7 +838,7 @@
         <button class="sleep-switch" id="sleep-switch">
           <div class="sleep-switch-progress" id="sleep-progress"></div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
           <span id="sleep-switch-label">HOLD TO BLOW OUT THE STARS</span>
         </button>
@@ -802,8 +861,9 @@
 
   <!-- Final Transmission Blackout Overlay -->
   <div id="blackout-screen">
-    <div class="blackout-message-1" id="bo-msg1">Rest well, Yangiee.</div>
-    <div class="blackout-message-2" id="bo-msg2">See you in tomorrow's light. ✦</div>
+    <div class="blackout-message-1" id="bo-msg1">Rest well, goodnight, Yangiee.</div>
+    <div class="blackout-message-2" id="bo-msg2">See you in tomorrow's light. ✦ Matulog ka na anong oras na, batang toh
+    </div>
     <button class="reignite-btn" id="reignite-btn">REIGNITE THE UNIVERSE</button>
   </div>
 
@@ -816,7 +876,7 @@
     /* ======================================================================
        A. GLOBAL DISMISS (available immediately for inline onclick)
        ====================================================================== */
-    window.dismissStartOverlay = function(e) {
+    window.dismissStartOverlay = function (e) {
       if (e && e.stopPropagation) e.stopPropagation();
       const overlay = document.getElementById('start-overlay');
       if (!overlay || overlay.style.display === 'none') return;
@@ -827,7 +887,7 @@
 
       // Start audio
       try { playGenerativeTrack('lofi'); } catch (err) { console.warn("Audio start:", err); }
-      try { triggerHaptic([30]); } catch (err) {}
+      try { triggerHaptic([30]); } catch (err) { }
 
       // Run entrance animation
       try { playEntranceAnimation(); } catch (err) { console.warn("Entrance anim:", err); }
@@ -837,11 +897,11 @@
        B. MEMORY DATA FOR YANGIEE
        ====================================================================== */
     const STAR_MEMORIES = [
-      { icon: "🌟", sub: "CONSTELLATION NODE I",   title: "The First Spark",   body: "Every late night conversation with you feels like discovering a brand new star in the quiet sky." },
-      { icon: "🌙", sub: "CONSTELLATION NODE II",  title: "Your Warm Laugh",   body: "Your laugh is genuinely my favorite melody in the universe. Never lose that brilliant magic, Yangiee." },
-      { icon: "☕", sub: "CONSTELLATION NODE III", title: "Midnight Comfort",   body: "No matter how exhausting or noisy the day gets, thinking of you brings immediate warmth and peace." },
-      { icon: "🔮", sub: "CONSTELLATION NODE IV",  title: "Cosmic Wishes",     body: "I wished upon every shooting star tonight that all your dreams are soft, gentle, and filled with joy." },
-      { icon: "✨", sub: "CONSTELLATION NODE V",   title: "Yangiee's Crown",   body: "You shine brighter than any constellation in the night sky. Sleep tight, rest deeply, my favorite person." }
+      { icon: "🌟", sub: "CONSTELLATION NODE I", title: "The First Spark", body: "Every late night conversation with you feels like discovering a brand new star in the quiet sky." },
+      { icon: "🌙", sub: "CONSTELLATION NODE II", title: "Your Warm Laugh", body: "Your laugh is genuinely my favorite melody in the universe. Never lose that brilliant magic, Yangiee." },
+      { icon: "☕", sub: "CONSTELLATION NODE III", title: "Midnight Comfort", body: "No matter how exhausting or noisy the day gets, thinking of you brings immediate warmth and peace." },
+      { icon: "🔮", sub: "CONSTELLATION NODE IV", title: "Cosmic Wishes", body: "I wished upon every shooting star tonight that all your dreams are soft, gentle, and filled with joy." },
+      { icon: "✨", sub: "CONSTELLATION NODE V", title: "Yangiee's Crown", body: "You shine brighter than any constellation in the night sky. Sleep tight, rest deeply, my favorite person." }
     ];
 
     /* ======================================================================
@@ -856,30 +916,30 @@
     let $visualizerCanvas, visualizerCtx;
 
     function cacheDOMRefs() {
-      $heroCenter    = document.getElementById('hero-center');
-      $heroHeading   = document.getElementById('hero-heading');
-      $heroHint      = document.getElementById('hero-hint');
-      $liveClock     = document.getElementById('live-clock');
-      $scrollPrompt  = document.getElementById('scroll-prompt');
-      $appUI         = document.getElementById('app-ui');
-      $mainHeader    = document.getElementById('main-header');
-      $soundDeck     = document.getElementById('sound-deck');
-      $cardModal     = document.getElementById('card-modal');
-      $modalIcon     = document.getElementById('modal-icon');
-      $modalSub      = document.getElementById('modal-sub');
-      $modalTitle    = document.getElementById('modal-title');
-      $modalBody     = document.getElementById('modal-body');
-      $modalClose    = document.getElementById('modal-close');
+      $heroCenter = document.getElementById('hero-center');
+      $heroHeading = document.getElementById('hero-heading');
+      $heroHint = document.getElementById('hero-hint');
+      $liveClock = document.getElementById('live-clock');
+      $scrollPrompt = document.getElementById('scroll-prompt');
+      $appUI = document.getElementById('app-ui');
+      $mainHeader = document.getElementById('main-header');
+      $soundDeck = document.getElementById('sound-deck');
+      $cardModal = document.getElementById('card-modal');
+      $modalIcon = document.getElementById('modal-icon');
+      $modalSub = document.getElementById('modal-sub');
+      $modalTitle = document.getElementById('modal-title');
+      $modalBody = document.getElementById('modal-body');
+      $modalClose = document.getElementById('modal-close');
       $blackoutScreen = document.getElementById('blackout-screen');
-      $boMsg1        = document.getElementById('bo-msg1');
-      $boMsg2        = document.getElementById('bo-msg2');
-      $reigniteBtn   = document.getElementById('reignite-btn');
-      $sleepSwitch   = document.getElementById('sleep-switch');
+      $boMsg1 = document.getElementById('bo-msg1');
+      $boMsg2 = document.getElementById('bo-msg2');
+      $reigniteBtn = document.getElementById('reignite-btn');
+      $sleepSwitch = document.getElementById('sleep-switch');
       $sleepProgress = document.getElementById('sleep-progress');
-      $playIcon      = document.getElementById('play-icon');
-      $pauseIcon     = document.getElementById('pause-icon');
-      $trackStatus   = document.getElementById('track-status');
-      $trackName     = document.getElementById('track-name');
+      $playIcon = document.getElementById('play-icon');
+      $pauseIcon = document.getElementById('pause-icon');
+      $trackStatus = document.getElementById('track-status');
+      $trackName = document.getElementById('track-name');
       $visualizerCanvas = document.getElementById('visualizer-canvas');
       if ($visualizerCanvas) visualizerCtx = $visualizerCanvas.getContext('2d');
     }
@@ -998,12 +1058,12 @@
         starTwinklePhases = new Float32Array(starCount);
 
         for (let i = 0; i < starCount; i++) {
-          starPos[i * 3]     = (Math.random() - 0.5) * 100;
+          starPos[i * 3] = (Math.random() - 0.5) * 100;
           starPos[i * 3 + 1] = (Math.random() - 0.5) * 100;
           starPos[i * 3 + 2] = (Math.random() - 0.5) * 100;
 
           const isGold = Math.random() > 0.7;
-          starColors[i * 3]     = isGold ? 0.95 : 0.65;
+          starColors[i * 3] = isGold ? 0.95 : 0.65;
           starColors[i * 3 + 1] = isGold ? 0.82 : 0.8;
           starColors[i * 3 + 2] = isGold ? 0.35 : 1.0;
 
@@ -1028,9 +1088,9 @@
         const nodeCoords = [
           { x: -5, y: 3, z: 2 },
           { x: -2, y: 5, z: 1 },
-          { x:  3, y: 4, z: 3 },
-          { x:  5, y: 0, z: 2 },
-          { x:  1, y: -3, z: 4 }
+          { x: 3, y: 4, z: 3 },
+          { x: 5, y: 0, z: 2 },
+          { x: 1, y: -3, z: 4 }
         ];
 
         const nodeGeo = new THREE.SphereGeometry(0.26, 12, 12);
@@ -1398,14 +1458,14 @@
             gain.connect(masterGain);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.9);
-          } catch (e) {}
+          } catch (e) { }
         }, idx * 100);
       });
     }
 
     function stopCurrentSynth() {
       currentSynthNodes.forEach(n => {
-        try { if (n.stop) n.stop(); n.disconnect(); } catch (e) {}
+        try { if (n.stop) n.stop(); n.disconnect(); } catch (e) { }
       });
       currentSynthNodes = [];
     }
@@ -1488,9 +1548,9 @@
     }
 
     function updateAudioUI() {
-      if ($playIcon)    $playIcon.style.display   = isPlayingAudio ? 'none' : 'block';
-      if ($pauseIcon)   $pauseIcon.style.display  = isPlayingAudio ? 'block' : 'none';
-      if ($trackStatus) $trackStatus.innerText    = isPlayingAudio ? 'PLAYING LIVE SYNTH' : 'PAUSED';
+      if ($playIcon) $playIcon.style.display = isPlayingAudio ? 'none' : 'block';
+      if ($pauseIcon) $pauseIcon.style.display = isPlayingAudio ? 'block' : 'none';
+      if ($trackStatus) $trackStatus.innerText = isPlayingAudio ? 'PLAYING LIVE SYNTH' : 'PAUSED';
     }
 
     /* ======================================================================
@@ -1526,11 +1586,11 @@
     function openMemoryModal(idx, clickX, clickY) {
       triggerLiquidRipple(clickX, clickY);
       const data = STAR_MEMORIES[idx];
-      if ($modalIcon)  $modalIcon.innerText  = data.icon;
-      if ($modalSub)   $modalSub.innerText   = data.sub;
-      if ($modalTitle) $modalTitle.innerText  = data.title;
-      if ($modalBody)  $modalBody.innerText   = data.body;
-      if ($cardModal)  $cardModal.classList.add('active');
+      if ($modalIcon) $modalIcon.innerText = data.icon;
+      if ($modalSub) $modalSub.innerText = data.sub;
+      if ($modalTitle) $modalTitle.innerText = data.title;
+      if ($modalBody) $modalBody.innerText = data.body;
+      if ($cardModal) $cardModal.classList.add('active');
     }
 
     function closeMemoryModal() {
@@ -1661,7 +1721,7 @@
     }
 
     function handleOrientation(event) {
-      gyro.beta  = event.beta  || 0;
+      gyro.beta = event.beta || 0;
       gyro.gamma = event.gamma || 0;
     }
 
@@ -1713,12 +1773,12 @@
     function playEntranceAnimation() {
       if (typeof gsap === 'undefined') {
         // Fallback: just show everything instantly
-        if ($appUI)       $appUI.classList.add('visible');
-        if ($heroCenter)  $heroCenter.style.opacity = '1';
+        if ($appUI) $appUI.classList.add('visible');
+        if ($heroCenter) $heroCenter.style.opacity = '1';
         if ($heroHeading) { $heroHeading.style.opacity = '1'; $heroHeading.style.transform = 'none'; }
-        if ($heroHint)    { $heroHint.style.opacity = '1'; $heroHint.style.transform = 'none'; }
-        if ($liveClock)   { $liveClock.style.opacity = '1'; $liveClock.style.transform = 'none'; }
-        if ($scrollPrompt){ $scrollPrompt.style.opacity = '1'; $scrollPrompt.style.transform = 'none'; }
+        if ($heroHint) { $heroHint.style.opacity = '1'; $heroHint.style.transform = 'none'; }
+        if ($liveClock) { $liveClock.style.opacity = '1'; $liveClock.style.transform = 'none'; }
+        if ($scrollPrompt) { $scrollPrompt.style.opacity = '1'; $scrollPrompt.style.transform = 'none'; }
         document.querySelectorAll('.filigree').forEach(f => f.classList.add('visible'));
         if ($soundDeck) { $soundDeck.style.opacity = '1'; $soundDeck.style.transform = 'translateX(-50%) translateY(0)'; }
         if ($mainHeader) { $mainHeader.style.opacity = '1'; $mainHeader.style.transform = 'none'; }
@@ -1762,14 +1822,14 @@
        O. BOOTSTRAP — ERROR-ISOLATED INIT
        ====================================================================== */
     window.addEventListener('DOMContentLoaded', () => {
-      try { cacheDOMRefs(); }           catch (e) { console.error("cacheDOMRefs", e); }
-      try { generateCSSStars(); }       catch (e) { console.error("generateCSSStars", e); }
-      try { initThreeEngine(); }        catch (e) { console.error("initThreeEngine", e); }
-      try { initCanvases(); }           catch (e) { console.error("initCanvases", e); }
-      try { initInteractionEvents(); }  catch (e) { console.error("initInteractionEvents", e); }
-      try { initSleepSwitch(); }        catch (e) { console.error("initSleepSwitch", e); }
-      try { initGyroscope(); }          catch (e) { console.error("initGyroscope", e); }
-      try { masterLoop(); }             catch (e) { console.error("masterLoop", e); }
+      try { cacheDOMRefs(); } catch (e) { console.error("cacheDOMRefs", e); }
+      try { generateCSSStars(); } catch (e) { console.error("generateCSSStars", e); }
+      try { initThreeEngine(); } catch (e) { console.error("initThreeEngine", e); }
+      try { initCanvases(); } catch (e) { console.error("initCanvases", e); }
+      try { initInteractionEvents(); } catch (e) { console.error("initInteractionEvents", e); }
+      try { initSleepSwitch(); } catch (e) { console.error("initSleepSwitch", e); }
+      try { initGyroscope(); } catch (e) { console.error("initGyroscope", e); }
+      try { masterLoop(); } catch (e) { console.error("masterLoop", e); }
 
       // Live clock — update immediately + every 10 seconds
       try {
@@ -1795,4 +1855,5 @@
     });
   </script>
 </body>
+
 </html>
