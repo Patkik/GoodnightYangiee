@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Project Nocturne ✦ Starlight Transmission for Yangiee</title>
+  <meta name="description"
+    content="An intimate 3D cosmic sanctuary & starlight goodnight experience crafted specifically for Yangiee.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;600&display=swap"
+    rel="stylesheet">
+
+  <!-- External Libraries (Three.js & GSAP) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* ==========================================================================
+       1. CORE DESIGN SYSTEM & TOKENS
+       ========================================================================== */
+    :root {
+      --bg-obsidian:     #0B0C10;
+      --bg-indigo:       #1F2833;
+      --aurora-emerald:  #45A29E;
+      --aurora-violet:   #7B2CBF;
+      --starlight-gold:  #F4D03F;
+      --cute-pink:       #FF75B5;
+      --gold-glow:       rgba(244, 208, 63, 0.45);
+      --warm-white:      #FEFCF3;
+      --glass-bg:        rgba(15, 23, 42, 0.7);
+      --glass-border:    rgba(244, 208, 63, 0.2);
+      --font-display:    'Cinzel Decorative', serif;
+      --font-heading:    'Space Grotesk', sans-serif;
+      --font-body:       'Plus Jakarta Sans', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-obsidian);
+      font-family: var(--font-body);
+      color: var(--warm-white);
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* ==========================================================================
+       2. AMBIENT BACKGROUND LAYERS
+       ========================================================================== */
+
+    /* Subtle CSS radial gradient film grain */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.25;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(31, 40, 51, 0.4), transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(123, 44, 191, 0.15), transparent 50%);
+    }
+
+    /* CSS-only floating micro-stars behind the UI (zero JS cost) */
+    .css-stars {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .css-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--starlight-gold);
+      border-radius: 50%;
+      animation: css-float linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes css-float {
+      0%   { opacity: 0; transform: translateY(0) scale(0.8); }
+      15%  { opacity: 0.7; }
+      85%  { opacity: 0.5; }
+      100% { opacity: 0; transform: translateY(-100vh) scale(1.2); }
+    }
+
+    /* ==========================================================================
+       3. HARDWARE-ACCELERATED CANVASES
+       ========================================================================== */
+
+    #webgl-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      transform: translateZ(0);
+    }
+
+    #aurora-canvas,
+    #ripple-canvas,
+    #meteor-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      transform: translateZ(0);
+    }
+
+    #meteor-canvas {
+      z-index: 5;
+    }
+
+    /* ==========================================================================
+       4. CORNER SVG FILIGREES
+       ========================================================================== */
+
+    .filigree {
+      position: fixed;
+      width: 54px;
+      height: 54px;
+      z-index: 15;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .filigree.visible { opacity: 0.4; }
+
+    .filigree svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: var(--starlight-gold);
+      stroke-width: 1.2;
+    }
+
+    .f-tl { top: 14px; left: 14px; }
+    .f-tr { top: 14px; right: 14px; transform: scaleX(-1); }
+    .f-bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+    .f-br { bottom: 14px; right: 14px; transform: scale(-1); }
+
+    /* ==========================================================================
+       5. UI CONTAINER & HEADER
+       ========================================================================== */
+
+    #app-ui {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    #app-ui.visible { opacity: 1; }
+
+    header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: auto;
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+
+    .brand { display: flex; flex-direction: column; }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: clamp(14px, 3vw, 18px);
+      letter-spacing: 4px;
+      color: var(--starlight-gold);
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: rgba(254, 252, 243, 0.5);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .gyro-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: rgba(254, 252, 243, 0.8);
+      cursor: pointer;
+    }
+
+    .gyro-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--aurora-emerald);
+    }
+
+    /* ==========================================================================
+       6. HERO VIEWPORT & LIVE CLOCK
+       ========================================================================== */
+
+    .hero-center {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      width: 90%;
+      max-width: 480px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .hero-heading {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: var(--warm-white);
+      line-height: 1.2;
+      margin-bottom: 10px;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    .hero-heading span {
+      background: linear-gradient(135deg, var(--starlight-gold), var(--cute-pink));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-hint {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: rgba(254, 252, 243, 0.6);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .hero-hint::before,
+    .hero-hint::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: rgba(244, 208, 63, 0.3);
+    }
+
+    /* Live clock */
+    .live-clock {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      color: rgba(254, 252, 243, 0.45);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .scroll-indicator {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--starlight-gold);
+      font-size: 11px;
+      letter-spacing: 2px;
+      pointer-events: auto;
+      cursor: pointer;
+      animation: bounce-float 2.5s ease-in-out infinite;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    @keyframes bounce-float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(6px); }
+    }
+
+    /* ==========================================================================
+       7. MEMORY CARD MODAL
+       ========================================================================== */
+
+    .card-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(11, 12, 16, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .card-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .card-modal {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(244, 208, 63, 0.3);
+      border-radius: 20px;
+      padding: 28px 24px;
+      transform: scale(0.9) translateY(15px);
+      transition: transform 0.3s ease-out;
+    }
+
+    .card-modal-overlay.active .card-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .card-icon {
+      font-size: 26px;
+      margin-bottom: 12px;
+      color: var(--starlight-gold);
+    }
+
+    .card-subtitle {
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--aurora-emerald);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--starlight-gold);
+      margin-bottom: 14px;
+    }
+
+    .card-body {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(254, 252, 243, 0.9);
+      margin-bottom: 24px;
+    }
+
+    .card-close-btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(244, 208, 63, 0.15);
+      border: 1px solid var(--starlight-gold);
+      border-radius: 12px;
+      color: var(--starlight-gold);
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .card-close-btn:hover {
+      background: rgba(244, 208, 63, 0.25);
+    }
+
+    /* ==========================================================================
+       8. FLOATING AMBIENT SOUND DECK
+       ========================================================================== */
+
+    .sound-deck {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      z-index: 30;
+      width: calc(100% - 40px);
+      max-width: 440px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: auto;
+      opacity: 0;
+    }
+
+    .sound-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sound-track-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sound-play-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(244, 208, 63, 0.15);
+      border: 1px solid var(--starlight-gold);
+      color: var(--starlight-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .sound-play-toggle:hover {
+      background: rgba(244, 208, 63, 0.25);
+    }
+
+    .sound-track-labels {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sound-now-playing {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--warm-white);
+    }
+
+    .sound-status {
+      font-size: 9px;
+      color: rgba(254, 252, 243, 0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .visualizer-canvas {
+      width: 70px;
+      height: 20px;
+    }
+
+    .track-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .track-pills::-webkit-scrollbar { display: none; }
+
+    .track-pill {
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      color: rgba(254, 252, 243, 0.7);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .track-pill.active {
+      background: rgba(244, 208, 63, 0.2);
+      border-color: var(--starlight-gold);
+      color: var(--starlight-gold);
+    }
+
+    .track-pill:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ==========================================================================
+       9. SLEEP SWITCH & BLACKOUT SCREEN
+       ========================================================================== */
+
+    .sleep-switch-container {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sleep-switch {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255, 117, 181, 0.25), rgba(123, 44, 191, 0.35));
+      border: 1px solid rgba(244, 208, 63, 0.35);
+      color: var(--warm-white);
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      user-select: none;
+      touch-action: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .sleep-switch:hover {
+      border-color: rgba(244, 208, 63, 0.6);
+    }
+
+    .sleep-switch-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cute-pink), var(--starlight-gold));
+      opacity: 0.5;
+      pointer-events: none;
+      transition: width 0.03s linear;
+    }
+
+    #blackout-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #040507;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      text-align: center;
+      transition: opacity 1.5s ease;
+    }
+
+    #blackout-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .blackout-message-1 {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 6vw, 44px);
+      color: var(--starlight-gold);
+      letter-spacing: 5px;
+      margin-bottom: 14px;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    .blackout-message-2 {
+      font-family: var(--font-heading);
+      font-size: clamp(13px, 3vw, 18px);
+      letter-spacing: 3px;
+      color: rgba(254, 252, 243, 0.75);
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    .reignite-btn {
+      margin-top: 40px;
+      padding: 10px 24px;
+      background: transparent;
+      border: 1px solid rgba(244, 208, 63, 0.3);
+      border-radius: 24px;
+      color: rgba(244, 208, 63, 0.7);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      opacity: 0;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .reignite-btn:hover {
+      border-color: rgba(244, 208, 63, 0.6);
+      color: var(--starlight-gold);
+    }
+
+    /* ==========================================================================
+       10. START OVERLAY
+       ========================================================================== */
+
+    #start-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg-obsidian);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: opacity 0.6s ease;
+    }
+
+    .start-title {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 4vw, 30px);
+      color: var(--starlight-gold);
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .start-subtitle {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(254, 252, 243, 0.6);
+      text-transform: uppercase;
+    }
+
+    .start-btn {
+      padding: 14px 32px;
+      background: linear-gradient(135deg, rgba(244, 208, 63, 0.2), rgba(123, 44, 191, 0.3));
+      border: 1px solid var(--starlight-gold);
+      border-radius: 26px;
+      color: var(--starlight-gold);
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .start-btn:hover {
+      background: linear-gradient(135deg, rgba(244, 208, 63, 0.3), rgba(123, 44, 191, 0.4));
+      transform: scale(1.03);
+    }
+
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Static Ambient CSS Layer -->
+  <div class="film-grain"></div>
+
+  <!-- CSS-only Floating Micro-Stars (zero JS cost, adds depth) -->
+  <div class="css-stars" id="css-stars"></div>
+
+  <!-- SVG Corner Filigrees -->
+  <div class="filigree f-tl"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
+  <div class="filigree f-tr"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
+  <div class="filigree f-bl"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
+  <div class="filigree f-br"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25"/></svg></div>
+
+  <!-- Canvases -->
+  <canvas id="webgl-canvas"></canvas>
+  <canvas id="aurora-canvas"></canvas>
+  <canvas id="ripple-canvas"></canvas>
+  <canvas id="meteor-canvas"></canvas>
+
+  <!-- Start Overlay -->
+  <div id="start-overlay" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">
+    <div class="start-title">Project Nocturne</div>
+    <div class="start-subtitle">A Starlight Transmission for Yangiee</div>
+    <button class="start-btn" id="init-btn" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">Wake The Universe</button>
+  </div>
+
+  <!-- Main UI Layer -->
+  <div id="app-ui">
+    <header id="main-header">
+      <div class="brand">
+        <span class="brand-title">NOCTURNE</span>
+        <span class="brand-sub">FOR YANGIEE ✦ 3D STAGE</span>
+      </div>
+      <div class="gyro-badge" id="gyro-btn">
+        <div class="gyro-dot"></div>
+        <span id="gyro-text">GYRO PARALLAX</span>
+      </div>
+    </header>
+
+    <!-- Center Hero Screen -->
+    <div class="hero-center" id="hero-center">
+      <div class="hero-heading" id="hero-heading">GOOD <span>NIGHT</span></div>
+      <div class="live-clock" id="live-clock"></div>
+      <div class="hero-hint" id="hero-hint">TILT PHONE OR SWIPE TO EXPLORE</div>
+      <div class="scroll-indicator" id="scroll-prompt">
+        <span>TAP STARS FOR MEMORIES</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Ambient Audio & Sleep Deck -->
+    <div class="sound-deck" id="sound-deck">
+      <div class="sound-top-row">
+        <div class="sound-track-info">
+          <button class="sound-play-toggle" id="audio-toggle">
+            <svg id="play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="pause-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+          <div class="sound-track-labels">
+            <span class="sound-now-playing" id="track-name">LOFI NIGHT BEATS</span>
+            <span class="sound-status" id="track-status">GENERATIVE AUDIO SYNTH</span>
+          </div>
+        </div>
+        <canvas class="visualizer-canvas" id="visualizer-canvas"></canvas>
+      </div>
+
+      <div class="track-pills">
+        <button class="track-pill active" data-preset="lofi">LOFI NIGHT BEATS</button>
+        <button class="track-pill" data-preset="rain">SOFT RAIN ON GLASS</button>
+        <button class="track-pill" data-preset="fire">WARM FIREPLACE</button>
+      </div>
+
+      <!-- Sleep Mode Hold Switch -->
+      <div class="sleep-switch-container">
+        <button class="sleep-switch" id="sleep-switch">
+          <div class="sleep-switch-progress" id="sleep-progress"></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <span id="sleep-switch-label">HOLD TO BLOW OUT THE STARS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memory Card Modal -->
+  <div class="card-modal-overlay" id="card-modal">
+    <div class="card-modal">
+      <div class="card-icon" id="modal-icon">🌟</div>
+      <div class="card-subtitle" id="modal-sub">STAR MEMORY</div>
+      <div class="card-title" id="modal-title">The Northern Spark</div>
+      <div class="card-body" id="modal-body">
+        Every late night conversation with you feels like discovering a brand new star in the quiet sky.
+      </div>
+      <button class="card-close-btn" id="modal-close">KEEP STARLIGHT</button>
+    </div>
+  </div>
+
+  <!-- Final Transmission Blackout Overlay -->
+  <div id="blackout-screen">
+    <div class="blackout-message-1" id="bo-msg1">Rest well, Yangiee.</div>
+    <div class="blackout-message-2" id="bo-msg2">See you in tomorrow's light. ✦</div>
+    <button class="reignite-btn" id="reignite-btn">REIGNITE THE UNIVERSE</button>
+  </div>
+
+  <!-- ====================================================================
+       SCRIPT ENGINE
+       ==================================================================== -->
+  <script>
+    'use strict';
+
+    /* ======================================================================
+       A. GLOBAL DISMISS (available immediately for inline onclick)
+       ====================================================================== */
+    window.dismissStartOverlay = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const overlay = document.getElementById('start-overlay');
+      if (!overlay || overlay.style.display === 'none') return;
+
+      overlay.style.pointerEvents = 'none';
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.style.display = 'none'; }, 600);
+
+      // Start audio
+      try { playGenerativeTrack('lofi'); } catch (err) { console.warn("Audio start:", err); }
+      try { triggerHaptic([30]); } catch (err) {}
+
+      // Run entrance animation
+      try { playEntranceAnimation(); } catch (err) { console.warn("Entrance anim:", err); }
+    };
+
+    /* ======================================================================
+       B. MEMORY DATA FOR YANGIEE
+       ====================================================================== */
+    const STAR_MEMORIES = [
+      { icon: "🌟", sub: "CONSTELLATION NODE I",   title: "The First Spark",   body: "Every late night conversation with you feels like discovering a brand new star in the quiet sky." },
+      { icon: "🌙", sub: "CONSTELLATION NODE II",  title: "Your Warm Laugh",   body: "Your laugh is genuinely my favorite melody in the universe. Never lose that brilliant magic, Yangiee." },
+      { icon: "☕", sub: "CONSTELLATION NODE III", title: "Midnight Comfort",   body: "No matter how exhausting or noisy the day gets, thinking of you brings immediate warmth and peace." },
+      { icon: "🔮", sub: "CONSTELLATION NODE IV",  title: "Cosmic Wishes",     body: "I wished upon every shooting star tonight that all your dreams are soft, gentle, and filled with joy." },
+      { icon: "✨", sub: "CONSTELLATION NODE V",   title: "Yangiee's Crown",   body: "You shine brighter than any constellation in the night sky. Sleep tight, rest deeply, my favorite person." }
+    ];
+
+    /* ======================================================================
+       C. CACHED DOM REFERENCES (hoisted; assigned at init)
+       ====================================================================== */
+    let $heroCenter, $heroHeading, $heroHint, $liveClock, $scrollPrompt;
+    let $appUI, $mainHeader, $soundDeck;
+    let $cardModal, $modalIcon, $modalSub, $modalTitle, $modalBody, $modalClose;
+    let $blackoutScreen, $boMsg1, $boMsg2, $reigniteBtn;
+    let $sleepSwitch, $sleepProgress;
+    let $playIcon, $pauseIcon, $trackStatus, $trackName;
+    let $visualizerCanvas, visualizerCtx;
+
+    function cacheDOMRefs() {
+      $heroCenter    = document.getElementById('hero-center');
+      $heroHeading   = document.getElementById('hero-heading');
+      $heroHint      = document.getElementById('hero-hint');
+      $liveClock     = document.getElementById('live-clock');
+      $scrollPrompt  = document.getElementById('scroll-prompt');
+      $appUI         = document.getElementById('app-ui');
+      $mainHeader    = document.getElementById('main-header');
+      $soundDeck     = document.getElementById('sound-deck');
+      $cardModal     = document.getElementById('card-modal');
+      $modalIcon     = document.getElementById('modal-icon');
+      $modalSub      = document.getElementById('modal-sub');
+      $modalTitle    = document.getElementById('modal-title');
+      $modalBody     = document.getElementById('modal-body');
+      $modalClose    = document.getElementById('modal-close');
+      $blackoutScreen = document.getElementById('blackout-screen');
+      $boMsg1        = document.getElementById('bo-msg1');
+      $boMsg2        = document.getElementById('bo-msg2');
+      $reigniteBtn   = document.getElementById('reignite-btn');
+      $sleepSwitch   = document.getElementById('sleep-switch');
+      $sleepProgress = document.getElementById('sleep-progress');
+      $playIcon      = document.getElementById('play-icon');
+      $pauseIcon     = document.getElementById('pause-icon');
+      $trackStatus   = document.getElementById('track-status');
+      $trackName     = document.getElementById('track-name');
+      $visualizerCanvas = document.getElementById('visualizer-canvas');
+      if ($visualizerCanvas) visualizerCtx = $visualizerCanvas.getContext('2d');
+    }
+
+    /* ======================================================================
+       D. THREE.JS 3D ENGINE
+       ====================================================================== */
+    let scene, camera, renderer;
+    let moonMesh, atmosphereMesh;
+    let starParticles, constellationGroup;
+    let starNodes = [];
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    let gyro = { alpha: 0, beta: 0, gamma: 0 };
+    let isBlackoutActive = false;
+
+    // Twinkle data — per-star phase offsets for shimmer
+    let starTwinklePhases = null;
+
+    function initThreeEngine() {
+      try {
+        const container = document.getElementById('webgl-canvas');
+        if (!container || typeof THREE === 'undefined') return;
+
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x0B0C10, 0.002);
+
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+        camera.position.z = 18;
+
+        renderer = new THREE.WebGLRenderer({
+          canvas: container,
+          antialias: false,
+          alpha: true,
+          powerPreference: "high-performance"
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x1F2833, 1.2);
+        scene.add(ambientLight);
+
+        const moonLight = new THREE.DirectionalLight(0xF4D03F, 2.5);
+        moonLight.position.set(20, 20, 15);
+        scene.add(moonLight);
+
+        // Procedural Moon texture
+        const moonCanvas = document.createElement('canvas');
+        moonCanvas.width = 512;
+        moonCanvas.height = 256;
+        const ctx = moonCanvas.getContext('2d');
+
+        const grad = ctx.createLinearGradient(0, 0, 512, 256);
+        grad.addColorStop(0, '#D4D6DD');
+        grad.addColorStop(0.5, '#A0A4B0');
+        grad.addColorStop(1, '#5C606E');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 512, 256);
+
+        // Craters
+        ctx.fillStyle = 'rgba(40, 45, 60, 0.35)';
+        for (let i = 0; i < 25; i++) {
+          const x = Math.random() * 512;
+          const y = Math.random() * 256;
+          const r = 15 + Math.random() * 50;
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        const moonTexture = new THREE.CanvasTexture(moonCanvas);
+        const moonGeo = new THREE.SphereGeometry(4.2, 32, 32);
+        const moonMat = new THREE.MeshStandardMaterial({
+          map: moonTexture,
+          roughness: 0.8,
+          metalness: 0.1
+        });
+        moonMesh = new THREE.Mesh(moonGeo, moonMat);
+        moonMesh.position.set(0, 1, 0);
+        scene.add(moonMesh);
+
+        // Atmosphere glow (Rayleigh-style shader)
+        const atmosphereGeo = new THREE.SphereGeometry(4.5, 24, 24);
+        const atmosphereMat = new THREE.ShaderMaterial({
+          uniforms: {
+            uGlowIntensity: { value: 1.0 }
+          },
+          vertexShader: `
+            varying vec3 vNormal;
+            void main() {
+              vNormal = normalize(normalMatrix * normal);
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: `
+            uniform float uGlowIntensity;
+            varying vec3 vNormal;
+            void main() {
+              float intensity = pow(0.65 - dot(vNormal, vec3(0, 0, 1.0)), 2.2);
+              gl_FragColor = vec4(0.27, 0.63, 0.62, 1.0) * intensity * 1.4 * uGlowIntensity;
+            }
+          `,
+          blending: THREE.AdditiveBlending,
+          side: THREE.BackSide,
+          transparent: true
+        });
+        atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMat);
+        atmosphereMesh.position.copy(moonMesh.position);
+        scene.add(atmosphereMesh);
+
+        // Starfield with twinkle phases
+        const starCount = 750;
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(starCount * 3);
+        const starColors = new Float32Array(starCount * 3);
+        starTwinklePhases = new Float32Array(starCount);
+
+        for (let i = 0; i < starCount; i++) {
+          starPos[i * 3]     = (Math.random() - 0.5) * 100;
+          starPos[i * 3 + 1] = (Math.random() - 0.5) * 100;
+          starPos[i * 3 + 2] = (Math.random() - 0.5) * 100;
+
+          const isGold = Math.random() > 0.7;
+          starColors[i * 3]     = isGold ? 0.95 : 0.65;
+          starColors[i * 3 + 1] = isGold ? 0.82 : 0.8;
+          starColors[i * 3 + 2] = isGold ? 0.35 : 1.0;
+
+          // Random phase offset for twinkling
+          starTwinklePhases[i] = Math.random() * Math.PI * 2;
+        }
+
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+        const starMat = new THREE.PointsMaterial({
+          size: 0.2,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.85
+        });
+        starParticles = new THREE.Points(starGeo, starMat);
+        scene.add(starParticles);
+
+        // Constellation nodes
+        constellationGroup = new THREE.Group();
+        const nodeCoords = [
+          { x: -5, y: 3, z: 2 },
+          { x: -2, y: 5, z: 1 },
+          { x:  3, y: 4, z: 3 },
+          { x:  5, y: 0, z: 2 },
+          { x:  1, y: -3, z: 4 }
+        ];
+
+        const nodeGeo = new THREE.SphereGeometry(0.26, 12, 12);
+        const nodeMat = new THREE.MeshBasicMaterial({ color: 0xF4D03F });
+
+        nodeCoords.forEach((coord, idx) => {
+          const mesh = new THREE.Mesh(nodeGeo, nodeMat);
+          mesh.position.set(coord.x, coord.y, coord.z);
+          mesh.userData = { index: idx };
+          constellationGroup.add(mesh);
+          starNodes.push(mesh);
+        });
+
+        // Constellation connecting lines
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x45A29E, transparent: true, opacity: 0.4 });
+        const lineGeo = new THREE.BufferGeometry();
+        const linePositions = [];
+        for (let i = 0; i < nodeCoords.length - 1; i++) {
+          linePositions.push(nodeCoords[i].x, nodeCoords[i].y, nodeCoords[i].z);
+          linePositions.push(nodeCoords[i + 1].x, nodeCoords[i + 1].y, nodeCoords[i + 1].z);
+        }
+        lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+        constellationGroup.add(new THREE.LineSegments(lineGeo, lineMat));
+        scene.add(constellationGroup);
+
+        window.addEventListener('resize', onWindowResize);
+      } catch (e) {
+        console.error("Three.js init error:", e);
+      }
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      if (auroraCanvas) { auroraCanvas.width = window.innerWidth; auroraCanvas.height = window.innerHeight; }
+      if (rippleCanvas) { rippleCanvas.width = window.innerWidth; rippleCanvas.height = window.innerHeight; }
+      if (meteorCanvas) { meteorCanvas.width = window.innerWidth; meteorCanvas.height = window.innerHeight; }
+    }
+
+    /* ======================================================================
+       E. 2D CANVAS LAYERS
+       ====================================================================== */
+    let auroraCanvas, auroraCtx, auroraParticles = [];
+    let rippleCanvas, rippleCtx, ripples = [];
+    let meteorCanvas, meteorCtx, meteors = [], cuteSparkles = [];
+    let isMeteorActive = false;
+    let lastAuroraSpawn = 0;
+    let frameCounter = 0;
+
+    function initCanvases() {
+      try {
+        auroraCanvas = document.getElementById('aurora-canvas');
+        if (auroraCanvas) {
+          auroraCtx = auroraCanvas.getContext('2d');
+          auroraCanvas.width = window.innerWidth;
+          auroraCanvas.height = window.innerHeight;
+        }
+
+        rippleCanvas = document.getElementById('ripple-canvas');
+        if (rippleCanvas) {
+          rippleCtx = rippleCanvas.getContext('2d');
+          rippleCanvas.width = window.innerWidth;
+          rippleCanvas.height = window.innerHeight;
+        }
+
+        meteorCanvas = document.getElementById('meteor-canvas');
+        if (meteorCanvas) {
+          meteorCtx = meteorCanvas.getContext('2d');
+          meteorCanvas.width = window.innerWidth;
+          meteorCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('touchmove', (e) => {
+          if (e.touches.length > 0) handlePointerMove(e.touches[0]);
+        }, { passive: true });
+
+        // Tap-anywhere ripple for ambient interactivity
+        window.addEventListener('click', (e) => {
+          triggerLiquidRipple(e.clientX, e.clientY);
+        });
+
+      } catch (e) {
+        console.error("Canvas init error:", e);
+      }
+    }
+
+    function handlePointerMove(e) {
+      mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.targetY = (e.clientY / window.innerHeight) * 2 - 1;
+
+      const now = Date.now();
+      if (now - lastAuroraSpawn > 30 && auroraParticles.length < 25) {
+        lastAuroraSpawn = now;
+        auroraParticles.push({
+          x: e.clientX,
+          y: e.clientY,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: -Math.random() * 1.5 - 0.5,
+          size: Math.random() * 3 + 2,
+          alpha: 0.7,
+          color: Math.random() > 0.5 ? '#FF75B5' : '#45A29E'
+        });
+      }
+    }
+
+    function triggerLiquidRipple(x, y) {
+      if (ripples.length < 5) {
+        ripples.push({ x, y, radius: 8, maxRadius: 140, alpha: 0.6 });
+      }
+    }
+
+    /* ======================================================================
+       F. METEOR SHOWER
+       ====================================================================== */
+
+    // Convert hex to {r, g, b} once
+    function hexToRGB(hex) {
+      const h = hex.replace('#', '');
+      return {
+        r: parseInt(h.substring(0, 2), 16),
+        g: parseInt(h.substring(2, 4), 16),
+        b: parseInt(h.substring(4, 6), 16)
+      };
+    }
+
+    function getRandomMeteorColor() {
+      const palette = ['#F4D03F', '#FF75B5', '#45A29E', '#7B2CBF', '#FEFCF3'];
+      return palette[Math.floor(Math.random() * palette.length)];
+    }
+
+    function triggerExtravagantMeteorShower() {
+      isMeteorActive = true;
+      meteors = [];
+      cuteSparkles = [];
+      playStarfallChimes();
+
+      for (let i = 0; i < 22; i++) {
+        setTimeout(() => {
+          const color = getRandomMeteorColor();
+          const rgb = hexToRGB(color);
+          meteors.push({
+            x: Math.random() * (window.innerWidth + 200) - 100,
+            y: -50 - Math.random() * 150,
+            length: Math.random() * 100 + 70,
+            speed: Math.random() * 14 + 10,
+            angle: Math.PI / 4,
+            color: color,
+            tailColor: `rgba(${rgb.r},${rgb.g},${rgb.b},0)`, // Pre-computed!
+            thickness: Math.random() * 2 + 1.5,
+            isHeartHead: Math.random() > 0.4
+          });
+        }, i * 70);
+      }
+    }
+
+    /* ======================================================================
+       G. UNIFIED MASTER RENDER LOOP
+       ====================================================================== */
+
+    // Pre-allocated typed array for audio visualizer (avoid GC churn)
+    let visualizerDataArray = null;
+
+    function masterLoop() {
+      requestAnimationFrame(masterLoop);
+      frameCounter++;
+
+      // --- THREE.JS 3D SCENE ---
+      if (renderer && scene && camera) {
+        if (!isBlackoutActive) {
+          if (moonMesh) moonMesh.rotation.y += 0.0015;
+          if (atmosphereMesh) {
+            atmosphereMesh.rotation.y += 0.0015;
+            // Moon glow pulse — subtle breathing effect
+            const glowPulse = 0.85 + Math.sin(Date.now() * 0.001) * 0.15;
+            atmosphereMesh.material.uniforms.uGlowIntensity.value = glowPulse;
+          }
+          if (starParticles) {
+            starParticles.rotation.y += 0.0002;
+            // Starfield twinkling — modulate opacity
+            const t = Date.now() * 0.002;
+            starParticles.material.opacity = 0.7 + Math.sin(t) * 0.15;
+          }
+
+          // Camera parallax (mouse + gyro)
+          mouse.x += (mouse.targetX - mouse.x) * 0.05;
+          mouse.y += (mouse.targetY - mouse.y) * 0.05;
+          camera.position.x = mouse.x * 2.5 + (gyro.gamma / 18);
+          camera.position.y = -mouse.y * 2.5 - (gyro.beta / 18);
+          camera.lookAt(0, 0, 0);
+
+          // Constellation node pulse
+          starNodes.forEach((node, i) => {
+            const scale = 1 + Math.sin(Date.now() * 0.003 + i) * 0.15;
+            node.scale.set(scale, scale, scale);
+          });
+        }
+        renderer.render(scene, camera);
+      }
+
+      // --- AURORA PARTICLES ---
+      if (auroraCtx && auroraParticles.length > 0) {
+        auroraCtx.save();
+        auroraCtx.clearRect(0, 0, auroraCanvas.width, auroraCanvas.height);
+        for (let i = auroraParticles.length - 1; i >= 0; i--) {
+          const p = auroraParticles[i];
+          p.x += p.vx; p.y += p.vy; p.alpha -= 0.02; p.size *= 0.98;
+          if (p.alpha <= 0) { auroraParticles.splice(i, 1); continue; }
+
+          auroraCtx.globalAlpha = p.alpha;
+          auroraCtx.fillStyle = p.color;
+          auroraCtx.beginPath();
+          auroraCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          auroraCtx.fill();
+        }
+        auroraCtx.restore();
+      }
+
+      // --- RIPPLE RINGS ---
+      if (rippleCtx && ripples.length > 0) {
+        rippleCtx.save();
+        rippleCtx.clearRect(0, 0, rippleCanvas.width, rippleCanvas.height);
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const r = ripples[i];
+          r.radius += 4; r.alpha -= 0.015;
+          if (r.alpha <= 0) { ripples.splice(i, 1); continue; }
+
+          rippleCtx.beginPath();
+          rippleCtx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          rippleCtx.strokeStyle = `rgba(244, 208, 63, ${r.alpha})`;
+          rippleCtx.lineWidth = 1.5;
+          rippleCtx.stroke();
+        }
+        rippleCtx.restore();
+      }
+
+      // --- METEOR SHOWER ---
+      if (meteorCtx && (meteors.length > 0 || cuteSparkles.length > 0)) {
+        meteorCtx.save();
+        meteorCtx.clearRect(0, 0, meteorCanvas.width, meteorCanvas.height);
+
+        for (let i = meteors.length - 1; i >= 0; i--) {
+          const m = meteors[i];
+          m.x += Math.cos(m.angle) * m.speed;
+          m.y += Math.sin(m.angle) * m.speed;
+
+          // Throttled sparkle spawning (every 3rd frame, and cap at 40)
+          if (frameCounter % 3 === 0 && Math.random() > 0.5 && cuteSparkles.length < 40) {
+            cuteSparkles.push({
+              x: m.x, y: m.y,
+              vx: (Math.random() - 0.5) * 0.8,
+              vy: Math.random() * 1.2 + 0.3,
+              size: Math.random() * 10 + 6,
+              alpha: 0.9,
+              color: m.color,
+              symbol: Math.random() > 0.4 ? '✨' : '💖'
+            });
+          }
+
+          const tailX = m.x - Math.cos(m.angle) * m.length;
+          const tailY = m.y - Math.sin(m.angle) * m.length;
+
+          meteorCtx.globalAlpha = 1;
+          const grad = meteorCtx.createLinearGradient(m.x, m.y, tailX, tailY);
+          grad.addColorStop(0, m.color);
+          grad.addColorStop(1, m.tailColor); // Pre-computed rgba
+
+          meteorCtx.strokeStyle = grad;
+          meteorCtx.lineWidth = m.thickness;
+          meteorCtx.lineCap = 'round';
+          meteorCtx.beginPath();
+          meteorCtx.moveTo(m.x, m.y);
+          meteorCtx.lineTo(tailX, tailY);
+          meteorCtx.stroke();
+
+          if (m.isHeartHead) {
+            meteorCtx.globalAlpha = 1;
+            meteorCtx.font = '14px sans-serif';
+            meteorCtx.fillText('💖', m.x - 7, m.y + 5);
+          }
+
+          if (m.y > window.innerHeight + 50 || m.x < -100) {
+            meteors.splice(i, 1);
+          }
+        }
+
+        for (let i = cuteSparkles.length - 1; i >= 0; i--) {
+          const s = cuteSparkles[i];
+          s.x += s.vx; s.y += s.vy; s.alpha -= 0.02;
+          if (s.alpha <= 0) { cuteSparkles.splice(i, 1); continue; }
+
+          meteorCtx.globalAlpha = Math.max(0, s.alpha);
+          meteorCtx.font = `${s.size}px sans-serif`;
+          meteorCtx.fillText(s.symbol, s.x, s.y);
+        }
+
+        meteorCtx.restore();
+      }
+
+      // --- AUDIO VISUALIZER (cached refs, pre-allocated array) ---
+      if (analyser && isPlayingAudio && visualizerCtx && $visualizerCanvas) {
+        visualizerCtx.clearRect(0, 0, $visualizerCanvas.width, $visualizerCanvas.height);
+
+        if (!visualizerDataArray) {
+          visualizerDataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+        analyser.getByteFrequencyData(visualizerDataArray);
+
+        visualizerCtx.beginPath();
+        visualizerCtx.strokeStyle = '#F4D03F';
+        visualizerCtx.lineWidth = 1.5;
+
+        const sliceWidth = $visualizerCanvas.width / 16;
+        let x = 0;
+        for (let i = 0; i < 16; i++) {
+          const v = visualizerDataArray[i] / 255.0;
+          const y = (1 - v) * ($visualizerCanvas.height / 2) + 2;
+          if (i === 0) visualizerCtx.moveTo(x, y); else visualizerCtx.lineTo(x, y);
+          x += sliceWidth;
+        }
+        visualizerCtx.stroke();
+      }
+    }
+
+    /* ======================================================================
+       H. WEB AUDIO SYNTHESIZER ENGINE
+       ====================================================================== */
+    let audioCtx = null, masterGain = null, analyser = null, currentSynthNodes = [];
+    let isPlayingAudio = false, activePreset = 'lofi';
+
+    function initWebAudio() {
+      if (audioCtx) return;
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.35;
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 32;
+
+        masterGain.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      } catch (e) {
+        console.warn("Web Audio Context error:", e);
+      }
+    }
+
+    function playStarfallChimes() {
+      if (!audioCtx) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          if (!audioCtx) return;
+          try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.9);
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.9);
+          } catch (e) {}
+        }, idx * 100);
+      });
+    }
+
+    function stopCurrentSynth() {
+      currentSynthNodes.forEach(n => {
+        try { if (n.stop) n.stop(); n.disconnect(); } catch (e) {}
+      });
+      currentSynthNodes = [];
+    }
+
+    function playGenerativeTrack(preset) {
+      initWebAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      stopCurrentSynth();
+      activePreset = preset;
+
+      try {
+        if (preset === 'lofi') {
+          const freqs = [220, 277.18, 329.63, 440];
+          freqs.forEach(f => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start();
+            currentSynthNodes.push(osc, gain);
+          });
+        } else if (preset === 'rain') {
+          const bufferSize = audioCtx.sampleRate * 2;
+          const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) output[i] = (Math.random() * 2 - 1) * 0.04;
+
+          const rainSource = audioCtx.createBufferSource();
+          rainSource.buffer = noiseBuffer;
+          rainSource.loop = true;
+
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+          rainSource.connect(filter);
+          filter.connect(masterGain);
+          rainSource.start();
+          currentSynthNodes.push(rainSource, filter);
+        } else if (preset === 'fire') {
+          const bufferSize = audioCtx.sampleRate * 2;
+          const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          let lastOut = 0.0;
+          for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            output[i] = (lastOut + (0.02 * white)) / 1.02;
+            lastOut = output[i];
+          }
+
+          const fireSource = audioCtx.createBufferSource();
+          fireSource.buffer = noiseBuffer;
+          fireSource.loop = true;
+          fireSource.connect(masterGain);
+          fireSource.start();
+          currentSynthNodes.push(fireSource);
+        }
+        isPlayingAudio = true;
+      } catch (e) {
+        console.warn("Audio synth play error:", e);
+      }
+      updateAudioUI();
+    }
+
+    function toggleAudioPlay() {
+      if (!audioCtx) { playGenerativeTrack(activePreset); return; }
+      if (isPlayingAudio) {
+        masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        isPlayingAudio = false;
+      } else {
+        masterGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        isPlayingAudio = true;
+      }
+      updateAudioUI();
+    }
+
+    function updateAudioUI() {
+      if ($playIcon)    $playIcon.style.display   = isPlayingAudio ? 'none' : 'block';
+      if ($pauseIcon)   $pauseIcon.style.display  = isPlayingAudio ? 'block' : 'none';
+      if ($trackStatus) $trackStatus.innerText    = isPlayingAudio ? 'PLAYING LIVE SYNTH' : 'PAUSED';
+    }
+
+    /* ======================================================================
+       I. INTERACTION EVENTS & MODALS
+       ====================================================================== */
+    const raycaster = new THREE.Raycaster();
+    const mouseVector = new THREE.Vector2();
+
+    function initInteractionEvents() {
+      window.addEventListener('click', (e) => {
+        if ($cardModal && $cardModal.classList.contains('active')) return;
+        const overlay = document.getElementById('start-overlay');
+        if (overlay && overlay.style.display !== 'none' && overlay.style.opacity !== '0') return;
+        if (!camera || starNodes.length === 0) return;
+
+        mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouseVector, camera);
+        const intersects = raycaster.intersectObjects(starNodes);
+
+        if (intersects.length > 0) {
+          const hitNode = intersects[0].object;
+          const idx = hitNode.userData.index;
+          openMemoryModal(idx, e.clientX, e.clientY);
+          triggerHaptic([20, 40]);
+        }
+      });
+
+      if ($modalClose) $modalClose.addEventListener('click', closeMemoryModal);
+    }
+
+    function openMemoryModal(idx, clickX, clickY) {
+      triggerLiquidRipple(clickX, clickY);
+      const data = STAR_MEMORIES[idx];
+      if ($modalIcon)  $modalIcon.innerText  = data.icon;
+      if ($modalSub)   $modalSub.innerText   = data.sub;
+      if ($modalTitle) $modalTitle.innerText  = data.title;
+      if ($modalBody)  $modalBody.innerText   = data.body;
+      if ($cardModal)  $cardModal.classList.add('active');
+    }
+
+    function closeMemoryModal() {
+      if ($cardModal) $cardModal.classList.remove('active');
+    }
+
+    /* ======================================================================
+       J. SLEEP SWITCH & BLACKOUT TRANSMISSION
+       ====================================================================== */
+    let sleepHoldTimer = null, sleepProgress = 0;
+
+    function initSleepSwitch() {
+      if (!$sleepSwitch || !$sleepProgress) return;
+
+      const startHold = (e) => {
+        e.preventDefault();
+        sleepProgress = 0;
+        sleepHoldTimer = setInterval(() => {
+          sleepProgress += 4;
+          $sleepProgress.style.width = `${sleepProgress}%`;
+          triggerHaptic([12]);
+
+          if (sleepProgress >= 100) {
+            clearInterval(sleepHoldTimer);
+            executeBlackoutTransmission();
+          }
+        }, 30);
+      };
+
+      const endHold = () => {
+        if (sleepProgress < 100) {
+          clearInterval(sleepHoldTimer);
+          sleepProgress = 0;
+          $sleepProgress.style.width = '0%';
+        }
+      };
+
+      $sleepSwitch.addEventListener('mousedown', startHold);
+      $sleepSwitch.addEventListener('mouseup', endHold);
+      $sleepSwitch.addEventListener('mouseleave', endHold);
+      $sleepSwitch.addEventListener('touchstart', startHold);
+      $sleepSwitch.addEventListener('touchend', endHold);
+
+      if ($reigniteBtn) $reigniteBtn.addEventListener('click', reigniteUniverse);
+    }
+
+    function executeBlackoutTransmission() {
+      isBlackoutActive = true;
+      triggerHaptic([50, 100, 150]);
+
+      triggerExtravagantMeteorShower();
+
+      if (typeof gsap !== 'undefined' && camera && starParticles && moonMesh) {
+        gsap.to(camera.position, { z: 2, duration: 2.5, ease: "power3.inOut" });
+        gsap.to(starParticles.scale, { x: 0, y: 0, z: 0, duration: 2, ease: "power4.in" });
+        gsap.to(moonMesh.material, { opacity: 0.1, transparent: true, duration: 2.5 });
+      }
+
+      if (masterGain && audioCtx) {
+        masterGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
+      }
+
+      setTimeout(() => {
+        if ($blackoutScreen) $blackoutScreen.classList.add('active');
+
+        if (typeof gsap !== 'undefined') {
+          gsap.to($boMsg1, { opacity: 1, y: 0, duration: 1.2, delay: 0.3 });
+          gsap.to($boMsg2, { opacity: 1, y: 0, duration: 1.2, delay: 1.4 });
+          gsap.to($reigniteBtn, { opacity: 1, duration: 0.8, delay: 2.5 });
+        }
+      }, 1800);
+    }
+
+    function reigniteUniverse() {
+      isBlackoutActive = false;
+      isMeteorActive = false;
+      meteors = [];
+      cuteSparkles = [];
+
+      if ($blackoutScreen) $blackoutScreen.classList.remove('active');
+
+      if (typeof gsap !== 'undefined') {
+        gsap.to($boMsg1, { opacity: 0, y: 15, duration: 0.4 });
+        gsap.to($boMsg2, { opacity: 0, y: 15, duration: 0.4 });
+        gsap.to($reigniteBtn, { opacity: 0, duration: 0.4 });
+
+        if (camera && starParticles && moonMesh) {
+          gsap.to(camera.position, { z: 18, duration: 1.8, ease: "power2.out" });
+          gsap.to(starParticles.scale, { x: 1, y: 1, z: 1, duration: 1.8 });
+          gsap.to(moonMesh.material, { opacity: 1, duration: 1.8 });
+        }
+      }
+
+      if (masterGain && audioCtx && isPlayingAudio) {
+        masterGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+      }
+      sleepProgress = 0;
+      if ($sleepProgress) $sleepProgress.style.width = '0%';
+    }
+
+    /* ======================================================================
+       K. UTILITIES
+       ====================================================================== */
+    function triggerHaptic(pattern) {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    function initGyroscope() {
+      const gyroBtn = document.getElementById('gyro-btn');
+      if (!gyroBtn) return;
+      gyroBtn.addEventListener('click', () => {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                const txt = document.getElementById('gyro-text');
+                if (txt) txt.innerText = "GYRO ACTIVE";
+              }
+            })
+            .catch(console.error);
+        } else {
+          window.addEventListener('deviceorientation', handleOrientation);
+          const txt = document.getElementById('gyro-text');
+          if (txt) txt.innerText = "GYRO ACTIVE";
+        }
+      });
+    }
+
+    function handleOrientation(event) {
+      gyro.beta  = event.beta  || 0;
+      gyro.gamma = event.gamma || 0;
+    }
+
+    /* ======================================================================
+       L. LIVE CLOCK
+       ====================================================================== */
+    function updateLiveClock() {
+      if (!$liveClock) return;
+      const now = new Date();
+      const hours = now.getHours();
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const h12 = hours % 12 || 12;
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayName = days[now.getDay()];
+
+      // Determine time-of-day mood
+      let mood = 'Night';
+      if (hours >= 5 && hours < 12) mood = 'Morning';
+      else if (hours >= 12 && hours < 17) mood = 'Afternoon';
+      else if (hours >= 17 && hours < 21) mood = 'Evening';
+
+      $liveClock.textContent = `${h12}:${mins} ${ampm} ✦ ${dayName} ${mood}`;
+    }
+
+    /* ======================================================================
+       M. CSS FLOATING MICRO-STARS GENERATOR
+       ====================================================================== */
+    function generateCSSStars() {
+      const container = document.getElementById('css-stars');
+      if (!container) return;
+
+      for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.className = 'css-star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = (60 + Math.random() * 40) + '%';
+        star.style.animationDuration = (8 + Math.random() * 12) + 's';
+        star.style.animationDelay = (Math.random() * 10) + 's';
+        star.style.width = (1 + Math.random() * 2) + 'px';
+        star.style.height = star.style.width;
+        container.appendChild(star);
+      }
+    }
+
+    /* ======================================================================
+       N. ENTRANCE ANIMATION
+       ====================================================================== */
+    function playEntranceAnimation() {
+      if (typeof gsap === 'undefined') {
+        // Fallback: just show everything instantly
+        if ($appUI)       $appUI.classList.add('visible');
+        if ($heroCenter)  $heroCenter.style.opacity = '1';
+        if ($heroHeading) { $heroHeading.style.opacity = '1'; $heroHeading.style.transform = 'none'; }
+        if ($heroHint)    { $heroHint.style.opacity = '1'; $heroHint.style.transform = 'none'; }
+        if ($liveClock)   { $liveClock.style.opacity = '1'; $liveClock.style.transform = 'none'; }
+        if ($scrollPrompt){ $scrollPrompt.style.opacity = '1'; $scrollPrompt.style.transform = 'none'; }
+        document.querySelectorAll('.filigree').forEach(f => f.classList.add('visible'));
+        if ($soundDeck) { $soundDeck.style.opacity = '1'; $soundDeck.style.transform = 'translateX(-50%) translateY(0)'; }
+        if ($mainHeader) { $mainHeader.style.opacity = '1'; $mainHeader.style.transform = 'none'; }
+        return;
+      }
+
+      // Premium staggered GSAP entrance
+      const tl = gsap.timeline({ delay: 0.3 });
+
+      // Show app UI container
+      tl.to($appUI, { opacity: 1, duration: 0.01 });
+
+      // Header slides down
+      tl.to($mainHeader, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.2);
+
+      // Hero center fades in
+      tl.to($heroCenter, { opacity: 1, duration: 0.01 }, 0.3);
+
+      // Heading rises up
+      tl.to($heroHeading, { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, 0.4);
+
+      // Live clock
+      tl.to($liveClock, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.7);
+
+      // Hint line
+      tl.to($heroHint, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.9);
+
+      // Scroll prompt
+      tl.to($scrollPrompt, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 1.1);
+
+      // Sound deck slides up from bottom
+      tl.to($soundDeck, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.8);
+
+      // Filigrees fade in
+      tl.add(() => {
+        document.querySelectorAll('.filigree').forEach(f => f.classList.add('visible'));
+      }, 1.0);
+    }
+
+    /* ======================================================================
+       O. BOOTSTRAP — ERROR-ISOLATED INIT
+       ====================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      try { cacheDOMRefs(); }           catch (e) { console.error("cacheDOMRefs", e); }
+      try { generateCSSStars(); }       catch (e) { console.error("generateCSSStars", e); }
+      try { initThreeEngine(); }        catch (e) { console.error("initThreeEngine", e); }
+      try { initCanvases(); }           catch (e) { console.error("initCanvases", e); }
+      try { initInteractionEvents(); }  catch (e) { console.error("initInteractionEvents", e); }
+      try { initSleepSwitch(); }        catch (e) { console.error("initSleepSwitch", e); }
+      try { initGyroscope(); }          catch (e) { console.error("initGyroscope", e); }
+      try { masterLoop(); }             catch (e) { console.error("masterLoop", e); }
+
+      // Live clock — update immediately + every 10 seconds
+      try {
+        updateLiveClock();
+        setInterval(updateLiveClock, 10000);
+      } catch (e) { console.error("liveClock", e); }
+
+      // Audio track pill switching
+      try {
+        document.querySelectorAll('.track-pill').forEach(pill => {
+          pill.addEventListener('click', (e) => {
+            document.querySelectorAll('.track-pill').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            const preset = e.target.getAttribute('data-preset');
+            if ($trackName) $trackName.innerText = e.target.innerText;
+            playGenerativeTrack(preset);
+          });
+        });
+
+        const toggleBtn = document.getElementById('audio-toggle');
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleAudioPlay);
+      } catch (e) { console.error("audio bindings", e); }
+    });
+  </script>
+</body>
+</html>
