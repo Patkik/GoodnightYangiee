@@ -1079,18 +1079,18 @@
         }
 
         const moonTexture = new THREE.CanvasTexture(moonCanvas);
-        const moonGeo = new THREE.SphereGeometry(4.2, 32, 32);
+        const moonGeo = new THREE.SphereGeometry(2.2, 32, 32);
         const moonMat = new THREE.MeshStandardMaterial({
           map: moonTexture,
           roughness: 0.8,
           metalness: 0.1
         });
         moonMesh = new THREE.Mesh(moonGeo, moonMat);
-        moonMesh.position.set(0, 1, 0);
+        moonMesh.position.set(0, 0.8, 0);
         scene.add(moonMesh);
 
         // Atmosphere glow (Rayleigh-style shader)
-        const atmosphereGeo = new THREE.SphereGeometry(4.5, 24, 24);
+        const atmosphereGeo = new THREE.SphereGeometry(2.45, 24, 24);
         const atmosphereMat = new THREE.ShaderMaterial({
           uniforms: {
             uGlowIntensity: { value: 1.0 }
@@ -1153,14 +1153,14 @@
         starParticles = new THREE.Points(starGeo, starMat);
         scene.add(starParticles);
 
-        // Radiant Constellation Star Nodes (Multi-layered starlight with 3D crystal core + 4-point flare sprite + pulsing halo)
+        // Radiant Constellation Star Nodes (positioned in clear dark space surrounding the Moon)
         constellationGroup = new THREE.Group();
         const nodeCoords = [
-          { x: -3.6, y: 2.5, z: 2 },
-          { x: -1.6, y: 3.8, z: 1 },
-          { x:  2.2, y: 3.2, z: 3 },
-          { x:  3.6, y: 0.0, z: 2 },
-          { x:  0.8, y: -2.4, z: 4 }
+          { x: -4.8, y:  2.8, z: 2.5 },
+          { x: -2.2, y:  4.8, z: 1.5 },
+          { x:  3.2, y:  4.2, z: 3.0 },
+          { x:  4.8, y:  0.2, z: 2.0 },
+          { x:  1.2, y: -3.8, z: 3.5 }
         ];
 
         // Shared geometries & materials for star nodes
@@ -1242,20 +1242,19 @@
       const aspect = window.innerWidth / window.innerHeight;
 
       // On mobile portrait (aspect < 1.0), push camera back so horizontal field of view accommodates all star nodes
-      let targetZ = 18;
+      let targetZ = 16;
       if (aspect < 1.0) {
-        targetZ = Math.max(18, Math.min(28, 12.5 / aspect));
+        targetZ = Math.max(16, Math.min(26, 11.5 / aspect));
       }
 
       if (!isBlackoutActive) {
         camera.position.z = targetZ;
       }
 
-      // Scale Moon & Constellation group on narrow portrait screens
-      const scale = aspect < 0.65 ? 0.75 : (aspect < 0.9 ? 0.85 : 1.0);
+      // Keep Moon & Atmosphere at elegant proportions
+      const scale = aspect < 0.65 ? 0.85 : 1.0;
       if (moonMesh) moonMesh.scale.set(scale, scale, scale);
       if (atmosphereMesh) atmosphereMesh.scale.set(scale, scale, scale);
-      if (constellationGroup) constellationGroup.scale.set(scale, scale, scale);
     }
 
     function onWindowResize() {
