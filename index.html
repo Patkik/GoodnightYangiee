@@ -958,6 +958,70 @@
     // Twinkle data — per-star phase offsets for shimmer
     let starTwinklePhases = null;
 
+    /* Procedural Starlight Flare Texture */
+    function createStarParticleTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      // Soft center radial glow
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0, '#FFFFFF');
+      grad.addColorStop(0.15, 'rgba(254, 252, 243, 0.95)');
+      grad.addColorStop(0.35, 'rgba(244, 208, 63, 0.6)');
+      grad.addColorStop(0.7, 'rgba(123, 44, 191, 0.15)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+
+      // 4-Point Starlight Flare Rays
+      ctx.save();
+      ctx.translate(64, 64);
+
+      // Main Cross Rays
+      for (let i = 0; i < 2; i++) {
+        ctx.rotate(i * (Math.PI / 2));
+        const rayGrad = ctx.createLinearGradient(-58, 0, 58, 0);
+        rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        rayGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.95)');
+        rayGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = rayGrad;
+        ctx.fillRect(-58, -2, 116, 4);
+      }
+
+      // Soft Diagonal Rays
+      for (let i = 0; i < 2; i++) {
+        ctx.rotate(Math.PI / 4 + i * (Math.PI / 2));
+        const rayGrad = ctx.createLinearGradient(-30, 0, 30, 0);
+        rayGrad.addColorStop(0, 'rgba(244, 208, 63, 0)');
+        rayGrad.addColorStop(0.5, 'rgba(244, 208, 63, 0.6)');
+        rayGrad.addColorStop(1, 'rgba(244, 208, 63, 0)');
+        ctx.fillStyle = rayGrad;
+        ctx.fillRect(-30, -1.2, 60, 2.4);
+      }
+      ctx.restore();
+
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    function createGlowHaloTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0, 'rgba(244, 208, 63, 0.8)');
+      grad.addColorStop(0.3, 'rgba(255, 117, 181, 0.4)');
+      grad.addColorStop(0.6, 'rgba(69, 162, 158, 0.15)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+
+      return new THREE.CanvasTexture(canvas);
+    }
+
     function initThreeEngine() {
       try {
         const container = document.getElementById('webgl-canvas');
@@ -985,6 +1049,10 @@
         const moonLight = new THREE.DirectionalLight(0xF4D03F, 2.5);
         moonLight.position.set(20, 20, 15);
         scene.add(moonLight);
+
+        // Procedural textures for stars & flares
+        const starFlareTexture = createStarParticleTexture();
+        const starHaloTexture = createGlowHaloTexture();
 
         // Procedural Moon texture
         const moonCanvas = document.createElement('canvas');
@@ -1050,7 +1118,7 @@
         atmosphereMesh.position.copy(moonMesh.position);
         scene.add(atmosphereMesh);
 
-        // Starfield with twinkle phases
+        // Starfield with glowing starlight particle texture
         const starCount = 750;
         const starGeo = new THREE.BufferGeometry();
         const starPos = new Float32Array(starCount * 3);
@@ -1067,7 +1135,6 @@
           starColors[i * 3 + 1] = isGold ? 0.82 : 0.8;
           starColors[i * 3 + 2] = isGold ? 0.35 : 1.0;
 
-          // Random phase offset for twinkling
           starTwinklePhases[i] = Math.random() * Math.PI * 2;
         }
 
@@ -1075,15 +1142,18 @@
         starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
 
         const starMat = new THREE.PointsMaterial({
-          size: 0.2,
+          size: 0.8,
+          map: starFlareTexture,
           vertexColors: true,
           transparent: true,
-          opacity: 0.85
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          opacity: 0.9
         });
         starParticles = new THREE.Points(starGeo, starMat);
         scene.add(starParticles);
 
-        // Constellation nodes (pulled inward so they fit cleanly on narrow mobile screens)
+        // Radiant Constellation Star Nodes (Multi-layered starlight with 3D crystal core + 4-point flare sprite + pulsing halo)
         constellationGroup = new THREE.Group();
         const nodeCoords = [
           { x: -3.6, y: 2.5, z: 2 },
@@ -1093,19 +1163,63 @@
           { x:  0.8, y: -2.4, z: 4 }
         ];
 
-        const nodeGeo = new THREE.SphereGeometry(0.32, 16, 16);
-        const nodeMat = new THREE.MeshBasicMaterial({ color: 0xF4D03F });
+        // Shared geometries & materials for star nodes
+        const hitGeo = new THREE.SphereGeometry(0.5, 12, 12);
+        const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+
+        const gemGeo = new THREE.OctahedronGeometry(0.28, 0);
+        const gemMat = new THREE.MeshStandardMaterial({
+          color: 0xFFF5D0,
+          emissive: 0xF4D03F,
+          emissiveIntensity: 0.8,
+          roughness: 0.2,
+          metalness: 0.9
+        });
+
+        const flareSpriteMat = new THREE.SpriteMaterial({
+          map: starFlareTexture,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          opacity: 0.95
+        });
+
+        const haloSpriteMat = new THREE.SpriteMaterial({
+          map: starHaloTexture,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          opacity: 0.5
+        });
 
         nodeCoords.forEach((coord, idx) => {
-          const mesh = new THREE.Mesh(nodeGeo, nodeMat);
-          mesh.position.set(coord.x, coord.y, coord.z);
-          mesh.userData = { index: idx };
-          constellationGroup.add(mesh);
-          starNodes.push(mesh);
+          const nodeGroup = new THREE.Group();
+          nodeGroup.position.set(coord.x, coord.y, coord.z);
+
+          // 1. Invisible touch/click hit box
+          const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+          hitMesh.userData = { index: idx, parentGroup: nodeGroup };
+          nodeGroup.add(hitMesh);
+          starNodes.push(hitMesh); // Raycaster checks hitMesh!
+
+          // 2. Golden 3D Octahedron crystal core
+          const gemMesh = new THREE.Mesh(gemGeo, gemMat);
+          nodeGroup.add(gemMesh);
+
+          // 3. Radiant 4-Point Starlight Flare Sprite
+          const flareSprite = new THREE.Sprite(flareSpriteMat);
+          flareSprite.scale.set(1.8, 1.8, 1.8);
+          nodeGroup.add(flareSprite);
+
+          // 4. Soft Pulsing Halo Ring Sprite
+          const haloSprite = new THREE.Sprite(haloSpriteMat);
+          haloSprite.scale.set(2.6, 2.6, 2.6);
+          nodeGroup.add(haloSprite);
+
+          nodeGroup.userData = { index: idx, gemMesh, flareSprite, haloSprite };
+          constellationGroup.add(nodeGroup);
         });
 
         // Constellation connecting lines
-        const lineMat = new THREE.LineBasicMaterial({ color: 0x45A29E, transparent: true, opacity: 0.4 });
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x45A29E, transparent: true, opacity: 0.45 });
         const lineGeo = new THREE.BufferGeometry();
         const linePositions = [];
         for (let i = 0; i < nodeCoords.length - 1; i++) {
@@ -1309,11 +1423,21 @@
           camera.position.y = -mouse.y * 2.5 - (gyro.beta / 18);
           camera.lookAt(0, 0, 0);
 
-          // Constellation node pulse
-          starNodes.forEach((node, i) => {
-            const scale = 1 + Math.sin(Date.now() * 0.003 + i) * 0.15;
-            node.scale.set(scale, scale, scale);
-          });
+          // Radiant Constellation Star Nodes Pulse & Rotation
+          if (constellationGroup) {
+            constellationGroup.children.forEach((child, i) => {
+              if (child.userData && child.userData.gemMesh) {
+                child.userData.gemMesh.rotation.y += 0.015;
+                child.userData.gemMesh.rotation.z += 0.01;
+
+                const t = Date.now() * 0.003 + i;
+                const flareScale = 1.8 + Math.sin(t) * 0.3;
+                const haloScale = 2.6 + Math.cos(t * 0.8) * 0.4;
+                if (child.userData.flareSprite) child.userData.flareSprite.scale.set(flareScale, flareScale, flareScale);
+                if (child.userData.haloSprite) child.userData.haloSprite.scale.set(haloScale, haloScale, haloScale);
+              }
+            });
+          }
         }
         renderer.render(scene, camera);
       }
