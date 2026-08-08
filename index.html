@@ -943,15 +943,93 @@
     };
 
     /* ======================================================================
-       B. MEMORY DATA FOR YANGIEE
+       B. PHILIPPINE STANDARD TIME (PST, UTC+8) & DYNAMIC DAY/NIGHT ENGINE
        ====================================================================== */
-    const STAR_MEMORIES = [
-      { icon: "🌟", sub: "CONSTELLATION NODE I", title: "The First Spark", body: "Every late night conversation with you feels like discovering a brand new star in the quiet sky." },
-      { icon: "🌙", sub: "CONSTELLATION NODE II", title: "Your Warm Laugh", body: "Your laugh is genuinely my favorite melody in the universe. Never lose that brilliant magic, Yangiee." },
-      { icon: "☕", sub: "CONSTELLATION NODE III", title: "Midnight Comfort", body: "No matter how exhausting or noisy the day gets, thinking of you brings immediate warmth and peace." },
-      { icon: "🔮", sub: "CONSTELLATION NODE IV", title: "Cosmic Wishes", body: "I wished upon every shooting star tonight that all your dreams are soft, gentle, and filled with joy." },
-      { icon: "✨", sub: "CONSTELLATION NODE V", title: "Yangiee's Crown", body: "You shine brighter than any constellation in the night sky. Sleep tight, rest deeply, my favorite person." }
+    function getPSTDate() {
+      const now = new Date();
+      const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const pstMs = utcMs + (8 * 3600000); // UTC+8 for Philippine Standard Time
+      return new Date(pstMs);
+    }
+
+    function isDayModePST() {
+      const pst = getPSTDate();
+      const hours = pst.getHours();
+      return hours >= 6 && hours < 18; // Morning/Day: 6:00 AM - 5:59 PM PST
+    }
+
+    const DAY_STAR_MEMORIES = [
+      { icon: "☀️", sub: "SOLAR RAY I",   title: "A Bright New Day", body: "Good morning, Yangiee! May today bring you endless smiles, warmth, and gentle magic." },
+      { icon: "☕", sub: "SOLAR RAY II",  title: "Morning Sunshine", body: "Sending you the warmest morning vibes to start your day right. Drink your coffee and conquer today!" },
+      { icon: "🌸", sub: "SOLAR RAY III", title: "Golden Energy",    body: "You bring as much warmth to the world as the morning sun. Keep shining bright today, Yangiee!" },
+      { icon: "🔮", sub: "SOLAR RAY IV",  title: "Morning Wishes",   body: "Wishing you a peaceful, happy, and productive day. Everything is going to go wonderfully!" },
+      { icon: "✨", sub: "SOLAR RAY V",   title: "Yangiee's Day",    body: "Rise and shine, my favorite person! Have a brilliant morning and a joyful day ahead!" }
     ];
+
+    const NIGHT_STAR_MEMORIES = [
+      { icon: "🌟", sub: "CONSTELLATION NODE I",   title: "The First Spark",   body: "Every late night conversation with you feels like discovering a brand new star in the quiet sky." },
+      { icon: "🌙", sub: "CONSTELLATION NODE II",  title: "Your Warm Laugh",   body: "Your laugh is genuinely my favorite melody in the universe. Never lose that brilliant magic, Yangiee." },
+      { icon: "☕", sub: "CONSTELLATION NODE III", title: "Midnight Comfort",   body: "No matter how exhausting or noisy the day gets, thinking of you brings immediate warmth and peace." },
+      { icon: "🔮", sub: "CONSTELLATION NODE IV",  title: "Cosmic Wishes",     body: "I wished upon every shooting star tonight that all your dreams are soft, gentle, and filled with joy." },
+      { icon: "✨", sub: "CONSTELLATION NODE V",   title: "Yangiee's Crown",   body: "You shine brighter than any constellation in the night sky. Sleep tight, rest deeply, my favorite person." }
+    ];
+
+    let currentMemories = NIGHT_STAR_MEMORIES;
+
+    function applyTimeOfDayMode() {
+      const isDay = isDayModePST();
+      currentMemories = isDay ? DAY_STAR_MEMORIES : NIGHT_STAR_MEMORIES;
+
+      const heroHeading = document.getElementById('hero-heading');
+      if (heroHeading) {
+        heroHeading.innerHTML = isDay ? 'GOOD <span>MORNING</span>' : 'GOOD <span>NIGHT</span>';
+      }
+
+      const brandSub = document.querySelector('.brand-sub');
+      if (brandSub) {
+        brandSub.textContent = isDay ? 'FOR YANGIEE ✦ SOLAR STAGE' : 'FOR YANGIEE ✦ 3D STAGE';
+      }
+
+      const startTitle = document.querySelector('.start-title');
+      if (startTitle) {
+        startTitle.textContent = isDay ? 'Project Nocturne ✦ Dawn Edition' : 'Project Nocturne';
+      }
+
+      const startSub = document.querySelector('.start-subtitle');
+      if (startSub) {
+        startSub.textContent = isDay ? 'A Golden Morning Greeting for Yangiee' : 'A Starlight Transmission for Yangiee';
+      }
+
+      const startBtn = document.getElementById('init-btn');
+      if (startBtn) {
+        startBtn.textContent = isDay ? 'Rise & Shine, Universe' : 'Wake The Universe';
+      }
+
+      const heroHint = document.getElementById('hero-hint');
+      if (heroHint) {
+        heroHint.textContent = isDay ? 'TILT PHONE OR SWIPE TO EXPLORE THE DAWN' : 'TILT PHONE OR SWIPE TO EXPLORE';
+      }
+
+      const scrollPromptText = document.querySelector('#scroll-prompt span');
+      if (scrollPromptText) {
+        scrollPromptText.textContent = isDay ? 'TAP SUN RAYS FOR MEMORIES' : 'TAP STARS FOR MEMORIES';
+      }
+
+      const sleepSwitchLabel = document.getElementById('sleep-switch-label');
+      if (sleepSwitchLabel) {
+        sleepSwitchLabel.textContent = isDay ? 'HOLD TO REST THE SUN' : 'HOLD TO BLOW OUT THE STARS';
+      }
+
+      const boMsg1 = document.getElementById('bo-msg1');
+      if (boMsg1) {
+        boMsg1.textContent = isDay ? 'Have a wonderful day, Yangiee.' : 'Rest well, goodnight, Yangiee.';
+      }
+
+      const boMsg2 = document.getElementById('bo-msg2');
+      if (boMsg2) {
+        boMsg2.textContent = isDay ? "May your day be filled with warmth & magic. ✦ Magandang umaga!" : "See you in tomorrow's light. ✦ Matulog ka na anong oras na, batang toh";
+      }
+    }
 
     /* ======================================================================
        C. CACHED DOM REFERENCES (hoisted; assigned at init)
@@ -1071,6 +1149,73 @@
       return new THREE.CanvasTexture(canvas);
     }
 
+    /* Procedural Solar Surface Texture (Morning / Day Mode) */
+    function createSunTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 512, 256);
+      grad.addColorStop(0, '#FFFBE6');
+      grad.addColorStop(0.3, '#F4D03F');
+      grad.addColorStop(0.65, '#FF7518');
+      grad.addColorStop(1, '#E53935');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 256);
+
+      // Solar flare swirls & sunspots
+      ctx.fillStyle = 'rgba(255, 245, 180, 0.45)';
+      for (let i = 0; i < 40; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 256;
+        const r = 10 + Math.random() * 45;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = 'rgba(210, 40, 20, 0.25)';
+      for (let i = 0; i < 20; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 256;
+        const r = 5 + Math.random() * 25;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    /* Procedural Lunar Surface Texture (Night Mode) */
+    function createMoonTexture() {
+      const moonCanvas = document.createElement('canvas');
+      moonCanvas.width = 512;
+      moonCanvas.height = 256;
+      const ctx = moonCanvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 512, 256);
+      grad.addColorStop(0, '#D4D6DD');
+      grad.addColorStop(0.5, '#A0A4B0');
+      grad.addColorStop(1, '#5C606E');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 256);
+
+      // Craters
+      ctx.fillStyle = 'rgba(40, 45, 60, 0.35)';
+      for (let i = 0; i < 25; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 256;
+        const r = 15 + Math.random() * 50;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      return new THREE.CanvasTexture(moonCanvas);
+    }
+
     function initThreeEngine() {
       try {
         const container = document.getElementById('webgl-canvas');
@@ -1091,11 +1236,13 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x1F2833, 1.2);
+        const isDay = isDayModePST();
+
+        // Lighting (Warm golden solar light for Day, Cool lunar light for Night)
+        const ambientLight = new THREE.AmbientLight(isDay ? 0x332211 : 0x1F2833, 1.4);
         scene.add(ambientLight);
 
-        const moonLight = new THREE.DirectionalLight(0xF4D03F, 2.5);
+        const moonLight = new THREE.DirectionalLight(isDay ? 0xFFD700 : 0xF4D03F, isDay ? 3.0 : 2.5);
         moonLight.position.set(20, 20, 15);
         scene.add(moonLight);
 
@@ -1103,42 +1250,22 @@
         const starFlareTexture = createStarParticleTexture();
         const starHaloTexture = createGlowHaloTexture();
 
-        // Procedural Moon texture
-        const moonCanvas = document.createElement('canvas');
-        moonCanvas.width = 512;
-        moonCanvas.height = 256;
-        const ctx = moonCanvas.getContext('2d');
-
-        const grad = ctx.createLinearGradient(0, 0, 512, 256);
-        grad.addColorStop(0, '#D4D6DD');
-        grad.addColorStop(0.5, '#A0A4B0');
-        grad.addColorStop(1, '#5C606E');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 512, 256);
-
-        // Craters
-        ctx.fillStyle = 'rgba(40, 45, 60, 0.35)';
-        for (let i = 0; i < 25; i++) {
-          const x = Math.random() * 512;
-          const y = Math.random() * 256;
-          const r = 15 + Math.random() * 50;
-          ctx.beginPath();
-          ctx.arc(x, y, r, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        const moonTexture = new THREE.CanvasTexture(moonCanvas);
+        // Procedural Planet Texture (Sun in Morning/Day, Moon at Night)
+        const planetTexture = isDay ? createSunTexture() : createMoonTexture();
         const moonGeo = new THREE.SphereGeometry(2.2, 32, 32);
         const moonMat = new THREE.MeshStandardMaterial({
-          map: moonTexture,
-          roughness: 0.8,
-          metalness: 0.1
+          map: planetTexture,
+          roughness: isDay ? 0.3 : 0.8,
+          metalness: isDay ? 0.4 : 0.1,
+          emissive: isDay ? 0xF4D03F : 0x000000,
+          emissiveIntensity: isDay ? 0.65 : 0.0
         });
         moonMesh = new THREE.Mesh(moonGeo, moonMat);
         moonMesh.position.set(0, 1.4, 0);
         scene.add(moonMesh);
 
-        // Atmosphere glow (Rayleigh-style shader)
+        // Atmosphere glow (Solar Corona for Day, Lunar Rayleigh Shader for Night)
+        const coronaColor = isDay ? 'vec4(0.96, 0.65, 0.18, 1.0)' : 'vec4(0.27, 0.63, 0.62, 1.0)';
         const atmosphereGeo = new THREE.SphereGeometry(2.45, 24, 24);
         const atmosphereMat = new THREE.ShaderMaterial({
           uniforms: {
@@ -1156,7 +1283,7 @@
             varying vec3 vNormal;
             void main() {
               float intensity = pow(0.65 - dot(vNormal, vec3(0, 0, 1.0)), 2.2);
-              gl_FragColor = vec4(0.27, 0.63, 0.62, 1.0) * intensity * 1.4 * uGlowIntensity;
+              gl_FragColor = ${coronaColor} * intensity * 1.5 * uGlowIntensity;
             }
           `,
           blending: THREE.AdditiveBlending,
@@ -1840,7 +1967,7 @@
 
     function openMemoryModal(idx, clickX, clickY) {
       triggerLiquidRipple(clickX, clickY);
-      const data = STAR_MEMORIES[idx];
+      const data = (currentMemories && currentMemories[idx]) || NIGHT_STAR_MEMORIES[idx];
       if ($modalIcon) $modalIcon.innerText = data.icon;
       if ($modalSub) $modalSub.innerText = data.sub;
       if ($modalTitle) $modalTitle.innerText = data.title;
@@ -2044,21 +2171,23 @@
        ====================================================================== */
     function updateLiveClock() {
       if (!$liveClock) return;
-      const now = new Date();
-      const hours = now.getHours();
-      const mins = String(now.getMinutes()).padStart(2, '0');
+      const pst = getPSTDate();
+      const hours = pst.getHours();
+      const mins = String(pst.getMinutes()).padStart(2, '0');
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const h12 = hours % 12 || 12;
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dayName = days[now.getDay()];
+      const dayName = days[pst.getDay()];
 
-      // Determine time-of-day mood
+      // Determine PST time-of-day mood
       let mood = 'Night';
-      if (hours >= 5 && hours < 12) mood = 'Morning';
+      if (hours >= 6 && hours < 12) mood = 'Morning';
       else if (hours >= 12 && hours < 17) mood = 'Afternoon';
-      else if (hours >= 17 && hours < 21) mood = 'Evening';
+      else if (hours >= 17 && hours < 18) mood = 'Sunset';
 
-      $liveClock.textContent = `${h12}:${mins} ${ampm} ✦ ${dayName} ${mood}`;
+      $liveClock.textContent = `${h12}:${mins} ${ampm} PST ✦ ${dayName} ${mood}`;
+
+      applyTimeOfDayMode();
     }
 
     /* ======================================================================
@@ -2137,6 +2266,7 @@
        ====================================================================== */
     window.addEventListener('DOMContentLoaded', () => {
       try { cacheDOMRefs(); } catch (e) { console.error("cacheDOMRefs", e); }
+      try { applyTimeOfDayMode(); } catch (e) { console.error("applyTimeOfDayMode", e); }
       try { generateCSSStars(); } catch (e) { console.error("generateCSSStars", e); }
       try { initThreeEngine(); } catch (e) { console.error("initThreeEngine", e); }
       try { initCanvases(); } catch (e) { console.error("initCanvases", e); }
