@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.starlight.sanctuary.app-merged_res-31:/xml_backup_rules.xml.flat",
+        "source": "com.starlight.sanctuary.app-main-33:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.starlight.sanctuary.app-merged_res-31:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.starlight.sanctuary.app-main-33:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.starlight.sanctuary.app-merged_res-31:/xml_data_extraction_rules.xml.flat",
+        "source": "com.starlight.sanctuary.app-main-33:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.starlight.sanctuary.app-merged_res-31:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.starlight.sanctuary.app-main-33:/mipmap-xxhdpi/ic_launcher.png"
+    }
+]

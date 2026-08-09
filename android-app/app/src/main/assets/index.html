@@ -27,19 +27,28 @@
 
   <style>
     /* ==========================================================================
-       1. CORE DESIGN SYSTEM & TOKENS
+       1. CORE DESIGN SYSTEM & TOKENS (Soft Twilight / Dreamy Night Option 2)
        ========================================================================== */
     :root {
-      --bg-obsidian: #0B0C10;
-      --bg-indigo: #1F2833;
-      --aurora-emerald: #45A29E;
-      --aurora-violet: #7B2CBF;
-      --starlight-gold: #F4D03F;
-      --cute-pink: #FF75B5;
-      --gold-glow: rgba(244, 208, 63, 0.45);
-      --warm-white: #FEFCF3;
-      --glass-bg: rgba(15, 23, 42, 0.7);
-      --glass-border: rgba(244, 208, 63, 0.2);
+      --bg-midnight: #1E1E2E;
+      --bg-plum: #1B192A;
+      --pastel-pink: #F5C2E7;
+      --pastel-pink-glow: rgba(245, 194, 231, 0.35);
+      --amber-glow: #F9E2AF;
+      --amber-glow-soft: rgba(249, 226, 175, 0.4);
+      --lavender-gray: #CDD6F4;
+      --subtext-gray: #A6ADC8;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-hover-border: rgba(245, 194, 231, 0.35);
+      --card-bg: rgba(30, 30, 46, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --aurora-emerald: #94E2D5;
+      --aurora-violet: #CBA6F7;
+      --starlight-gold: #F9E2AF;
+      --cute-pink: #F5C2E7;
+      --gold-glow: rgba(249, 226, 175, 0.45);
+      --warm-white: #CDD6F4;
       --font-display: 'Cinzel Decorative', serif;
       --font-heading: 'Space Grotesk', sans-serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
@@ -59,9 +68,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: var(--bg-obsidian);
+      background-color: var(--bg-midnight);
       font-family: var(--font-body);
-      color: var(--warm-white);
+      color: var(--lavender-gray);
       user-select: none;
       touch-action: manipulation;
     }
@@ -70,19 +79,18 @@
        2. AMBIENT BACKGROUND LAYERS
        ========================================================================== */
 
-    /* Subtle CSS radial gradient film grain */
     .film-grain {
       position: fixed;
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      opacity: 0.25;
+      opacity: 0.3;
       background:
-        radial-gradient(circle at 50% 30%, rgba(31, 40, 51, 0.4), transparent 70%),
-        radial-gradient(circle at 80% 80%, rgba(123, 44, 191, 0.15), transparent 50%);
+        radial-gradient(circle at 50% 20%, rgba(27, 25, 42, 0.8), transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(245, 194, 231, 0.1), transparent 50%),
+        radial-gradient(circle at 20% 60%, rgba(249, 226, 175, 0.08), transparent 50%);
     }
 
-    /* CSS-only floating micro-stars behind the UI (zero JS cost) */
     .css-stars {
       position: fixed;
       inset: 0;
@@ -95,7 +103,7 @@
       position: absolute;
       width: 2px;
       height: 2px;
-      background: var(--starlight-gold);
+      background: var(--amber-glow);
       border-radius: 50%;
       animation: css-float linear infinite;
       opacity: 0;
@@ -122,7 +130,7 @@
     }
 
     /* ==========================================================================
-       3. HARDWARE-ACCELERATED CANVASES
+       3. HARDWARE-ACCELERATED CANVASES & FILIGREES
        ========================================================================== */
 
     #webgl-canvas {
@@ -150,10 +158,6 @@
       z-index: 5;
     }
 
-    /* ==========================================================================
-       4. CORNER SVG FILIGREES
-       ========================================================================== */
-
     .filigree {
       position: fixed;
       width: 54px;
@@ -165,42 +169,24 @@
     }
 
     .filigree.visible {
-      opacity: 0.4;
+      opacity: 0.35;
     }
 
     .filigree svg {
       width: 100%;
       height: 100%;
       fill: none;
-      stroke: var(--starlight-gold);
+      stroke: var(--pastel-pink);
       stroke-width: 1.2;
     }
 
-    .f-tl {
-      top: 14px;
-      left: 14px;
-    }
-
-    .f-tr {
-      top: 14px;
-      right: 14px;
-      transform: scaleX(-1);
-    }
-
-    .f-bl {
-      bottom: 14px;
-      left: 14px;
-      transform: scaleY(-1);
-    }
-
-    .f-br {
-      bottom: 14px;
-      right: 14px;
-      transform: scale(-1);
-    }
+    .f-tl { top: 14px; left: 14px; }
+    .f-tr { top: 14px; right: 14px; transform: scaleX(-1); }
+    .f-bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+    .f-br { bottom: 14px; right: 14px; transform: scale(-1); }
 
     /* ==========================================================================
-       5. UI CONTAINER & HEADER
+       4. UI CONTAINER & HEADER (ZONE A TOP NAV)
        ========================================================================== */
 
     #app-ui {
@@ -221,7 +207,7 @@
     }
 
     header {
-      padding: 20px 24px;
+      padding: 16px 22px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -237,68 +223,93 @@
 
     .brand-title {
       font-family: var(--font-display);
-      font-size: clamp(14px, 3vw, 18px);
+      font-size: clamp(14px, 3vw, 17px);
       letter-spacing: 4px;
-      color: var(--starlight-gold);
+      color: var(--pastel-pink);
       text-transform: uppercase;
+      text-shadow: 0 0 16px rgba(245, 194, 231, 0.4);
     }
 
     .brand-sub {
       font-family: var(--font-heading);
-      font-size: 10px;
+      font-size: 9px;
       letter-spacing: 2px;
-      color: rgba(254, 252, 243, 0.5);
+      color: var(--subtext-gray);
       text-transform: uppercase;
       margin-top: 2px;
     }
 
-    .gyro-badge {
+    .header-nav-icons {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 12px;
+    }
+
+    .nav-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 20px;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      color: rgba(254, 252, 243, 0.8);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--lavender-gray);
+      font-size: 14px;
       cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .nav-icon-btn:hover {
+      border-color: var(--glass-hover-border);
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow: 0 0 14px rgba(245, 194, 231, 0.25);
+      transform: translateY(-1px);
     }
 
     .gyro-dot {
-      width: 6px;
-      height: 6px;
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       background: var(--aurora-emerald);
     }
 
+    .vault-lock-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* ==========================================================================
-       6. HERO VIEWPORT & LIVE CLOCK
+       5. HERO VIEWPORT & MAIN SCROLLING HUB
        ========================================================================== */
 
     .hero-center {
       position: absolute;
-      top: 50%;
+      top: 47%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
       pointer-events: auto;
-      width: 90%;
-      max-width: 480px;
+      width: 92%;
+      max-width: 440px;
       opacity: 0;
       transition: opacity 0.6s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       overflow-y: auto;
-      max-height: calc(100vh - 240px);
+      max-height: calc(100vh - 210px);
       scrollbar-width: none;
       -ms-overflow-style: none;
-      padding-bottom: 8px;
+      padding-bottom: 24px;
     }
 
     .hero-center::-webkit-scrollbar {
@@ -307,330 +318,442 @@
 
     .hero-heading {
       font-family: var(--font-display);
-      font-size: clamp(30px, 7vw, 52px);
+      font-size: clamp(26px, 6vw, 44px);
       font-weight: 700;
-      letter-spacing: 6px;
-      color: var(--warm-white);
+      letter-spacing: 5px;
+      color: var(--lavender-gray);
       line-height: 1.2;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       transform: translateY(20px);
       opacity: 0;
-      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95), 0 0 30px rgba(11, 12, 16, 0.9);
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
     }
 
     .hero-heading span {
-      background: linear-gradient(135deg, var(--starlight-gold), var(--cute-pink));
+      background: linear-gradient(135deg, var(--pastel-pink), var(--amber-glow));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.9));
+      filter: drop-shadow(0 2px 8px rgba(245, 194, 231, 0.3));
     }
 
-    .hero-hint {
-      font-family: var(--font-heading);
-      font-size: 11px;
-      letter-spacing: 2.5px;
-      color: var(--warm-white);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      opacity: 0;
-      transform: translateY(10px);
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(244, 208, 63, 0.3);
-      padding: 6px 16px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    }
-
-    .hero-hint::before,
-    .hero-hint::after {
-      content: '';
-      display: inline-block;
-      width: 14px;
-      height: 1px;
-      background: rgba(244, 208, 63, 0.5);
-    }
-
-    /* Live clock */
     .live-clock {
       font-family: var(--font-heading);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       letter-spacing: 2.5px;
-      color: var(--starlight-gold);
+      color: var(--amber-glow);
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 2px;
       opacity: 0;
       transform: translateY(10px);
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 16px rgba(244, 208, 63, 0.3);
-    }
-
-    .scroll-indicator {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      color: var(--starlight-gold);
-      font-size: 11px;
-      letter-spacing: 2px;
-      pointer-events: auto;
-      cursor: pointer;
-      animation: bounce-float 2.5s ease-in-out infinite;
-      opacity: 0;
-      transform: translateY(10px);
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(244, 208, 63, 0.3);
-      padding: 8px 18px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    }
-
-    @keyframes bounce-float {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(6px);
-      }
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     /* ==========================================================================
-       7. MEMORY CARD MODAL
+       6. ZONE A: UNIFIED CONNECTION HERO CARD
        ========================================================================== */
 
-    .card-modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(11, 12, 16, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    .unified-connection-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 16px 18px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .unified-connection-card:hover {
+      border-color: var(--glass-hover-border);
+    }
+
+    .connection-badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(245, 194, 231, 0.1);
+      border: 1px solid rgba(245, 194, 231, 0.25);
+      border-radius: 20px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--lavender-gray);
+    }
+
+    .connection-badge-top .days-count {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--pastel-pink);
+      text-shadow: 0 0 12px rgba(245, 194, 231, 0.5);
+    }
+
+    .days-icon {
+      animation: heart-pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes heart-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .connection-weather-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 100%;
+      padding: 4px 0;
+    }
+
+    .connection-weather-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .weather-loc-tag {
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      color: var(--pastel-pink);
+    }
+
+    .you-card .weather-loc-tag {
+      color: var(--amber-glow);
+    }
+
+    .weather-info-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .weather-emoji {
+      font-size: 20px;
+    }
+
+    .weather-temp {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--lavender-gray);
+    }
+
+    .weather-city {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      color: var(--subtext-gray);
+      white-space: nowrap;
+    }
+
+    .connection-divider {
+      width: 1px;
+      height: 36px;
+      background: var(--glass-border);
+    }
+
+    .connection-card-footer {
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--subtext-gray);
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       7. ZONE B: INTERACTIVE & DAILY HUB
+       ========================================================================== */
+
+    .quick-action-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .quick-action-btn {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .card-modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .card-modal {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(244, 208, 63, 0.3);
-      border-radius: 20px;
-      padding: 28px 24px;
-      transform: scale(0.9) translateY(15px);
-      transition: transform 0.3s ease-out;
-    }
-
-    .card-modal-overlay.active .card-modal {
-      transform: scale(1) translateY(0);
-    }
-
-    .card-icon {
-      font-size: 26px;
-      margin-bottom: 12px;
-      color: var(--starlight-gold);
-    }
-
-    .card-subtitle {
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: var(--aurora-emerald);
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .card-title {
-      font-family: var(--font-display);
-      font-size: 20px;
-      color: var(--starlight-gold);
-      margin-bottom: 14px;
-    }
-
-    .card-body {
-      font-family: var(--font-body);
-      font-size: 14px;
-      line-height: 1.6;
-      color: rgba(254, 252, 243, 0.9);
-      margin-bottom: 24px;
-    }
-
-    .card-close-btn {
-      width: 100%;
-      padding: 12px;
-      background: rgba(244, 208, 63, 0.15);
-      border: 1px solid var(--starlight-gold);
-      border-radius: 12px;
-      color: var(--starlight-gold);
-      font-family: var(--font-heading);
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .card-close-btn:hover {
-      background: rgba(244, 208, 63, 0.25);
-    }
-
-    /* ==========================================================================
-       8. FLOATING AMBIENT SOUND DECK
-       ========================================================================== */
-
-    .sound-deck {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(40px);
-      z-index: 30;
-      width: calc(100% - 40px);
-      max-width: 440px;
-      background: var(--glass-bg);
+      gap: 7px;
+      padding: 11px 12px;
+      background: var(--card-bg);
       border: 1px solid var(--glass-border);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 20px;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      pointer-events: auto;
-      opacity: 0;
+      border-radius: 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--lavender-gray);
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
-    .sound-top-row {
+    .quick-action-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--glass-hover-border);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 194, 231, 0.15);
+    }
+
+    .quick-action-icon {
+      font-size: 15px;
+    }
+
+    .quote-card-compact {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align: center;
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+
+    .quote-card-compact:hover {
+      border-color: var(--glass-hover-border);
+    }
+
+    .quote-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 6px;
     }
 
-    .sound-track-info {
+    .quote-icon {
+      font-size: 11px;
+      color: var(--amber-glow);
+    }
+
+    .quote-refresh-btn-icon {
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--amber-glow);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quote-refresh-btn-icon:hover {
+      background: rgba(249, 226, 175, 0.15);
+      border-color: var(--amber-glow);
+      transform: rotate(45deg);
+    }
+
+    .quote-text {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--lavender-gray);
+      margin-bottom: 4px;
+    }
+
+    .quote-author {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--aurora-emerald);
+      text-transform: uppercase;
+    }
+
+    .scroll-indicator-compact {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--subtext-gray);
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    /* ==========================================================================
+       8. ZONE C: AMBIENT CONTROLS & PRIMARY ACTION (FIXED BOTTOM)
+       ========================================================================== */
+
+    .zone-c-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      padding: 12px 20px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      background: linear-gradient(to top, rgba(30, 30, 46, 0.95) 60%, rgba(30, 30, 46, 0));
+    }
+
+    .compact-audio-pill {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 24px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .audio-left {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
     .sound-play-toggle {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: rgba(244, 208, 63, 0.15);
-      border: 1px solid var(--starlight-gold);
-      color: var(--starlight-gold);
+      background: rgba(245, 194, 231, 0.15);
+      border: 1px solid var(--pastel-pink);
+      color: var(--pastel-pink);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
 
     .sound-play-toggle:hover {
-      background: rgba(244, 208, 63, 0.25);
-    }
-
-    .sound-track-labels {
-      display: flex;
-      flex-direction: column;
+      background: rgba(245, 194, 231, 0.3);
+      transform: scale(1.05);
     }
 
     .sound-now-playing {
       font-family: var(--font-heading);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      color: var(--warm-white);
+      color: var(--lavender-gray);
+      letter-spacing: 1px;
     }
 
-    .sound-status {
-      font-size: 9px;
-      color: rgba(254, 252, 243, 0.5);
-      letter-spacing: 1px;
-      text-transform: uppercase;
+    .audio-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .visualizer-canvas {
-      width: 70px;
-      height: 20px;
+      width: 50px;
+      height: 18px;
     }
 
-    .track-pills {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      scrollbar-width: none;
+    .track-selector-wrapper {
+      position: relative;
     }
 
-    .track-pills::-webkit-scrollbar {
-      display: none;
-    }
-
-    .track-pill {
+    .track-selector-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
       padding: 5px 10px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--amber-glow);
       font-family: var(--font-heading);
-      font-size: 10px;
-      color: rgba(254, 252, 243, 0.7);
-      white-space: nowrap;
+      font-size: 9.5px;
+      letter-spacing: 1px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
+    .track-selector-btn:hover {
+      background: rgba(249, 226, 175, 0.15);
+      border-color: var(--amber-glow);
+    }
+
+    .track-pills-dropdown {
+      position: absolute;
+      bottom: 110%;
+      right: 0;
+      background: rgba(30, 30, 46, 0.95);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 6px;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 50;
+      min-width: 110px;
+    }
+
+    .track-pills-dropdown.active {
+      display: flex;
+    }
+
+    .track-pill {
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 9.5px;
+      color: var(--subtext-gray);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
     .track-pill.active {
-      background: rgba(244, 208, 63, 0.2);
-      border-color: var(--starlight-gold);
-      color: var(--starlight-gold);
+      background: rgba(245, 194, 231, 0.2);
+      color: var(--pastel-pink);
     }
 
     .track-pill:hover:not(.active) {
       background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--lavender-gray);
     }
 
-    /* ==========================================================================
-       9. SLEEP SWITCH & BLACKOUT SCREEN
-       ========================================================================== */
-
     .sleep-switch-container {
-      margin-top: 4px;
+      width: 100%;
+      max-width: 440px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
     }
 
     .sleep-switch {
       position: relative;
       width: 100%;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.25), rgba(123, 44, 191, 0.35));
-      border: 1px solid rgba(244, 208, 63, 0.35);
-      color: var(--warm-white);
+      height: 48px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(245, 194, 231, 0.18), rgba(203, 166, 247, 0.25));
+      border: 1px solid var(--pastel-pink);
+      color: var(--lavender-gray);
       font-family: var(--font-heading);
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
@@ -641,11 +764,13 @@
       gap: 8px;
       user-select: none;
       touch-action: none;
-      transition: border-color 0.3s ease;
+      box-shadow: 0 6px 24px rgba(245, 194, 231, 0.15);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .sleep-switch:hover {
-      border-color: rgba(244, 208, 63, 0.6);
+      border-color: var(--amber-glow);
+      box-shadow: 0 6px 30px rgba(249, 226, 175, 0.25);
     }
 
     .sleep-switch-progress {
@@ -654,105 +779,94 @@
       left: 0;
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--cute-pink), var(--starlight-gold));
-      opacity: 0.5;
+      background: linear-gradient(90deg, var(--pastel-pink), var(--amber-glow));
+      opacity: 0.45;
       pointer-events: none;
       transition: width 0.03s linear;
     }
 
-    #blackout-screen {
+    /* ==========================================================================
+       9. MODALS & OVERLAYS (UPDATED SOFT TWILIGHT THEME)
+       ========================================================================== */
+
+    .card-modal-overlay,
+    .vault-modal-overlay,
+    .mailbox-modal-overlay,
+    .jar-unlock-modal {
       position: fixed;
       inset: 0;
-      z-index: 200;
-      background: #040507;
-      opacity: 0;
-      pointer-events: none;
+      z-index: 100;
+      background: rgba(27, 25, 42, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 28px;
-      text-align: center;
-      transition: opacity 1.5s ease;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
-    #blackout-screen.active {
+    .card-modal-overlay.active,
+    .vault-modal-overlay.active,
+    .mailbox-modal-overlay.active,
+    .jar-unlock-modal.active {
       opacity: 1;
       pointer-events: auto;
     }
 
-    .blackout-message-1 {
-      font-family: var(--font-display);
-      font-size: clamp(26px, 6vw, 44px);
-      color: var(--starlight-gold);
-      letter-spacing: 5px;
-      margin-bottom: 14px;
-      opacity: 0;
-      transform: translateY(15px);
+    .card-modal,
+    .vault-modal-card,
+    .mailbox-modal-card,
+    .jar-unlock-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(30, 30, 46, 0.96);
+      border: 1px solid var(--glass-hover-border);
+      border-radius: 22px;
+      padding: 24px 22px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      transform: scale(0.92);
+      transition: transform 0.3s ease-out;
     }
 
-    .blackout-message-2 {
-      font-family: var(--font-heading);
-      font-size: clamp(13px, 3vw, 18px);
-      letter-spacing: 3px;
-      color: rgba(254, 252, 243, 0.75);
-      text-transform: uppercase;
-      opacity: 0;
-      transform: translateY(15px);
+    .card-modal-overlay.active .card-modal,
+    .vault-modal-overlay.active .vault-modal-card,
+    .mailbox-modal-overlay.active .mailbox-modal-card,
+    .jar-unlock-modal.active .jar-unlock-card {
+      transform: scale(1);
     }
 
-    .reignite-btn {
-      margin-top: 40px;
-      padding: 10px 24px;
-      background: transparent;
-      border: 1px solid rgba(244, 208, 63, 0.3);
-      border-radius: 24px;
-      color: rgba(244, 208, 63, 0.7);
+    .card-icon { font-size: 26px; margin-bottom: 10px; color: var(--amber-glow); }
+    .card-subtitle { font-family: var(--font-heading); font-size: 10px; letter-spacing: 3px; color: var(--aurora-emerald); text-transform: uppercase; margin-bottom: 4px; }
+    .card-title { font-family: var(--font-display); font-size: 20px; color: var(--pastel-pink); margin-bottom: 12px; }
+    .card-body { font-family: var(--font-body); font-size: 13.5px; line-height: 1.6; color: var(--lavender-gray); margin-bottom: 20px; }
+
+    .card-close-btn, .vault-close-btn, .jar-unlock-close {
+      width: 100%;
+      padding: 11px;
+      background: rgba(245, 194, 231, 0.15);
+      border: 1px solid var(--pastel-pink);
+      border-radius: 14px;
+      color: var(--pastel-pink);
       font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 2.5px;
+      font-size: 11px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
-      opacity: 0;
-      transition: border-color 0.2s ease, color 0.2s ease;
+      transition: background 0.2s ease;
     }
 
-    .reignite-btn:hover {
-      border-color: rgba(244, 208, 63, 0.6);
-      color: var(--starlight-gold);
+    .card-close-btn:hover, .vault-close-btn:hover, .jar-unlock-close:hover {
+      background: rgba(245, 194, 231, 0.28);
     }
-
-    /* Flashing Love Banner on Reignite */
-    .love-flash-banner {
-      position: fixed;
-      top: 48%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.5);
-      z-index: 10000;
-      font-family: var(--font-display);
-      font-size: clamp(28px, 8vw, 60px);
-      font-weight: 900;
-      letter-spacing: 5px;
-      background: linear-gradient(135deg, #FFF, var(--starlight-gold), var(--cute-pink));
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 25px rgba(255, 117, 181, 0.95)) drop-shadow(0 0 45px rgba(244, 208, 63, 0.8));
-      opacity: 0;
-      pointer-events: none;
-      white-space: nowrap;
-      text-align: center;
-    }
-
-    /* ==========================================================================
-       10. START OVERLAY
-       ========================================================================== */
 
     #start-overlay {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: var(--bg-obsidian);
+      background: var(--bg-midnight);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -766,7 +880,7 @@
     .start-title {
       font-family: var(--font-display);
       font-size: clamp(20px, 4vw, 30px);
-      color: var(--starlight-gold);
+      color: var(--pastel-pink);
       letter-spacing: 5px;
       text-transform: uppercase;
       text-align: center;
@@ -776,1409 +890,121 @@
       font-family: var(--font-heading);
       font-size: 11px;
       letter-spacing: 2px;
-      color: rgba(254, 252, 243, 0.6);
+      color: var(--subtext-gray);
       text-transform: uppercase;
     }
 
     .start-btn {
       padding: 14px 32px;
-      background: linear-gradient(135deg, rgba(244, 208, 63, 0.2), rgba(123, 44, 191, 0.3));
-      border: 1px solid var(--starlight-gold);
+      background: linear-gradient(135deg, rgba(245, 194, 231, 0.25), rgba(249, 226, 175, 0.25));
+      border: 1px solid var(--pastel-pink);
       border-radius: 26px;
-      color: var(--starlight-gold);
+      color: var(--lavender-gray);
       font-family: var(--font-heading);
       font-size: 11px;
       letter-spacing: 3px;
       text-transform: uppercase;
       cursor: pointer;
-      pointer-events: auto;
       transition: background 0.2s ease, transform 0.15s ease;
     }
 
     .start-btn:hover {
-      background: linear-gradient(135deg, rgba(244, 208, 63, 0.3), rgba(123, 44, 191, 0.4));
+      background: linear-gradient(135deg, rgba(245, 194, 231, 0.4), rgba(249, 226, 175, 0.4));
       transform: scale(1.03);
     }
 
-    .start-btn:active {
-      transform: scale(0.98);
-    }
-
-    /* ==========================================================================
-       11. DAYS MET COUNTER BADGE
-       ========================================================================== */
-    .days-met-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(255, 117, 181, 0.45);
-      border-radius: 20px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      color: var(--warm-white);
-      box-shadow: 0 4px 18px rgba(255, 117, 181, 0.2);
-      margin-bottom: 4px;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: auto;
-    }
-
-    .days-met-badge .days-count {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--starlight-gold);
-      text-shadow: 0 0 12px rgba(244, 208, 63, 0.6);
-    }
-
-    .days-icon {
-      animation: heart-pulse 2s infinite ease-in-out;
-    }
-
-    @keyframes heart-pulse {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.2);
-      }
-    }
-
-    /* ==========================================================================
-       12. QUOTE CARD (QUOTE API)
-       ========================================================================== */
-    .quote-card {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(244, 208, 63, 0.3);
-      border-radius: 16px;
-      padding: 12px 18px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      text-align: center;
-      margin-bottom: 6px;
-      opacity: 0;
-      transform: translateY(10px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-      transition: border-color 0.3s ease;
-      pointer-events: auto;
-    }
-
-    .quote-card:hover {
-      border-color: rgba(244, 208, 63, 0.6);
-    }
-
-    .quote-icon {
-      font-size: 12px;
-      color: var(--starlight-gold);
-      margin-bottom: 2px;
-    }
-
-    .quote-text {
-      font-family: var(--font-body);
-      font-size: 11.5px;
-      font-style: italic;
-      line-height: 1.5;
-      color: rgba(254, 252, 243, 0.95);
-      margin-bottom: 4px;
-    }
-
-    .quote-author {
-      font-family: var(--font-heading);
-      font-size: 9.5px;
-      letter-spacing: 1.5px;
-      color: var(--aurora-emerald);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .quote-refresh-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      background: rgba(244, 208, 63, 0.12);
-      border: 1px solid rgba(244, 208, 63, 0.35);
-      border-radius: 12px;
-      color: var(--starlight-gold);
-      font-family: var(--font-heading);
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .quote-refresh-btn:hover {
-      background: rgba(244, 208, 63, 0.28);
-      transform: scale(1.04);
-    }
-
-    /* ==========================================================================
-       13. FLOATING INTERACTIVE CARE BUBBLE
-       ========================================================================== */
+    /* Floating Care Bubble & Hidden Widgets */
     .care-bubble-container {
       position: fixed;
-      top: 80px;
-      right: 20px;
+      top: 70px;
+      right: 18px;
       z-index: 40;
       pointer-events: auto;
     }
 
-    @media (max-width: 600px) {
-      .care-bubble-container {
-        top: 70px;
-        right: 12px;
-      }
-    }
-
     .care-bubble {
-      width: 270px;
-      background: rgba(15, 23, 42, 0.88);
-      border: 1.5px solid rgba(255, 117, 181, 0.55);
+      width: 260px;
+      background: rgba(30, 30, 46, 0.94);
+      border: 1.5px solid var(--pastel-pink);
       border-radius: 20px;
       padding: 14px 16px;
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(255, 117, 181, 0.25), 0 0 20px rgba(244, 208, 63, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       animation: care-float 4s ease-in-out infinite;
-      transform-origin: top right;
-      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     @keyframes care-float {
-
-      0%,
-      100% {
-        transform: translateY(0) rotate(0deg);
-      }
-
-      50% {
-        transform: translateY(-7px) rotate(1deg);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
-    .care-bubble-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
+    .care-bubble-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .care-title { font-family: var(--font-heading); font-size: 9.5px; font-weight: 700; letter-spacing: 1.5px; color: var(--pastel-pink); text-transform: uppercase; flex: 1; }
+    .care-dismiss-x { background: none; border: none; color: var(--subtext-gray); font-size: 18px; cursor: pointer; }
+    .care-body { font-family: var(--font-body); font-size: 12px; line-height: 1.45; color: var(--lavender-gray); margin-bottom: 10px; }
+    .care-actions { display: flex; gap: 6px; }
+    .care-btn { flex: 1; padding: 7px 8px; border-radius: 12px; font-family: var(--font-heading); font-size: 9.5px; font-weight: 600; cursor: pointer; background: rgba(245, 194, 231, 0.15); border: 1px solid var(--pastel-pink); color: var(--lavender-gray); }
+    .care-min-btn { display: none; align-items: center; gap: 6px; padding: 7px 14px; background: rgba(30, 30, 46, 0.9); border: 1px solid var(--pastel-pink); border-radius: 20px; color: var(--pastel-pink); font-family: var(--font-heading); font-size: 10px; cursor: pointer; }
 
-    .care-emoji {
-      font-size: 18px;
-    }
-
-    .care-title {
-      font-family: var(--font-heading);
-      font-size: 9.5px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--cute-pink);
-      text-transform: uppercase;
-      flex: 1;
-    }
-
-    .care-dismiss-x {
-      background: none;
-      border: none;
-      color: rgba(254, 252, 243, 0.5);
-      font-size: 18px;
-      cursor: pointer;
-      padding: 0 4px;
-      line-height: 1;
-    }
-
-    .care-dismiss-x:hover {
-      color: var(--warm-white);
-    }
-
-    .care-body {
-      font-family: var(--font-body);
-      font-size: 12px;
-      line-height: 1.45;
-      color: rgba(254, 252, 243, 0.92);
-      margin-bottom: 10px;
-    }
-
-    .care-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .care-btn {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 12px;
-      font-family: var(--font-heading);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ate-btn {
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.35), rgba(244, 208, 63, 0.35));
-      border: 1px solid var(--cute-pink);
-      color: var(--warm-white);
-    }
-
-    .ate-btn:hover {
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.55), rgba(244, 208, 63, 0.55));
-      transform: scale(1.03);
-      box-shadow: 0 0 14px rgba(255, 117, 181, 0.4);
-    }
-
-    .sleep-btn {
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.35), rgba(69, 162, 158, 0.35));
-      border: 1px solid var(--aurora-violet);
-      color: var(--warm-white);
-    }
-
-    .sleep-btn:hover {
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.55), rgba(69, 162, 158, 0.55));
-      transform: scale(1.03);
-    }
-
-    .care-min-btn {
-      display: none;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid var(--cute-pink);
-      border-radius: 20px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: var(--cute-pink);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(255, 117, 181, 0.25);
-      transition: all 0.2s ease;
-    }
-
-    .care-min-btn:hover {
-      background: rgba(255, 117, 181, 0.25);
-      transform: scale(1.05);
-    }
-
-    /* Pop Toast Notification */
     .pop-toast {
       position: fixed;
       bottom: 90px;
       left: 50%;
       transform: translateX(-50%) translateY(20px) scale(0.8);
       z-index: 90;
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.95), rgba(123, 44, 191, 0.95));
-      border: 1px solid var(--starlight-gold);
+      background: linear-gradient(135deg, rgba(245, 194, 231, 0.95), rgba(203, 166, 247, 0.95));
+      border: 1px solid var(--amber-glow);
       border-radius: 24px;
       padding: 10px 22px;
-      color: var(--warm-white);
+      color: #1E1E2E;
       font-family: var(--font-heading);
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 1.5px;
-      box-shadow: 0 8px 30px rgba(255, 117, 181, 0.5), 0 0 20px rgba(244, 208, 63, 0.4);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
       opacity: 0;
       pointer-events: none;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.4s ease;
     }
 
-    .pop-toast.active {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1);
+    .pop-toast.active { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+
+    /* Hide redundant elements visually while keeping JS references intact */
+    .motd-card, .mailbox-quick-card, .sky-sync-row, .care-jar-widget, .goodnight-signal-btn, .weather-banner {
+      display: none !important;
     }
 
-    /* ==========================================================================
-       14. MOTD — MESSAGE OF THE DAY CARD
-       ========================================================================== */
-    .motd-card {
-      width: 100%;
-      max-width: 420px;
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.2), rgba(69, 162, 158, 0.15));
-      border: 1px solid rgba(123, 44, 191, 0.45);
-      border-radius: 16px;
-      padding: 10px 16px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      text-align: center;
-      opacity: 0;
-      transform: translateY(10px);
-      box-shadow: 0 4px 18px rgba(123, 44, 191, 0.18);
-      pointer-events: auto;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .motd-label {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      letter-spacing: 2.5px;
-      color: var(--aurora-emerald);
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .motd-text {
-      font-family: var(--font-body);
-      font-size: 11px;
-      line-height: 1.55;
-      color: rgba(254, 252, 243, 0.9);
-    }
-
-    /* ==========================================================================
-       15. WEATHER CARE BANNER
-       ========================================================================== */
-    .weather-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 55;
-      padding: 9px 16px;
-      background: rgba(11, 12, 16, 0.93);
-      border-bottom: 1px solid rgba(244, 208, 63, 0.3);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transform: translateY(-100%);
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: auto;
-    }
-
-    .weather-banner.visible {
-      transform: translateY(0);
-    }
-
-    .weather-banner-icon {
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .weather-banner-text {
-      font-family: var(--font-body);
-      font-size: 11.5px;
-      line-height: 1.4;
-      color: rgba(254, 252, 243, 0.92);
-      flex: 1;
-    }
-
-    .weather-banner-dismiss {
-      background: none;
-      border: 1px solid rgba(244, 208, 63, 0.35);
-      border-radius: 10px;
-      color: var(--starlight-gold);
-      font-size: 9px;
-      font-family: var(--font-heading);
-      letter-spacing: 1px;
-      padding: 4px 10px;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background 0.2s;
-    }
-
-    .weather-banner-dismiss:hover {
-      background: rgba(244, 208, 63, 0.15);
-    }
-
-    /* ==========================================================================
-       16. SKY SYNC — DUAL LOCATION CARDS
-       ========================================================================== */
-    .sky-sync-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      width: 100%;
-      max-width: 420px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .sky-cards-pair {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .sky-card {
-      flex: 1;
-      background: rgba(15, 23, 42, 0.78);
-      border: 1px solid rgba(69, 162, 158, 0.4);
-      border-radius: 13px;
-      padding: 9px 8px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      text-align: center;
-    }
-
-    .sky-card.you-card {
-      border-color: rgba(244, 208, 63, 0.4);
-    }
-
-    .sky-card-label {
-      font-family: var(--font-heading);
-      font-size: 7.5px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--aurora-emerald);
-      margin-bottom: 2px;
-    }
-
-    .you-card .sky-card-label {
-      color: var(--starlight-gold);
-    }
-
-    .sky-card-weather {
-      font-size: 20px;
-      margin: 2px 0;
-    }
-
-    .sky-card-temp {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--warm-white);
-    }
-
-    .sky-card-city {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      color: rgba(254, 252, 243, 0.55);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .sky-card-time {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      color: rgba(254, 252, 243, 0.4);
-      margin-top: 1px;
-    }
-
-    .sky-sync-tagline {
-      font-family: var(--font-heading);
-      font-size: 9px;
-      letter-spacing: 1.2px;
-      color: rgba(254, 252, 243, 0.5);
-      text-align: center;
-    }
-
-    /* ==========================================================================
-       17. CARE JAR / STREAK WIDGET
-       ========================================================================== */
-    .care-jar-widget {
-      position: fixed;
-      bottom: 220px;
-      right: 18px;
-      z-index: 36;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      pointer-events: auto;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-
-    .care-jar-widget.visible {
-      opacity: 1;
-    }
-
-    .care-jar-widget:hover .care-jar-svg {
-      transform: scale(1.07);
-      filter: drop-shadow(0 0 12px rgba(255, 117, 181, 0.65));
-    }
-
-    .care-jar-svg {
-      transition: transform 0.3s ease, filter 0.3s ease;
-      filter: drop-shadow(0 0 6px rgba(255, 117, 181, 0.4));
-    }
-
-    .care-jar-streak {
-      font-family: var(--font-heading);
-      font-size: 8.5px;
-      letter-spacing: 0.8px;
-      color: var(--cute-pink);
-      text-align: center;
-    }
-
-    .care-jar-label {
-      font-family: var(--font-heading);
-      font-size: 7px;
-      letter-spacing: 1px;
-      color: rgba(254, 252, 243, 0.4);
-      text-transform: uppercase;
-    }
-
-    .jar-unlock-modal {
+    #blackout-screen {
       position: fixed;
       inset: 0;
-      z-index: 160;
-      background: rgba(11, 12, 16, 0.88);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+      z-index: 200;
+      background: #0B0A12;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-
-    .jar-unlock-modal.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .jar-unlock-card {
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.12), rgba(123, 44, 191, 0.18));
-      border: 1px solid var(--cute-pink);
-      border-radius: 24px;
-      padding: 30px 26px;
-      text-align: center;
-      max-width: 380px;
-      width: 100%;
-    }
-
-    .jar-unlock-icon {
-      font-size: 38px;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    .jar-unlock-title {
-      font-family: var(--font-display);
-      font-size: 17px;
-      color: var(--starlight-gold);
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-    }
-
-    .jar-unlock-body {
-      font-family: var(--font-body);
-      font-size: 13px;
-      line-height: 1.7;
-      color: rgba(254, 252, 243, 0.9);
-      margin-bottom: 18px;
-    }
-
-    .jar-unlock-close {
-      padding: 9px 22px;
-      background: rgba(255, 117, 181, 0.2);
-      border: 1px solid var(--cute-pink);
-      border-radius: 18px;
-      color: var(--warm-white);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .jar-unlock-close:hover {
-      background: rgba(255, 117, 181, 0.38);
-    }
-
-    /* ==========================================================================
-       18. SECRET VAULT
-       ========================================================================== */
-    .vault-lock-btn {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 10px;
-      background: var(--glass-bg);
-      border: 1px solid rgba(123, 44, 191, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 18px;
-      font-size: 10px;
-      letter-spacing: 1.2px;
-      color: rgba(254, 252, 243, 0.75);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-left: 8px;
-    }
-
-    .vault-lock-btn:hover {
-      border-color: var(--aurora-violet);
-      box-shadow: 0 0 10px rgba(123, 44, 191, 0.45);
-      color: var(--warm-white);
-    }
-
-    .vault-modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 220;
-      background: rgba(11, 12, 16, 0.93);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-
-    .vault-modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .vault-modal-card {
-      background: rgba(15, 23, 42, 0.97);
-      border: 1.5px solid rgba(123, 44, 191, 0.65);
-      border-radius: 24px;
-      padding: 28px 24px;
-      text-align: center;
-      max-width: 380px;
-      width: 100%;
-      box-shadow: 0 12px 40px rgba(123, 44, 191, 0.35);
-      transform: scale(0.9);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-height: 88vh;
-      overflow-y: auto;
-      scrollbar-width: none;
-    }
-
-    .vault-modal-card::-webkit-scrollbar {
-      display: none;
-    }
-
-    .vault-modal-overlay.active .vault-modal-card {
-      transform: scale(1);
-    }
-
-    .vault-icon-anim {
-      font-size: 34px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .vault-title {
-      font-family: var(--font-display);
-      font-size: 15px;
-      color: var(--aurora-violet);
-      letter-spacing: 2px;
-      margin-bottom: 4px;
-    }
-
-    .vault-subtitle {
-      font-family: var(--font-heading);
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: rgba(254, 252, 243, 0.4);
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .vault-input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .vault-input {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(123, 44, 191, 0.4);
-      border-radius: 12px;
-      padding: 10px 14px;
-      color: var(--warm-white);
-      font-family: var(--font-heading);
-      font-size: 14px;
-      letter-spacing: 4px;
-      text-align: center;
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .vault-input:focus {
-      border-color: var(--aurora-violet);
-    }
-
-    .vault-input.shake {
-      animation: vault-shake 0.4s ease;
-    }
-
-    @keyframes vault-shake {
-
-      0%,
-      100% {
-        transform: translateX(0);
-      }
-
-      25% {
-        transform: translateX(-8px);
-      }
-
-      75% {
-        transform: translateX(8px);
-      }
-    }
-
-    .vault-submit-btn {
-      flex-shrink: 0;
-      padding: 10px 14px;
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.4), rgba(69, 162, 158, 0.4));
-      border: 1px solid var(--aurora-violet);
-      border-radius: 12px;
-      color: var(--warm-white);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .vault-submit-btn:hover {
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.65), rgba(69, 162, 158, 0.65));
-    }
-
-    .vault-hint {
-      font-family: var(--font-heading);
-      font-size: 9px;
-      letter-spacing: 1.2px;
-      color: rgba(254, 252, 243, 0.3);
-      margin-bottom: 14px;
-    }
-
-    .vault-close-btn {
-      padding: 8px 18px;
-      background: transparent;
-      border: 1px solid rgba(254, 252, 243, 0.2);
-      border-radius: 14px;
-      color: rgba(254, 252, 243, 0.45);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 8px;
-    }
-
-    .vault-close-btn:hover {
-      border-color: rgba(254, 252, 243, 0.4);
-      color: var(--warm-white);
-    }
-
-    .vault-unlock-content {
-      display: none;
-    }
-
-    .vault-unlock-title {
-      font-family: var(--font-display);
-      font-size: 15px;
-      color: var(--starlight-gold);
-      letter-spacing: 2px;
-      margin-bottom: 12px;
-    }
-
-    .vault-love-note {
-      font-family: var(--font-body);
-      font-size: 12px;
-      line-height: 1.75;
-      color: rgba(254, 252, 243, 0.9);
-      margin-bottom: 14px;
-      padding: 13px 15px;
-      background: rgba(255, 117, 181, 0.08);
-      border: 1px solid rgba(255, 117, 181, 0.25);
-      border-radius: 14px;
-      text-align: left;
-    }
-
-    .vault-spotify-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 16px;
-      background: linear-gradient(135deg, #1DB954, #158a3e);
-      border: none;
-      border-radius: 18px;
-      color: #fff;
-      font-family: var(--font-heading);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1.2px;
-      cursor: pointer;
-      text-decoration: none;
-      margin-bottom: 10px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .vault-spotify-link:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(29, 185, 84, 0.45);
-    }
-
-    /* ==========================================================================
-       19. GOODNIGHT SIGNAL BUTTON
-       ========================================================================== */
-    .goodnight-signal-btn {
-      position: fixed;
-      bottom: 170px;
-      left: 50%;
-      transform: translateX(-50%) translateY(30px);
-      z-index: 36;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 22px;
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.58), rgba(11, 12, 16, 0.88));
-      border: 1.5px solid rgba(123, 44, 191, 0.75);
-      border-radius: 28px;
-      color: var(--warm-white);
-      font-family: var(--font-heading);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.8px;
-      cursor: pointer;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      animation: gn-pulse 3s ease-in-out infinite;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s;
-    }
-
-    .goodnight-signal-btn.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .goodnight-signal-btn:hover {
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.82), rgba(15, 23, 42, 0.96));
-      box-shadow: 0 10px 36px rgba(123, 44, 191, 0.65);
-    }
-
-    @keyframes gn-pulse {
-
-      0%,
-      100% {
-        box-shadow: 0 6px 24px rgba(123, 44, 191, 0.35);
-      }
-
-      50% {
-        box-shadow: 0 6px 38px rgba(123, 44, 191, 0.7), 0 0 16px rgba(255, 117, 181, 0.28);
-      }
-    }
-
-    .goodnight-signal-btn.sent {
-      background: linear-gradient(135deg, rgba(69, 162, 158, 0.65), rgba(15, 23, 42, 0.9));
-      border-color: var(--aurora-emerald);
-      pointer-events: none;
-      animation: none;
-    }
-
-    /* ==========================================================================
-       21. STARLIGHT MAILBOX & LEAVE A MESSAGE SYSTEM
-       ========================================================================== */
-    .mailbox-btn {
-      border-color: rgba(255, 117, 181, 0.5);
-    }
-
-    .mailbox-btn:hover {
-      border-color: var(--cute-pink);
-      box-shadow: 0 0 10px rgba(255, 117, 181, 0.45);
-    }
-
-    .mailbox-quick-card {
-      width: 100%;
-      max-width: 420px;
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.15), rgba(123, 44, 191, 0.2));
-      border: 1px solid rgba(255, 117, 181, 0.4);
-      border-radius: 16px;
-      padding: 10px 16px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      text-align: center;
-      opacity: 0;
-      transform: translateY(10px);
-      box-shadow: 0 4px 18px rgba(255, 117, 181, 0.15);
-      pointer-events: auto;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      cursor: pointer;
-    }
-
-    .mailbox-quick-card:hover {
-      border-color: var(--cute-pink);
-      box-shadow: 0 6px 24px rgba(255, 117, 181, 0.3);
-    }
-
-    .mailbox-quick-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .mailbox-quick-label {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      letter-spacing: 2px;
-      color: var(--cute-pink);
-      text-transform: uppercase;
-    }
-
-    .mailbox-quick-btn-tag {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      letter-spacing: 1px;
-      color: var(--starlight-gold);
-      background: rgba(244, 208, 63, 0.15);
-      padding: 2px 7px;
-      border-radius: 8px;
-      border: 1px solid rgba(244, 208, 63, 0.3);
-    }
-
-    .mailbox-quick-body {
-      font-family: var(--font-body);
-      font-size: 11px;
-      line-height: 1.5;
-      color: rgba(254, 252, 243, 0.9);
-      font-style: italic;
-    }
-
-    .mailbox-quick-meta {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      color: rgba(254, 252, 243, 0.45);
-      margin-top: 3px;
-    }
-
-    .mailbox-modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 230;
-      background: rgba(11, 12, 16, 0.93);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-
-    .mailbox-modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .mailbox-modal-card {
-      background: rgba(15, 23, 42, 0.97);
-      border: 1.5px solid rgba(255, 117, 181, 0.6);
-      border-radius: 24px;
-      padding: 24px 20px;
-      text-align: center;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 12px 40px rgba(255, 117, 181, 0.3);
-      transform: scale(0.9);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-height: 88vh;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      overflow-y: auto;
-      scrollbar-width: none;
-    }
-
-    .mailbox-modal-card::-webkit-scrollbar {
-      display: none;
-    }
-
-    .mailbox-modal-overlay.active .mailbox-modal-card {
-      transform: scale(1);
-    }
-
-    .mailbox-modal-title {
-      font-family: var(--font-display);
-      font-size: 16px;
-      color: var(--cute-pink);
-      letter-spacing: 2px;
-    }
-
-    .mailbox-modal-sub {
-      font-family: var(--font-heading);
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      color: rgba(254, 252, 243, 0.5);
-    }
-
-    .mailbox-sender-pills {
-      display: flex;
-      gap: 8px;
+      align-items: center;
       justify-content: center;
-    }
-
-    .sender-pill {
-      padding: 6px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(254, 252, 243, 0.2);
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(254, 252, 243, 0.6);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .sender-pill.active {
-      background: rgba(255, 117, 181, 0.22);
-      border-color: var(--cute-pink);
-      color: var(--warm-white);
-      box-shadow: 0 0 12px rgba(255, 117, 181, 0.35);
-    }
-
-    .mailbox-textarea {
-      width: 100%;
-      height: 90px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 117, 181, 0.35);
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: var(--warm-white);
-      font-family: var(--font-body);
-      font-size: 12px;
-      line-height: 1.6;
-      outline: none;
-      resize: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .mailbox-textarea:focus {
-      border-color: var(--cute-pink);
-    }
-
-    .mailbox-form-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .mailbox-char-count {
-      font-family: var(--font-heading);
-      font-size: 9px;
-      color: rgba(254, 252, 243, 0.4);
-    }
-
-    .mailbox-send-btn {
-      padding: 9px 20px;
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.6), rgba(123, 44, 191, 0.6));
-      border: 1px solid var(--cute-pink);
-      border-radius: 16px;
-      color: var(--warm-white);
-      font-family: var(--font-heading);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .mailbox-send-btn:hover {
-      background: linear-gradient(135deg, rgba(255, 117, 181, 0.85), rgba(123, 44, 191, 0.85));
-      box-shadow: 0 4px 16px rgba(255, 117, 181, 0.45);
-    }
-
-    .mailbox-notes-feed {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      text-align: left;
-      margin-top: 6px;
-    }
-
-    .mailbox-feed-title {
-      font-family: var(--font-heading);
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: var(--aurora-emerald);
-      text-transform: uppercase;
+      padding: 28px;
       text-align: center;
+      transition: opacity 1.5s ease;
     }
 
-    .mailbox-note-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 14px;
-      padding: 12px 14px;
-      position: relative;
-    }
+    #blackout-screen.active { opacity: 1; pointer-events: auto; }
+    .blackout-message-1 { font-family: var(--font-display); font-size: clamp(26px, 6vw, 44px); color: var(--amber-glow); letter-spacing: 5px; margin-bottom: 14px; }
+    .blackout-message-2 { font-family: var(--font-heading); font-size: clamp(13px, 3vw, 18px); color: var(--lavender-gray); text-transform: uppercase; }
+    .reignite-btn { margin-top: 40px; padding: 10px 24px; background: transparent; border: 1px solid var(--amber-glow); border-radius: 24px; color: var(--amber-glow); font-family: var(--font-heading); font-size: 10px; cursor: pointer; }
 
-    .mailbox-note-card.from-yangiee {
-      border-color: rgba(255, 117, 181, 0.35);
-      background: rgba(255, 117, 181, 0.06);
-    }
-
-    .mailbox-note-card.from-patrick {
-      border-color: rgba(244, 208, 63, 0.35);
-      background: rgba(244, 208, 63, 0.06);
-    }
-
-    .mailbox-note-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    .mailbox-note-badge {
-      font-family: var(--font-heading);
-      font-size: 8.5px;
-      letter-spacing: 1px;
-      color: var(--cute-pink);
-    }
-
-    .from-patrick .mailbox-note-badge {
-      color: var(--starlight-gold);
-    }
-
-    .mailbox-note-time {
-      font-family: var(--font-heading);
-      font-size: 8px;
-      color: rgba(254, 252, 243, 0.4);
-    }
-
-    .mailbox-note-text {
-      font-family: var(--font-body);
-      font-size: 11.5px;
-      line-height: 1.6;
-      color: rgba(254, 252, 243, 0.9);
-      word-break: break-word;
-    }
-
-    .mailbox-note-del {
-      background: none;
-      border: none;
-      color: rgba(254, 252, 243, 0.3);
-      font-size: 14px;
-      cursor: pointer;
-      padding: 0 4px;
-      line-height: 1;
-      transition: color 0.2s;
-    }
-
-    /* ==========================================================================
-       22. MOBILE RESPONSIVE CLEANUP & UNCLUTTERING SYSTEM
-       ========================================================================== */
+    /* Mobile Cleanup */
     @media (max-width: 768px) {
-      /* 1. Header bar compact layout */
-      #main-header {
-        padding: 8px 12px;
-        gap: 6px;
-      }
-      .brand-title {
-        font-size: 11px;
-        letter-spacing: 1.5px;
-      }
-      .brand-sub {
-        display: none;
-      }
-      .gyro-badge, .vault-lock-btn {
-        padding: 4px 8px;
-        font-size: 8.5px;
-      }
-
-      /* 2. Hero Center Scroll Area - Compact & Properly Spaced */
-      .hero-center {
-        top: 47%;
-        width: 92%;
-        max-width: 380px;
-        max-height: calc(100vh - 210px);
-        gap: 5px;
-        padding-bottom: 70px; /* Essential: leaves space for sound deck & goodnight button */
-      }
-      .hero-heading {
-        font-size: 1.45rem;
-        letter-spacing: 2px;
-        margin-bottom: 2px;
-      }
-      .live-clock {
-        font-size: 8px;
-        letter-spacing: 1px;
-        margin-bottom: 4px;
-      }
-
-      /* 3. Hero Cards Compact Padding */
-      .motd-card,
-      .days-met-badge,
-      .sky-sync-row,
-      .quote-card,
-      .mailbox-quick-card {
-        max-width: 100%;
-        padding: 7px 11px;
-        border-radius: 13px;
-      }
-      .motd-text {
-        font-size: 10px;
-        line-height: 1.4;
-      }
-      .days-met-badge {
-        padding: 5px 10px;
-      }
-      .days-count {
-        font-size: 12px;
-      }
-      .days-label {
-        font-size: 7.5px;
-        letter-spacing: 1px;
-      }
-      .quote-card {
-        padding: 8px 11px;
-      }
-      .quote-text {
-        font-size: 10px;
-        line-height: 1.4;
-      }
-      .quote-author {
-        font-size: 8.5px;
-      }
-      .sky-cards-pair {
-        gap: 6px;
-      }
-      .sky-card {
-        padding: 6px 4px;
-        border-radius: 11px;
-      }
-      .sky-card-weather {
-        font-size: 15px;
-        margin: 1px 0;
-      }
-      .sky-card-temp {
-        font-size: 11px;
-      }
-      .sky-card-city, .sky-card-time {
-        font-size: 7.5px;
-      }
-      .sky-sync-tagline {
-        font-size: 8px;
-      }
-      .mailbox-quick-body {
-        font-size: 10px;
-      }
-
-      /* 4. Care Bubble positioning on Mobile */
-      .care-bubble-container {
-        top: 54px;
-        right: 10px;
-        z-index: 45;
-      }
-      .care-bubble {
-        width: 245px;
-        padding: 10px 12px;
-        border-radius: 16px;
-        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
-      }
-      .care-body {
-        font-size: 10.5px;
-        line-height: 1.35;
-        margin-bottom: 6px;
-      }
-      .care-actions {
-        gap: 4px;
-      }
-      .care-btn {
-        padding: 5px 6px;
-        font-size: 8.5px;
-      }
-      .care-min-btn {
-        padding: 5px 10px;
-        font-size: 8.5px;
-      }
-
-      /* 5. Care Jar Widget - Compact & safely pinned at bottom-right */
-      .care-jar-widget {
-        bottom: 115px;
-        right: 8px;
-        transform: scale(0.72);
-        transform-origin: bottom right;
-      }
-
-      /* 6. Goodnight Signal Button - Pinned safely above sound deck */
-      .goodnight-signal-btn {
-        bottom: 160px;
-        padding: 7px 15px;
-        font-size: 9.5px;
-        letter-spacing: 1.2px;
-        border-radius: 22px;
-      }
-
-      /* 7. Sound Deck on Mobile */
-      .sound-deck {
-        bottom: 10px;
-        width: 94%;
-        padding: 8px 10px;
-        gap: 6px;
-      }
-      .sound-now-playing {
-        font-size: 9px;
-      }
-      .sound-status {
-        font-size: 7.5px;
-      }
-      .track-pills {
-        gap: 3px;
-      }
-      .track-pill {
-        padding: 3px 7px;
-        font-size: 7.5px;
-      }
-      .sleep-switch {
-        padding: 7px 10px;
-        font-size: 8.5px;
-      }
-
-      /* 8. Weather Banner on Mobile */
-      .weather-banner {
-        padding: 5px 10px;
-        gap: 6px;
-      }
-      .weather-banner-icon {
-        font-size: 16px;
-      }
-      .weather-banner-text {
-        font-size: 9.5px;
-        line-height: 1.3;
-      }
-      .weather-banner-dismiss {
-        padding: 2px 6px;
-        font-size: 7.5px;
-      }
-
-      /* 9. Pop Toast on Mobile */
-      .pop-toast {
-        bottom: 150px;
-        padding: 8px 16px;
-        font-size: 10px;
-      }
+      header { padding: 12px 16px; }
+      .brand-title { font-size: 12px; letter-spacing: 2px; }
+      .brand-sub { display: none; }
+      .hero-center { top: 45%; max-height: calc(100vh - 200px); padding-bottom: 16px; gap: 10px; }
+      .hero-heading { font-size: 1.5rem; letter-spacing: 3px; }
+      .zone-c-container { padding: 8px 12px 14px 12px; }
+      .compact-audio-pill { padding: 6px 10px; }
+      .sleep-switch { height: 44px; font-size: 10px; }
     }
   </style>
 </head>
@@ -2188,22 +1014,14 @@
   <!-- Static Ambient CSS Layer -->
   <div class="film-grain"></div>
 
-  <!-- CSS-only Floating Micro-Stars (zero JS cost, adds depth) -->
+  <!-- CSS-only Floating Micro-Stars -->
   <div class="css-stars" id="css-stars"></div>
 
   <!-- SVG Corner Filigrees -->
-  <div class="filigree f-tl"><svg viewBox="0 0 100 100">
-      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
-    </svg></div>
-  <div class="filigree f-tr"><svg viewBox="0 0 100 100">
-      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
-    </svg></div>
-  <div class="filigree f-bl"><svg viewBox="0 0 100 100">
-      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
-    </svg></div>
-  <div class="filigree f-br"><svg viewBox="0 0 100 100">
-      <path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" />
-    </svg></div>
+  <div class="filigree f-tl"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" /></svg></div>
+  <div class="filigree f-tr"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" /></svg></div>
+  <div class="filigree f-bl"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" /></svg></div>
+  <div class="filigree f-br"><svg viewBox="0 0 100 100"><path d="M10,90 L10,10 L90,10 M10,10 L50,50 M25,10 C25,30 30,25 50,25" /></svg></div>
 
   <!-- Canvases -->
   <canvas id="webgl-canvas"></canvas>
@@ -2215,8 +1033,7 @@
   <div id="start-overlay" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">
     <div class="start-title">Starlight Sanctuary</div>
     <div class="start-subtitle">A Starlight Transmission for Yangiee</div>
-    <button class="start-btn" id="init-btn" onclick="dismissStartOverlay(event)"
-      ontouchend="dismissStartOverlay(event)">Wake The Universe</button>
+    <button class="start-btn" id="init-btn" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">Wake The Universe</button>
   </div>
 
   <!-- Main UI Layer -->
@@ -2226,94 +1043,105 @@
         <span class="brand-title">SANCTUARY</span>
         <span class="brand-sub">FOR YANGIEE ✦ 3D STAGE</span>
       </div>
-      <div class="gyro-badge" id="gyro-btn">
-        <div class="gyro-dot"></div>
-        <span id="gyro-text">GYRO PARALLAX</span>
+      <div class="header-nav-icons">
+        <button class="nav-icon-btn vault-lock-btn" id="vault-lock-btn" title="Secret Vault">
+          <span>🔐</span>
+        </button>
+        <button class="nav-icon-btn mailbox-btn" id="mailbox-btn" title="Starlight Mailbox">
+          <span>💌</span>
+        </button>
+        <button class="nav-icon-btn" id="care-nav-btn" title="Care Reminder">
+          <span>💖</span>
+        </button>
+        <button class="nav-icon-btn gyro-badge" id="gyro-btn" title="Toggle Gyro Parallax">
+          <div class="gyro-dot"></div>
+          <span>⚙️</span>
+        </button>
       </div>
-      <button class="vault-lock-btn" id="vault-lock-btn" title="Secret Vault">
-        🔐 <span>VAULT</span>
-      </button>
-      <button class="vault-lock-btn mailbox-btn" id="mailbox-btn" title="Starlight Mailbox">
-        💌 <span>MAILBOX</span>
-      </button>
     </header>
 
-    <!-- Center Hero Screen -->
+    <!-- Center Hero Viewport -->
     <div class="hero-center" id="hero-center">
       <div class="hero-heading" id="hero-heading">GOOD <span>NIGHT</span></div>
       <div class="live-clock" id="live-clock"></div>
 
-      <!-- Message of the Day -->
-      <div class="motd-card" id="motd-card">
-        <div class="motd-label">❖ Message of the Day ❖</div>
-        <div class="motd-text" id="motd-text">Loading today’s message from the stars…</div>
-      </div>
-
-      <!-- Mailbox Quick Card -->
-      <div class="mailbox-quick-card" id="mailbox-quick-card" title="Open Mailbox 💌">
-        <div class="mailbox-quick-header">
-          <span class="mailbox-quick-label">💌 STARLIGHT MAILBOX</span>
-          <span class="mailbox-quick-btn-tag">WRITE NOTE ✦</span>
+      <!-- Zone A: Unified Connection Hero Card -->
+      <div class="unified-connection-card" id="unified-connection-card">
+        <div class="connection-badge-top" id="days-met-badge">
+          <span class="days-icon">💖</span>
+          <span class="days-count" id="days-met-count">0</span>
+          <span class="days-label">Days Together</span>
         </div>
-        <div class="mailbox-quick-body" id="mailbox-quick-body">"Leave a sweet note in the stars for each other..."</div>
-        <div class="mailbox-quick-meta" id="mailbox-quick-meta">Tap to view saved notes or leave a new one</div>
-      </div>
 
-      <!-- Days Met Counter Badge -->
-      <div class="days-met-badge" id="days-met-badge">
-        <span class="days-icon">💖</span>
-        <span class="days-count" id="days-met-count">0</span>
-        <span class="days-label">Since the first day ❖ JAN 27, 2024</span>
-      </div>
-
-      <!-- Dual Location Sky Sync -->
-      <div class="sky-sync-row" id="sky-sync-row">
-        <div class="sky-cards-pair">
-          <div class="sky-card her-card">
-            <div class="sky-card-label">💖 Yangiee</div>
-            <div class="sky-card-weather" id="sky-her-emoji">🌤️</div>
-            <div class="sky-card-temp" id="sky-her-temp">--°C</div>
-            <div class="sky-card-city" id="sky-her-city">Locating...</div>
-            <div class="sky-card-time" id="sky-her-time">--:-- --</div>
+        <div class="connection-weather-row" id="sky-sync-row">
+          <div class="connection-weather-col her-card">
+            <div class="weather-loc-tag">💖 Yangiee</div>
+            <div class="weather-info-main">
+              <span class="weather-emoji" id="sky-her-emoji">🌤️</span>
+              <span class="weather-temp" id="sky-her-temp">--°C</span>
+            </div>
+            <div class="weather-city" id="sky-her-city">Capas, Tarlac</div>
           </div>
-          <div class="sky-card you-card">
-            <div class="sky-card-label">⭐ Patrick</div>
-            <div class="sky-card-weather" id="sky-you-emoji">🌤️</div>
-            <div class="sky-card-temp" id="sky-you-temp">--°C</div>
-            <div class="sky-card-city" id="sky-you-city">Manila, NCR</div>
-            <div class="sky-card-time" id="sky-you-time">--:-- --</div>
+
+          <div class="connection-divider"></div>
+
+          <div class="connection-weather-col you-card">
+            <div class="weather-loc-tag">⭐ Patrick</div>
+            <div class="weather-info-main">
+              <span class="weather-emoji" id="sky-you-emoji">🌤️</span>
+              <span class="weather-temp" id="sky-you-temp">--°C</span>
+            </div>
+            <div class="weather-city" id="sky-you-city">Malaybalay, Bukidnon</div>
           </div>
         </div>
-        <div class="sky-sync-tagline" id="sky-sync-tagline">Connecting under the same sky 🌌</div>
+
+        <div class="connection-card-footer" id="sky-sync-tagline">
+          939 km apart • Under the same sky 🌌
+        </div>
       </div>
 
-      <!-- Quote Card (Quote API) -->
-      <div class="quote-card" id="quote-card">
-        <div class="quote-icon">❖</div>
-        <div class="quote-text" id="quote-text">"Loading quote from the stars..."</div>
-        <div class="quote-author" id="quote-author">— Starlight Sanctuary</div>
-        <button class="quote-refresh-btn" id="quote-refresh-btn" title="New Quote">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M23 4v6h-6M1 20v-6h6" />
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-          </svg>
-          <span>NEW QUOTE</span>
+      <!-- Zone B: Interactive & Daily Hub -->
+      <div class="quick-action-row">
+        <button class="quick-action-btn" id="btn-quick-note" title="Open Mailbox">
+          <span class="quick-action-icon">💌</span>
+          <span class="quick-action-label">Note</span>
+        </button>
+        <button class="quick-action-btn" id="btn-quick-streak" title="Streak & Check-in">
+          <span class="quick-action-icon">🔥</span>
+          <span class="quick-action-label" id="quick-streak-label">1 Day</span>
+        </button>
+        <button class="quick-action-btn" id="btn-quick-bed" title="Bedtime Signal">
+          <span class="quick-action-icon">🌙</span>
+          <span class="quick-action-label">Bed</span>
         </button>
       </div>
 
-      <div class="hero-hint" id="hero-hint">TILT PHONE OR SWIPE TO EXPLORE</div>
-      <div class="scroll-indicator" id="scroll-prompt">
-        <span>TAP STARS FOR MEMORIES</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M19 12l-7 7-7-7" />
-        </svg>
+      <!-- Compact Daily Quote Card -->
+      <div class="quote-card-compact" id="quote-card">
+        <div class="quote-card-header">
+          <span class="quote-icon">❖</span>
+          <button class="quote-refresh-btn-icon" id="quote-refresh-btn" title="New Quote">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+          </button>
+        </div>
+        <div class="quote-text" id="quote-text">"Loading quote from the stars..."</div>
+        <div class="quote-author" id="quote-author">— Starlight Sanctuary</div>
+      </div>
+
+      <!-- Gesture / Scroll Indicator -->
+      <div class="scroll-indicator-compact" id="scroll-prompt">
+        <span>TAP STARS FOR MEMORIES ✦</span>
       </div>
     </div>
 
-    <!-- Ambient Audio & Sleep Deck -->
-    <div class="sound-deck" id="sound-deck">
-      <div class="sound-top-row">
-        <div class="sound-track-info">
+    <!-- Zone C: Ambient Controls & Primary Action (Fixed Bottom) -->
+    <div class="zone-c-container">
+      <!-- Compact Audio Pill Banner -->
+      <div class="compact-audio-pill" id="sound-deck">
+        <div class="audio-left">
           <button class="sound-play-toggle" id="audio-toggle">
             <svg id="play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z" />
@@ -2322,25 +1150,31 @@
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
             </svg>
           </button>
-          <div class="sound-track-labels">
+          <div class="audio-labels">
             <span class="sound-now-playing" id="track-name">SOFT RAIN ON GLASS</span>
-            <span class="sound-status" id="track-status">GENERATIVE AUDIO SYNTH</span>
           </div>
         </div>
-        <canvas class="visualizer-canvas" id="visualizer-canvas"></canvas>
+
+        <div class="audio-right">
+          <canvas class="visualizer-canvas" id="visualizer-canvas"></canvas>
+          <div class="track-selector-wrapper">
+            <button class="track-selector-btn" id="track-selector-btn" title="Tracks">
+              <span>🎵 Tracks ▾</span>
+            </button>
+            <div class="track-pills-dropdown" id="track-pills-dropdown">
+              <button class="track-pill active" data-preset="rain">Soft Rain</button>
+              <button class="track-pill" data-preset="lofi">Lofi Beats</button>
+              <button class="track-pill" data-preset="fire">Fireplace</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="track-pills">
-        <button class="track-pill active" data-preset="rain">SOFT RAIN ON GLASS</button>
-        <button class="track-pill" data-preset="lofi">LOFI NIGHT BEATS</button>
-        <button class="track-pill" data-preset="fire">WARM FIREPLACE</button>
-      </div>
-
-      <!-- Sleep Mode Hold Switch -->
+      <!-- Primary Night Action: Hold to Blow Out the Stars -->
       <div class="sleep-switch-container">
         <button class="sleep-switch" id="sleep-switch">
           <div class="sleep-switch-progress" id="sleep-progress"></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
           <span id="sleep-switch-label">HOLD TO BLOW OUT THE STARS</span>
@@ -2365,13 +1199,17 @@
   <!-- Final Transmission Blackout Overlay -->
   <div id="blackout-screen">
     <div class="blackout-message-1" id="bo-msg1">Rest well, goodnight, Yangiee.</div>
-    <div class="blackout-message-2" id="bo-msg2">See you in tomorrow's light. ✦ Matulog ka na anong oras na, batang toh
-    </div>
+    <div class="blackout-message-2" id="bo-msg2">See you in tomorrow's light. ✦ Matulog ka na anong oras na, batang toh</div>
     <button class="reignite-btn" id="reignite-btn">REIGNITE THE UNIVERSE</button>
   </div>
 
-  <!-- Flashing Love Banner Overlay -->
   <div id="love-flash-banner" class="love-flash-banner">I LOVE YAAA! 💖✨</div>
+
+  <!-- Hidden compatibility elements to prevent JS errors -->
+  <div id="motd-card" class="motd-card" style="display:none;"><div id="motd-text"></div></div>
+  <div id="mailbox-quick-card" class="mailbox-quick-card" style="display:none;"><div id="mailbox-quick-body"></div><div id="mailbox-quick-meta"></div></div>
+  <div id="weather-banner" class="weather-banner" style="display:none;"><span id="weather-banner-icon"></span><span id="weather-banner-text"></span><button id="weather-banner-dismiss"></button></div>
+  <div id="hero-hint" style="display:none;"></div>
 
   <!-- Floating Interactive Care Bubble -->
   <div id="care-bubble-container" class="care-bubble-container">
@@ -2385,47 +1223,21 @@
         Yangiee, have you eaten yet? Make sure you stay healthy and full! 💖
       </div>
       <div class="care-actions">
-        <button class="care-btn ate-btn" id="ate-btn">
-          <span>I've Eaten! 😋</span>
-        </button>
-        <button class="care-btn water-btn" id="water-btn">
-          <span>Drank Water! 🥤</span>
-        </button>
-        <button class="care-btn sleep-btn" id="sleep-reminder-btn" style="display:none;">
-          <span>I'll Sleep Now 🌙</span>
-        </button>
+        <button class="care-btn ate-btn" id="ate-btn"><span>I've Eaten! 😋</span></button>
+        <button class="care-btn water-btn" id="water-btn"><span>Drank Water! 🥤</span></button>
+        <button class="care-btn sleep-btn" id="sleep-reminder-btn" style="display:none;"><span>I'll Sleep Now 🌙</span></button>
       </div>
     </div>
-
-    <!-- Minimized Trigger Button -->
-    <button id="care-min-btn" class="care-min-btn" title="Open Care Bubble">
-      <span class="care-min-icon">💖</span>
-      <span class="care-min-text">CARE</span>
-    </button>
+    <button id="care-min-btn" class="care-min-btn" title="Open Care Bubble"><span class="care-min-icon">💖</span><span class="care-min-text">CARE</span></button>
   </div>
 
-  <!-- Pop Toast Notification -->
-  <div id="pop-toast" class="pop-toast">
-    <span id="pop-toast-text">YAY! 💖 Proud of you, Yangiee!</span>
-  </div>
+  <div id="pop-toast" class="pop-toast"><span id="pop-toast-text">YAY! 💖 Proud of you, Yangiee!</span></div>
 
-  <!-- Weather Care Banner -->
-  <div id="weather-banner" class="weather-banner">
-    <span class="weather-banner-icon" id="weather-banner-icon">🌤️</span>
-    <span class="weather-banner-text" id="weather-banner-text">Checking today’s weather for you, Yangiee…</span>
-    <button class="weather-banner-dismiss" id="weather-banner-dismiss">GOT IT ✓</button>
-  </div>
-
-  <!-- Care Jar Streak Widget -->
-  <div id="care-jar-widget" class="care-jar-widget" title="Tap to check in! 🌿">
-    <svg width="52" height="84" viewBox="0 0 60 95" class="care-jar-svg" xmlns="http://www.w3.org/2000/svg">
-      <rect x="14" y="2" width="32" height="9" rx="3" fill="rgba(255,117,181,0.7)" stroke="#FF75B5"
-        stroke-width="1.2" />
-      <path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" fill="rgba(11,12,16,0.6)"
-        stroke="#FF75B5" stroke-width="1.5" stroke-opacity="0.7" />
-      <clipPath id="jcp">
-        <path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" />
-      </clipPath>
+  <div id="care-jar-widget" class="care-jar-widget" style="display:none;">
+    <svg width="52" height="84" viewBox="0 0 60 95" class="care-jar-svg">
+      <rect x="14" y="2" width="32" height="9" rx="3" fill="rgba(255,117,181,0.7)" stroke="#FF75B5" stroke-width="1.2" />
+      <path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" fill="rgba(11,12,16,0.6)" stroke="#FF75B5" stroke-width="1.5" stroke-opacity="0.7" />
+      <clipPath id="jcp"><path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" /></clipPath>
       <rect id="jar-fill-rect" x="6" y="90" width="48" height="0" fill="rgba(255,117,181,0.28)" clip-path="url(#jcp)" />
       <circle id="jar-star-0" cx="20" cy="76" r="4" fill="#F4D03F" opacity="0.1" />
       <circle id="jar-star-1" cx="36" cy="73" r="4" fill="#FF75B5" opacity="0.1" />
@@ -2439,7 +1251,6 @@
     <div class="care-jar-label">TAP TO CHECK IN</div>
   </div>
 
-  <!-- Care Jar Unlock Modal -->
   <div id="jar-unlock-modal" class="jar-unlock-modal">
     <div class="jar-unlock-card">
       <span class="jar-unlock-icon">🌟</span>
@@ -2449,7 +1260,6 @@
     </div>
   </div>
 
-  <!-- Secret Password Vault -->
   <div id="vault-modal" class="vault-modal-overlay">
     <div class="vault-modal-card">
       <span class="vault-icon-anim">🔐</span>
@@ -2457,8 +1267,7 @@
       <div class="vault-subtitle">Enter your passcode to unlock</div>
       <div id="vault-form-section">
         <div class="vault-input-row">
-          <input type="text" id="vault-input" class="vault-input" placeholder="••••" maxlength="12" autocomplete="off"
-            spellcheck="false" />
+          <input type="text" id="vault-input" class="vault-input" placeholder="••••" maxlength="12" autocomplete="off" spellcheck="false" />
           <button class="vault-submit-btn" id="vault-submit">OPEN</button>
         </div>
         <div class="vault-hint">Hint: A date that changed everything 💖</div>
@@ -2475,35 +1284,25 @@
     </div>
   </div>
 
-  <!-- Goodnight Signal Button (visible 10 PM – 5:59 AM) -->
-  <button id="goodnight-signal-btn" class="goodnight-signal-btn">🌙 Going to Bed Now</button>
+  <button id="goodnight-signal-btn" class="goodnight-signal-btn" style="display:none;">🌙 Going to Bed Now</button>
 
-  <!-- Starlight Mailbox Modal -->
   <div id="mailbox-modal" class="mailbox-modal-overlay">
     <div class="mailbox-modal-card">
       <div class="mailbox-modal-title">💌 STARLIGHT MAILBOX</div>
       <div class="mailbox-modal-sub">Leave a sweet note — it saves here & notifies Patrick! 📲</div>
-
-      <!-- Sender Toggle Pills -->
       <div class="mailbox-sender-pills">
         <button class="sender-pill active" id="sender-yangiee" data-sender="Yangiee">💖 From Yangiee</button>
         <button class="sender-pill" id="sender-patrick" data-sender="Patrick">⭐ From Patrick</button>
       </div>
-
-      <!-- Input Area -->
       <textarea id="mailbox-input" class="mailbox-textarea" placeholder="Write your note here, Yangiee..." maxlength="300"></textarea>
-
       <div class="mailbox-form-footer">
         <span class="mailbox-char-count"><span id="mailbox-chars">0</span>/300</span>
         <button class="mailbox-send-btn" id="mailbox-send-btn">✨ SEND NOTE</button>
       </div>
-
-      <!-- Feed of Notes -->
       <div class="mailbox-notes-feed">
         <div class="mailbox-feed-title">❖ SAVED NOTES IN THE STARS ❖</div>
         <div id="mailbox-notes-list"></div>
       </div>
-
       <button class="vault-close-btn" id="mailbox-close-btn">✕ Close Mailbox</button>
     </div>
   </div>
@@ -4031,21 +2830,43 @@
     const WMO_RAIN_CODES = new Set([51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99]);
     const WMO_THUNDER_CODES = new Set([95, 96, 99]);
 
-    function wmoToCondition(code) {
-      if (WMO_THUNDER_CODES.has(code)) return 'thunderstorm';
-      if (WMO_RAIN_CODES.has(code)) return 'rain';
-      if (code === 45 || code === 48) return 'fog';
-      if (code <= 3) return 'clear';
-      return 'cloudy';
-    }
+    function wmoToDetails(code, temp) {
+      // 1. Rain & Storm Categories
+      if (WMO_THUNDER_CODES.has(code)) {
+        return { condition: 'thunderstorm', label: 'Strong Rain / Storm', emoji: '🌩️' };
+      }
+      if (code === 65 || code === 82) {
+        return { condition: 'heavy_rain', label: 'Heavy Rain', emoji: '⛈️' };
+      }
+      if (code === 63 || code === 81) {
+        return { condition: 'rain', label: 'Moderate Rain', emoji: '🌧️' };
+      }
+      if (code === 51 || code === 53 || code === 55 || code === 61 || code === 80) {
+        return { condition: 'light_rain', label: 'Light Rain', emoji: '🌦️' };
+      }
 
-    function wmoToEmoji(code, temp) {
-      if (WMO_THUNDER_CODES.has(code)) return '\u26C8\uFE0F';
-      if (WMO_RAIN_CODES.has(code)) return code <= 55 ? '\uD83C\uDF26\uFE0F' : '\uD83C\uDF27\uFE0F';
-      if (code === 45 || code === 48) return '\uD83C\uDF2B\uFE0F';
-      if (code <= 1) return temp > 30 ? '\u2600\uFE0F' : '\uD83C\uDF24\uFE0F';
-      if (code <= 3) return '\u26C5';
-      return '\uD83C\uDF25\uFE0F';
+      // 2. Fog / Clouds
+      if (code === 45 || code === 48) {
+        return { condition: 'fog', label: 'Misty / Foggy', emoji: '🌫️' };
+      }
+      if (code === 3) {
+        return { condition: 'cloudy', label: 'Cloudy Sky', emoji: '☁️' };
+      }
+      if (code === 2) {
+        return { condition: 'partly_cloudy', label: 'Light Weather', emoji: '🌤️' };
+      }
+
+      // 3. Fair / Temperature Categories
+      if (temp >= 35) {
+        return { condition: 'extremely_hot', label: 'Extremely Hot', emoji: '🥵' };
+      }
+      if (temp >= 31) {
+        return { condition: 'hot', label: 'Hot Weather', emoji: '🔥' };
+      }
+      if (temp >= 24 && temp <= 30) {
+        return { condition: 'perfect', label: 'Perfect Weather', emoji: '☀️' };
+      }
+      return { condition: 'light_weather', label: 'Light Weather', emoji: '🌤️' };
     }
 
     async function getIPLocation() {
@@ -4066,10 +2887,17 @@
         if (res.ok) {
           const d = await res.json();
           const cw = d.current_weather;
-          return { code: cw.weathercode, temp: Math.round(cw.temperature), condition: wmoToCondition(cw.weathercode), emoji: wmoToEmoji(cw.weathercode, cw.temperature) };
+          const details = wmoToDetails(cw.weathercode, cw.temperature);
+          return {
+            code: cw.weathercode,
+            temp: Math.round(cw.temperature),
+            condition: details.condition,
+            label: details.label,
+            emoji: details.emoji
+          };
         }
       } catch (e) { console.warn('Open-Meteo failed:', e); }
-      return { code: 0, temp: 28, condition: 'clear', emoji: '\uD83C\uDF24\uFE0F' };
+      return { code: 0, temp: 27, condition: 'perfect', label: 'Perfect Weather', emoji: '☀️' };
     }
 
     function showWeatherBanner(icon, msg) {
@@ -4092,30 +2920,31 @@
 
     async function initWeatherEngine() {
       initWeatherBannerDismiss();
-      // Yangiee's location is hardcoded — IP lookup always returns Patrick's location (Malaybalay)
       const YANGIEE_LOC = { lat: 15.3304, lon: 120.5883, city: 'Capas', region: 'Tarlac' };
       herLatLon = { lat: YANGIEE_LOC.lat, lon: YANGIEE_LOC.lon };
-
-      const herCityEl = document.getElementById('sky-her-city');
-      if (herCityEl) herCityEl.textContent = `${YANGIEE_LOC.city}, ${YANGIEE_LOC.region}`;
 
       const weather = await fetchOpenMeteo(YANGIEE_LOC.lat, YANGIEE_LOC.lon);
       updateSkySyncHerCard(weather);
 
       const lastStatus = localStorage.getItem('ws_last_status') || 'clear';
-      const isRaining = weather.condition === 'rain' || weather.condition === 'thunderstorm';
-      const wasRaining = lastStatus === 'rain';
+      const isRaining = weather.condition.includes('rain') || weather.condition === 'thunderstorm';
 
       if (weather.condition === 'thunderstorm') {
-        showWeatherBanner('\u26C8\uFE0F', "There's a thunderstorm outside! Stay safe and stay indoors, Yangiee! Don't go out unless necessary. \uD83C\uDFE0\uD83D\uDC96");
-      } else if (isRaining) {
-        showWeatherBanner('\u2614', "It's raining outside right now! Don't forget your umbrella and jacket before leaving, Yangiee! \u2614\uD83C\uDF27\uFE0F");
-      } else if (wasRaining && !isRaining) {
-        showWeatherBanner('\u2615', "Looks like the rain just stopped! If you got caught in it, dry off, change into warm clothes, and drink something warm! \u2615\uD83D\uDC96");
-      } else if (weather.temp > 31) {
-        showWeatherBanner('\uD83E\uDD64', `It's super warm outside at ${weather.temp}\u00B0C today! Stay in the shade and drink plenty of cold water, okay? \uD83E\uDD64\u2600\uFE0F`);
+        showWeatherBanner('🌩️', "Strong Rain & Storm outside! Stay safe and stay indoors, Yangiee! 🏡💖");
+      } else if (weather.condition === 'heavy_rain') {
+        showWeatherBanner('⛈️', "Heavy Rain falling right now! Don't forget an umbrella & raincoat, Yangiee! ☔✨");
+      } else if (weather.condition === 'rain') {
+        showWeatherBanner('🌧️', "It's raining outside right now! Stay warm and dry, Yangiee! 🌧️💕");
+      } else if (weather.condition === 'light_rain') {
+        showWeatherBanner('🌦️', "Light rain / drizzle outside! Carry a light umbrella just in case! 🌦️💖");
+      } else if (weather.condition === 'extremely_hot') {
+        showWeatherBanner('🥵', `Extremely Hot outside at ${weather.temp}°C! Stay in the shade/aircon and drink cold water! 🥤🔥`);
+      } else if (weather.condition === 'hot') {
+        showWeatherBanner('🔥', `Hot weather outside at ${weather.temp}°C! Stay cool and hydrated, Yangiee! 🥤☀️`);
+      } else if (weather.condition === 'perfect') {
+        showWeatherBanner('☀️', `Perfect weather outside at ${weather.temp}°C! Hope your day feels bright and amazing! ☀️💖`);
       } else if (weather.temp < 22) {
-        showWeatherBanner('\uD83E\uDDE5', `It's quite chilly out at ${weather.temp}\u00B0C! Bundle up with a blanket or wear something cozy! \uD83E\uDDE5\u2728`);
+        showWeatherBanner('🧥', `It's chilly at ${weather.temp}°C! Bundle up with a blanket or sweater! 🧥✨`);
       }
 
       localStorage.setItem('ws_last_status', isRaining ? 'rain' : 'clear');
@@ -4228,9 +3057,11 @@
     function updateSkySyncHerCard(weather) {
       const herEmoji = document.getElementById('sky-her-emoji');
       const herTemp = document.getElementById('sky-her-temp');
+      const herCity = document.getElementById('sky-her-city');
       const herTime = document.getElementById('sky-her-time');
       if (herEmoji) herEmoji.textContent = weather.emoji;
       if (herTemp) herTemp.textContent = `${weather.temp}\u00B0C`;
+      if (herCity) herCity.textContent = `Capas, Tarlac • ${weather.label || 'Fair'}`;
       if (herTime) herTime.textContent = getLocalTimeStr(getPSTDate());
     }
 
@@ -4242,7 +3073,7 @@
       const patTime = document.getElementById('sky-you-time');
       if (patEmoji) patEmoji.textContent = patWeather.emoji;
       if (patTemp) patTemp.textContent = `${patWeather.temp}\u00B0C`;
-      if (patCity) patCity.textContent = `${PATRICK_LOC.city}, ${PATRICK_LOC.region}`;
+      if (patCity) patCity.textContent = `Malaybalay, Bukidnon • ${patWeather.label || 'Fair'}`;
       if (patTime) patTime.textContent = getLocalTimeStr(getPSTDate());
 
       const tagline = document.getElementById('sky-sync-tagline');
@@ -4304,6 +3135,11 @@
       const isDoneToday = (lastDate === today);
       const streakEl = document.getElementById('care-jar-streak');
       const labelEl = document.querySelector('.care-jar-label');
+      const quickStreakLabel = document.getElementById('quick-streak-label');
+
+      if (quickStreakLabel) {
+        quickStreakLabel.textContent = streak > 0 ? `${streak} Day${streak > 1 ? 's' : ''}` : 'Streak';
+      }
 
       if (isDoneToday) {
         if (streakEl) streakEl.textContent = `${streak} day streak 🔥`;
@@ -4822,13 +3658,52 @@
         if ($careMinBtn) $careMinBtn.addEventListener('click', showCareBubble);
       } catch (e) { console.error("care bubble", e); }
 
-      // New Feature Engines
+      // New Feature Engines & Quick Action Bindings
       try { initMotd(); } catch (e) { console.error('motd', e); }
       try { initWeatherEngine().then(() => initSkySync()); } catch (e) { console.error('weather+sky', e); }
       try { initCareJar(); } catch (e) { console.error('careJar', e); }
       try { initVault(); } catch (e) { console.error('vault', e); }
       try { initGoodnightSignal(); } catch (e) { console.error('goodnightSignal', e); }
       try { initMailbox(); } catch (e) { console.error('mailbox', e); }
+
+      // Quick Action Row & Navigation Header Icon Bindings
+      try {
+        const btnNote = document.getElementById('btn-quick-note');
+        if (btnNote) btnNote.addEventListener('click', () => {
+          const mbModal = document.getElementById('mailbox-modal');
+          if (mbModal) mbModal.classList.add('active');
+          renderMailboxFeed();
+        });
+
+        const btnStreak = document.getElementById('btn-quick-streak');
+        if (btnStreak) btnStreak.addEventListener('click', () => {
+          const s = getCareJarState();
+          if (s.lastDate === getTodayPSTStr()) {
+            showPopToast('Checked in today ✓ Come back tomorrow! 💖');
+          } else {
+            careJarCheckin();
+            showPopToast('🌿 Star added to your jar! 💕');
+          }
+        });
+
+        const btnBed = document.getElementById('btn-quick-bed');
+        if (btnBed) btnBed.addEventListener('click', sendGoodnightSignal);
+
+        const careNavBtn = document.getElementById('care-nav-btn');
+        if (careNavBtn) careNavBtn.addEventListener('click', showCareBubble);
+
+        const trackSelectorBtn = document.getElementById('track-selector-btn');
+        const trackPillsDropdown = document.getElementById('track-pills-dropdown');
+        if (trackSelectorBtn && trackPillsDropdown) {
+          trackSelectorBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            trackPillsDropdown.classList.toggle('active');
+          });
+          document.addEventListener('click', () => {
+            trackPillsDropdown.classList.remove('active');
+          });
+        }
+      } catch (e) { console.error("quick actions", e); }
 
       // Register PWA Service Worker for offline app functionality & mobile installation
       if ('serviceWorker' in navigator) {
