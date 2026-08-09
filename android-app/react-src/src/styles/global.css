@@ -147,6 +147,16 @@ html, body, #root {
   justify-content: space-between;
   pointer-events: auto;
 }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-logo-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  box-shadow: 0 0 14px rgba(245,194,231,0.4), 0 0 4px rgba(255,255,255,0.2);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.brand-text-col { display: flex; flex-direction: column; }
 .brand-title {
   font-family: var(--font-display);
   font-size: clamp(14px,3vw,17px);

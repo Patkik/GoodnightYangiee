@@ -65,8 +65,11 @@ export function SanctuaryHeader({ onVault, onMailbox }) {
   return (
     <header className="sanctuary-header dissipatable">
       <div className="brand">
-        <div className="brand-title">Hakdog</div>
-        <div className="brand-sub">Celestial Sanctuary</div>
+        <img src="icon-192.png" className="brand-logo-img" alt="Logo" />
+        <div className="brand-text-col">
+          <div className="brand-title">Hakdog</div>
+          <div className="brand-sub">Celestial Sanctuary</div>
+        </div>
       </div>
       <div className="header-nav-icons">
         <button className="nav-icon-btn" onClick={onMailbox} id="mailbox-btn" title="Starlight Mailbox">

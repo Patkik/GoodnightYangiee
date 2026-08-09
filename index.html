@@ -270,6 +270,21 @@
 
     .brand {
       display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo-img {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      box-shadow: 0 0 14px rgba(245, 194, 231, 0.4), 0 0 4px rgba(255, 255, 255, 0.2);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .brand-text-col {
+      display: flex;
       flex-direction: column;
     }
 
@@ -1150,8 +1165,11 @@
   <div id="app-ui">
     <header id="main-header">
       <div class="brand">
-        <span class="brand-title">HAKDOG</span>
-        <span class="brand-sub">FOR YANGIEE ✦ CELESTIAL STAGE</span>
+        <img src="icon-192.png" class="brand-logo-img" alt="Goodnight Yangiee Logo" />
+        <div class="brand-text-col">
+          <span class="brand-title">HAKDOG</span>
+          <span class="brand-sub">FOR YANGIEE ✦ CELESTIAL STAGE</span>
+        </div>
       </div>
       <div class="header-nav-icons">
         <button class="nav-icon-btn vault-lock-btn" id="vault-lock-btn" title="Secret Vault">
