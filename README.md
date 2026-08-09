@@ -1,8 +1,8 @@
-# Project Nocturne ✦ A Starlight Transmission for Yangiee
+# Starlight Sanctuary ✦ A Transmission for Yangiee
 
 An intimate 3D cosmic sanctuary & starlight goodnight web application built with WebGL (Three.js), HTML5 Canvas, Web Audio API, and GSAP.
 
-![Project Nocturne](https://img.shields.priority/badge/Status-Active-brightgreen)
+![Starlight Sanctuary](https://img.shields.priority/badge/Status-Active-brightgreen)
 ![Three.js](https://img.shields.io/badge/Three.js-r128-blue)
 ![Web Audio API](https://img.shields.io/badge/Web_Audio_API-Generative-purple)
 
