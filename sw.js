@@ -30,7 +30,14 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Network first, falling back to cache
+  const url = e.request.url;
+  // Bypass cache completely for version check & GitHub API sync requests
+  if (url.includes('version.json') || url.includes('api.github.com') || url.includes('raw.githubusercontent.com')) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }));
+    return;
+  }
+
+  // Network first, falling back to cache for all other assets
   e.respondWith(
     fetch(e.request).catch(() => caches.match(e.request))
   );

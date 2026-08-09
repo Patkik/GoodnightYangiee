@@ -3,6 +3,7 @@ import { useAppStore } from './store/appStore.js';
 import { useKiroStore } from './store/kiroStore.js';
 import { usePSTClock } from './hooks/usePSTClock.js';
 import { useWeather } from './hooks/useWeather.js';
+import { useGitHubSync } from './hooks/useGitHubSync.js';
 import { useWebAudio } from './hooks/useWebAudio.js';
 import {
   StartOverlay,
@@ -101,6 +102,7 @@ export default function App() {
   // Hooks
   usePSTClock();
   useWeather();
+  useGitHubSync();
   const audio = useWebAudio(audioPreset);
 
   // Get derived quote
