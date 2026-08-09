@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
-  "commit": "8dd5610",
-  "updatedAt": "2026-08-10T04:43:00+08:00",
-  "releaseNotes": "Added GOOD MORNIGHT greeting mode (3 AM to 6 AM)"
+  "version": "1.0.4",
+  "commit": "35c9666",
+  "updatedAt": "2026-08-10T04:46:00+08:00",
+  "releaseNotes": "Fix Android icon asset bundling & automatic image fallbacks"
 }
