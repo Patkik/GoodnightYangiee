@@ -25,6 +25,7 @@ function CareLeaf({ idx }) {
 export function StartOverlay({ onStart }) {
   return (
     <div className="start-overlay" onClick={onStart}>
+      <img src="icon-192.png" className="start-logo-img" alt="Logo" onError={(e) => { e.target.onerror = null; e.target.src = 'icon.png'; }} />
       <div className="start-logo">Hakdog</div>
       <div className="start-sub">Celestial Sanctuary</div>
       <div style={{ fontFamily: 'var(--font-heading)', fontSize: '10px', letterSpacing: '2px', color: 'var(--subtext-gray)', textAlign: 'center', maxWidth: '240px', lineHeight: 1.6, marginBottom: '40px' }}>
@@ -65,7 +66,7 @@ export function SanctuaryHeader({ onVault, onMailbox }) {
   return (
     <header className="sanctuary-header dissipatable">
       <div className="brand">
-        <img src="icon-192.png" className="brand-logo-img" alt="Logo" />
+        <img src="icon-192.png" className="brand-logo-img" alt="Logo" onError={(e) => { e.target.onerror = null; e.target.src = 'icon.png'; }} />
         <div className="brand-text-col">
           <div className="brand-title">Hakdog</div>
           <div className="brand-sub">Celestial Sanctuary</div>
