@@ -1,6 +1,6 @@
 {
-  "version": "1.0.4",
-  "commit": "35c9666",
-  "updatedAt": "2026-08-10T04:46:00+08:00",
-  "releaseNotes": "Fix Android icon asset bundling & automatic image fallbacks"
+  "version": "1.0.5",
+  "commit": "2078427",
+  "updatedAt": "2026-08-10T04:47:00+08:00",
+  "releaseNotes": "Bundled high-res logo assets & updated Android APK binaries"
 }
