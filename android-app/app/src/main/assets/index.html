@@ -4,13 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hakdog — Celestial Sanctuary</title>
   <!-- PWA & Mobile Application Meta Tags -->
   <link rel="manifest" href="manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Starlight">
-  <meta name="theme-color" content="#0b0c10">
+  <meta name="apple-mobile-web-app-title" content="Hakdog">
+  <meta name="theme-color" content="#1E1E2E">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
@@ -21,9 +22,11 @@
     href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;600&display=swap"
     rel="stylesheet">
 
-  <!-- External Libraries (Three.js & GSAP) -->
+  <!-- External Libraries (Three.js, GSAP & Firebase v10) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
     /* ==========================================================================
@@ -204,6 +207,55 @@
 
     #app-ui.visible {
       opacity: 1;
+    }
+
+    #app-ui header,
+    #app-ui .unified-connection-card,
+    #app-ui .quick-action-row,
+    #app-ui .quote-card-compact,
+    #app-ui .scroll-indicator-compact,
+    #app-ui .zone-c-container,
+    #app-ui .care-bubble-container {
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+    }
+
+    #app-ui.dissipated header,
+    #app-ui.dissipated .unified-connection-card,
+    #app-ui.dissipated .quick-action-row,
+    #app-ui.dissipated .quote-card-compact,
+    #app-ui.dissipated .scroll-indicator-compact,
+    #app-ui.dissipated .zone-c-container,
+    #app-ui.dissipated .care-bubble-container {
+      opacity: 0 !important;
+      transform: scale(0.94) translateY(14px) !important;
+      filter: blur(12px) !important;
+      pointer-events: none !important;
+    }
+
+    .dissipation-hint {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--amber-glow);
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      cursor: pointer;
+    }
+
+    #app-ui.dissipated ~ #dissipation-hint {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     header {
@@ -999,7 +1051,7 @@
     @media (max-width: 768px) {
       header { padding: 12px 16px; }
       .brand-title { font-size: 12px; letter-spacing: 2px; }
-      .brand-sub { display: none; }
+      .brand-sub { font-size: 8px; letter-spacing: 1px; }
       .hero-center { top: 45%; max-height: calc(100vh - 200px); padding-bottom: 16px; gap: 10px; }
       .hero-heading { font-size: 1.5rem; letter-spacing: 3px; }
       .zone-c-container { padding: 8px 12px 14px 12px; }
@@ -1031,31 +1083,36 @@
 
   <!-- Start Overlay -->
   <div id="start-overlay" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">
-    <div class="start-title">Starlight Sanctuary</div>
-    <div class="start-subtitle">A Starlight Transmission for Yangiee</div>
+    <div class="start-title">Hakdog Sanctuary</div>
+    <div class="start-subtitle">A Celestial Transmission for Yangiee</div>
     <button class="start-btn" id="init-btn" onclick="dismissStartOverlay(event)" ontouchend="dismissStartOverlay(event)">Wake The Universe</button>
+  </div>
+
+  <!-- Dissipation Restore Hint -->
+  <div class="dissipation-hint" id="dissipation-hint" title="Click anywhere on celestial sky to restore UI">
+    ✦ TAP STARRY SKY TO RESTORE UI ✦
   </div>
 
   <!-- Main UI Layer -->
   <div id="app-ui">
     <header id="main-header">
       <div class="brand">
-        <span class="brand-title">SANCTUARY</span>
-        <span class="brand-sub">FOR YANGIEE ✦ 3D STAGE</span>
+        <span class="brand-title">HAKDOG</span>
+        <span class="brand-sub">FOR YANGIEE ✦ CELESTIAL STAGE</span>
       </div>
       <div class="header-nav-icons">
         <button class="nav-icon-btn vault-lock-btn" id="vault-lock-btn" title="Secret Vault">
-          <span>🔐</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </button>
         <button class="nav-icon-btn mailbox-btn" id="mailbox-btn" title="Starlight Mailbox">
-          <span>💌</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </button>
         <button class="nav-icon-btn" id="care-nav-btn" title="Care Reminder">
-          <span>💖</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
         <button class="nav-icon-btn gyro-badge" id="gyro-btn" title="Toggle Gyro Parallax">
           <div class="gyro-dot"></div>
-          <span>⚙️</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
       </div>
     </header>
@@ -1068,16 +1125,18 @@
       <!-- Zone A: Unified Connection Hero Card -->
       <div class="unified-connection-card" id="unified-connection-card">
         <div class="connection-badge-top" id="days-met-badge">
-          <span class="days-icon">💖</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--pastel-pink)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           <span class="days-count" id="days-met-count">0</span>
-          <span class="days-label">Days Together</span>
+          <span class="days-label">days since the day we met</span>
         </div>
 
         <div class="connection-weather-row" id="sky-sync-row">
           <div class="connection-weather-col her-card">
             <div class="weather-loc-tag">💖 Yangiee</div>
             <div class="weather-info-main">
-              <span class="weather-emoji" id="sky-her-emoji">🌤️</span>
+              <span class="weather-emoji" id="sky-her-emoji">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber-glow)" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              </span>
               <span class="weather-temp" id="sky-her-temp">--°C</span>
             </div>
             <div class="weather-city" id="sky-her-city">Capas, Tarlac</div>
@@ -1088,7 +1147,9 @@
           <div class="connection-weather-col you-card">
             <div class="weather-loc-tag">⭐ Patrick</div>
             <div class="weather-info-main">
-              <span class="weather-emoji" id="sky-you-emoji">🌤️</span>
+              <span class="weather-emoji" id="sky-you-emoji">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber-glow)" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              </span>
               <span class="weather-temp" id="sky-you-temp">--°C</span>
             </div>
             <div class="weather-city" id="sky-you-city">Malaybalay, Bukidnon</div>
@@ -1096,22 +1157,22 @@
         </div>
 
         <div class="connection-card-footer" id="sky-sync-tagline">
-          939 km apart • Under the same sky 🌌
+          938 km apart • Under the same sky 🌌
         </div>
       </div>
 
       <!-- Zone B: Interactive & Daily Hub -->
       <div class="quick-action-row">
         <button class="quick-action-btn" id="btn-quick-note" title="Open Mailbox">
-          <span class="quick-action-icon">💌</span>
-          <span class="quick-action-label">Note</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span class="quick-action-label">Mailbox</span>
         </button>
         <button class="quick-action-btn" id="btn-quick-streak" title="Streak & Check-in">
-          <span class="quick-action-icon">🔥</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
           <span class="quick-action-label" id="quick-streak-label">1 Day</span>
         </button>
         <button class="quick-action-btn" id="btn-quick-bed" title="Bedtime Signal">
-          <span class="quick-action-icon">🌙</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <span class="quick-action-label">Bed</span>
         </button>
       </div>
@@ -1128,7 +1189,7 @@
           </button>
         </div>
         <div class="quote-text" id="quote-text">"Loading quote from the stars..."</div>
-        <div class="quote-author" id="quote-author">— Starlight Sanctuary</div>
+        <div class="quote-author" id="quote-author">— Hakdog Sanctuary</div>
       </div>
 
       <!-- Gesture / Scroll Indicator -->
@@ -1159,7 +1220,8 @@
           <canvas class="visualizer-canvas" id="visualizer-canvas"></canvas>
           <div class="track-selector-wrapper">
             <button class="track-selector-btn" id="track-selector-btn" title="Tracks">
-              <span>🎵 Tracks ▾</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span>Tracks ▾</span>
             </button>
             <div class="track-pills-dropdown" id="track-pills-dropdown">
               <button class="track-pill active" data-preset="rain">Soft Rain</button>
@@ -1176,6 +1238,12 @@
           <div class="sleep-switch-progress" id="sleep-progress"></div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <span id="sleep-switch-label">HOLD TO BLOW OUT THE STARS</span>
+        </button>
+      </div>
+    </div>
+  </div>
           </svg>
           <span id="sleep-switch-label">HOLD TO BLOW OUT THE STARS</span>
         </button>
@@ -1393,7 +1461,7 @@
 
       const brandSub = document.querySelector('.brand-sub');
       if (brandSub) {
-        brandSub.textContent = isDay ? 'FOR YANGIEE ✦ SOLAR STAGE' : (isEvening ? 'FOR YANGIEE ✦ EVENING STAGE' : 'FOR YANGIEE ✦ 3D STAGE');
+        brandSub.textContent = isDay ? 'FOR YANGIEE ✦ SOLAR STAGE' : (isEvening ? 'FOR YANGIEE ✦ EVENING STAGE' : 'FOR YANGIEE ✦ CELESTIAL STAGE');
       }
 
       const startTitle = document.querySelector('.start-title');
@@ -2369,21 +2437,39 @@
       return false;
     }
 
+    function toggleDissipationMode(forceState) {
+      if (!$appUI) return;
+      if (forceState !== undefined) {
+        if (forceState) $appUI.classList.add('dissipated');
+        else $appUI.classList.remove('dissipated');
+      } else {
+        $appUI.classList.toggle('dissipated');
+      }
+    }
+
     function initInteractionEvents() {
       let lastTouchTime = 0;
 
       window.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'touch') {
           lastTouchTime = Date.now();
-          checkStarNodeHit(e.clientX, e.clientY);
+          const hit = checkStarNodeHit(e.clientX, e.clientY);
+          if (!hit && !e.target.closest('#app-ui') && !e.target.closest('.card-modal-overlay') && !e.target.closest('#start-overlay')) {
+            toggleDissipationMode();
+          }
         }
       }, { passive: true });
 
       window.addEventListener('click', (e) => {
-        // Prevent duplicate trigger if pointerdown already handled a touch event
         if (Date.now() - lastTouchTime < 300) return;
-        checkStarNodeHit(e.clientX, e.clientY);
+        const hit = checkStarNodeHit(e.clientX, e.clientY);
+        if (!hit && !e.target.closest('#app-ui') && !e.target.closest('.card-modal-overlay') && !e.target.closest('#start-overlay') && !e.target.closest('#dissipation-hint')) {
+          toggleDissipationMode();
+        }
       });
+
+      const hintEl = document.getElementById('dissipation-hint');
+      if (hintEl) hintEl.addEventListener('click', () => toggleDissipationMode(false));
 
       if ($modalClose) $modalClose.addEventListener('click', closeMemoryModal);
     }
@@ -2869,6 +2955,18 @@
       return { condition: 'light_weather', label: 'Light Weather', emoji: '🌤️' };
     }
 
+    function triggerNativeNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try { new Notification(title, { body: body, icon: 'icon-192.png' }); } catch(e) {}
+      } else if ('Notification' in window && Notification.permission !== 'denied') {
+        try {
+          Notification.requestPermission().then(p => {
+            if (p === 'granted') new Notification(title, { body: body, icon: 'icon-192.png' });
+          });
+        } catch(e) {}
+      }
+    }
+
     async function getIPLocation() {
       try {
         const res = await fetch('https://ipwho.is/', { cache: 'no-cache' });
@@ -2882,12 +2980,36 @@
 
     async function fetchOpenMeteo(lat, lon) {
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&forecast_days=1`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&hourly=precipitation_probability,precipitation&forecast_days=1`;
         const res = await fetch(url, { cache: 'no-cache' });
         if (res.ok) {
           const d = await res.json();
           const cw = d.current_weather;
           const details = wmoToDetails(cw.weathercode, cw.temperature);
+
+          // Advance Rain Forecast Engine (Next 3 Hours with intensity)
+          if (d.hourly && d.hourly.precipitation) {
+            const currentHour = getPSTDate().getHours();
+            for (let i = 1; i <= 3; i++) {
+              const idx = (currentHour + i) % 24;
+              const prob = d.hourly.precipitation_probability ? d.hourly.precipitation_probability[idx] : 0;
+              const amount = d.hourly.precipitation[idx] || 0;
+
+              if (prob >= 40 || amount > 0.2) {
+                let intensityText = `Light Rain (~${amount.toFixed(1)} mm/hr)`;
+                if (amount > 7.6) intensityText = `Heavy Downpour (~${amount.toFixed(1)} mm/hr)`;
+                else if (amount > 2.5) intensityText = `Moderate Rain (~${amount.toFixed(1)} mm/hr)`;
+
+                const alertMsg = `🌧️ Rain expected in ${i} hour${i > 1 ? 's' : ''} (${intensityText})! Keep an umbrella handy, Yangiee! ☔`;
+                setTimeout(() => {
+                  showWeatherBanner('🌧️', alertMsg);
+                  triggerNativeNotification("Advance Weather Alert 🌧️", alertMsg);
+                }, 1200);
+                break;
+              }
+            }
+          }
+
           return {
             code: cw.weathercode,
             temp: Math.round(cw.temperature),
@@ -3090,6 +3212,98 @@
     }
 
     /* ======================================================================
+       FIREBASE REAL-TIME PROGRESS PERSISTENCE
+       ====================================================================== */
+    const HAKDOG_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyClcy7YWLnvH05hx4GBMoxab17QyUolnmI",
+      authDomain: "hakdog-91862.firebaseapp.com",
+      projectId: "hakdog-91862",
+      storageBucket: "hakdog-91862.firebasestorage.app",
+      messagingSenderId: "525522947265",
+      appId: "1:525522947265:web:7d3b73972816b82c7fd840"
+    };
+
+    let hakdogDb = null;
+
+    function initHakdogFirebase() {
+      if (typeof firebase !== 'undefined' && HAKDOG_FIREBASE_CONFIG && HAKDOG_FIREBASE_CONFIG.apiKey) {
+        try {
+          if (!firebase.apps.length) {
+            firebase.initializeApp(HAKDOG_FIREBASE_CONFIG);
+          }
+          hakdogDb = firebase.firestore();
+          console.log("Hakdog Firebase Connected Successfully!");
+          listenCareJarFirebase();
+          listenMailboxFirebase();
+        } catch(e) { console.warn("Firebase Init Warning:", e); }
+      }
+    }
+
+    function syncCareJarToFirebase(leaves, streak, lastDate) {
+      if (!hakdogDb) return;
+      try {
+        hakdogDb.collection("care_jar").doc("yangiee_state").set({
+          leaves: leaves,
+          streak: streak,
+          lastDate: lastDate,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      } catch(e) { console.warn("Firebase Care Jar Sync Error:", e); }
+    }
+
+    function listenCareJarFirebase() {
+      if (!hakdogDb) return;
+      try {
+        hakdogDb.collection("care_jar").doc("yangiee_state").onSnapshot(doc => {
+          if (doc.exists) {
+            const d = doc.data();
+            if (d.leaves !== undefined) setStorageItem('cj_leaves', d.leaves);
+            if (d.streak !== undefined) setStorageItem('cj_streak', d.streak);
+            if (d.lastDate !== undefined) setStorageItem('cj_last_date', d.lastDate);
+            renderCareJar(d.leaves || 0, d.streak || 0, d.lastDate || '');
+          }
+        });
+      } catch(e) { console.warn("Firebase Care Jar Listen Error:", e); }
+    }
+
+    function syncMailboxNoteToFirebase(sender, text) {
+      if (!hakdogDb) return;
+      try {
+        const pst = getPSTDate();
+        const timeStr = getLocalTimeStr(pst) + ', ' + pst.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        hakdogDb.collection("mailbox_notes").add({
+          sender: sender,
+          text: text,
+          timestamp: timeStr,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) { console.warn("Firebase Mailbox Sync Error:", e); }
+    }
+
+    function listenMailboxFirebase() {
+      if (!hakdogDb) return;
+      try {
+        hakdogDb.collection("mailbox_notes").orderBy("createdAt", "desc").limit(30).onSnapshot(snapshot => {
+          if (!snapshot || snapshot.empty) return;
+          const fbNotes = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            fbNotes.push({
+              id: doc.id,
+              sender: data.sender || 'Yangiee',
+              text: data.text || '',
+              timestamp: data.timestamp || ''
+            });
+          });
+          if (fbNotes.length > 0) {
+            saveMailboxNotes(fbNotes);
+            renderMailboxFeed();
+          }
+        });
+      } catch(e) { console.warn("Firebase Mailbox Listen Error:", e); }
+    }
+
+    /* ======================================================================
        T. INTERACTIVE CARE JAR / STREAK SYSTEM (MULTI-LAYER & CLOUD PERSISTENT)
        ====================================================================== */
     function getStorageItem(key) {
@@ -3181,6 +3395,8 @@
       setStorageItem('cj_leaves', newLeaves);
       setStorageItem('cj_streak', newStreak);
       setStorageItem('cj_last_date', today);
+
+      syncCareJarToFirebase(newLeaves, newStreak, today);
 
       renderCareJar(newLeaves, newStreak, today);
       if (newStreak >= 7) setTimeout(() => showJarUnlockModal(newStreak), 600);
@@ -3488,6 +3704,7 @@
       const notes = getSavedMailboxNotes();
       notes.unshift(newNote); // latest first
       saveMailboxNotes(notes);
+      syncMailboxNoteToFirebase(currentSender, text);
 
       input.value = '';
       const charsEl = document.getElementById('mailbox-chars');
@@ -3665,6 +3882,7 @@
       try { initVault(); } catch (e) { console.error('vault', e); }
       try { initGoodnightSignal(); } catch (e) { console.error('goodnightSignal', e); }
       try { initMailbox(); } catch (e) { console.error('mailbox', e); }
+      try { initHakdogFirebase(); } catch (e) { console.error('firebase', e); }
 
       // Quick Action Row & Navigation Header Icon Bindings
       try {
