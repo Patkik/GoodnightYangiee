@@ -1688,17 +1688,300 @@
     }
 
     /* ==========================================================================
-       20. WATER BUTTON IN CARE BUBBLE
+       21. STARLIGHT MAILBOX & LEAVE A MESSAGE SYSTEM
        ========================================================================== */
-    .water-btn {
-      background: linear-gradient(135deg, rgba(69, 162, 158, 0.35), rgba(244, 208, 63, 0.22));
-      border: 1px solid var(--aurora-emerald);
-      color: var(--warm-white);
+    .mailbox-btn {
+      border-color: rgba(255, 117, 181, 0.5);
     }
 
-    .water-btn:hover {
-      background: linear-gradient(135deg, rgba(69, 162, 158, 0.58), rgba(244, 208, 63, 0.42));
-      transform: scale(1.03);
+    .mailbox-btn:hover {
+      border-color: var(--cute-pink);
+      box-shadow: 0 0 10px rgba(255, 117, 181, 0.45);
+    }
+
+    .mailbox-quick-card {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(135deg, rgba(255, 117, 181, 0.15), rgba(123, 44, 191, 0.2));
+      border: 1px solid rgba(255, 117, 181, 0.4);
+      border-radius: 16px;
+      padding: 10px 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      box-shadow: 0 4px 18px rgba(255, 117, 181, 0.15);
+      pointer-events: auto;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      cursor: pointer;
+    }
+
+    .mailbox-quick-card:hover {
+      border-color: var(--cute-pink);
+      box-shadow: 0 6px 24px rgba(255, 117, 181, 0.3);
+    }
+
+    .mailbox-quick-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .mailbox-quick-label {
+      font-family: var(--font-heading);
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--cute-pink);
+      text-transform: uppercase;
+    }
+
+    .mailbox-quick-btn-tag {
+      font-family: var(--font-heading);
+      font-size: 8px;
+      letter-spacing: 1px;
+      color: var(--starlight-gold);
+      background: rgba(244, 208, 63, 0.15);
+      padding: 2px 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(244, 208, 63, 0.3);
+    }
+
+    .mailbox-quick-body {
+      font-family: var(--font-body);
+      font-size: 11px;
+      line-height: 1.5;
+      color: rgba(254, 252, 243, 0.9);
+      font-style: italic;
+    }
+
+    .mailbox-quick-meta {
+      font-family: var(--font-heading);
+      font-size: 8px;
+      color: rgba(254, 252, 243, 0.45);
+      margin-top: 3px;
+    }
+
+    .mailbox-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 230;
+      background: rgba(11, 12, 16, 0.93);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .mailbox-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mailbox-modal-card {
+      background: rgba(15, 23, 42, 0.97);
+      border: 1.5px solid rgba(255, 117, 181, 0.6);
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(255, 117, 181, 0.3);
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .mailbox-modal-card::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mailbox-modal-overlay.active .mailbox-modal-card {
+      transform: scale(1);
+    }
+
+    .mailbox-modal-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--cute-pink);
+      letter-spacing: 2px;
+    }
+
+    .mailbox-modal-sub {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: rgba(254, 252, 243, 0.5);
+    }
+
+    .mailbox-sender-pills {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .sender-pill {
+      padding: 6px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(254, 252, 243, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(254, 252, 243, 0.6);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sender-pill.active {
+      background: rgba(255, 117, 181, 0.22);
+      border-color: var(--cute-pink);
+      color: var(--warm-white);
+      box-shadow: 0 0 12px rgba(255, 117, 181, 0.35);
+    }
+
+    .mailbox-textarea {
+      width: 100%;
+      height: 90px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 117, 181, 0.35);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: var(--warm-white);
+      font-family: var(--font-body);
+      font-size: 12px;
+      line-height: 1.6;
+      outline: none;
+      resize: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .mailbox-textarea:focus {
+      border-color: var(--cute-pink);
+    }
+
+    .mailbox-form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mailbox-char-count {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      color: rgba(254, 252, 243, 0.4);
+    }
+
+    .mailbox-send-btn {
+      padding: 9px 20px;
+      background: linear-gradient(135deg, rgba(255, 117, 181, 0.6), rgba(123, 44, 191, 0.6));
+      border: 1px solid var(--cute-pink);
+      border-radius: 16px;
+      color: var(--warm-white);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mailbox-send-btn:hover {
+      background: linear-gradient(135deg, rgba(255, 117, 181, 0.85), rgba(123, 44, 191, 0.85));
+      box-shadow: 0 4px 16px rgba(255, 117, 181, 0.45);
+    }
+
+    .mailbox-notes-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      margin-top: 6px;
+    }
+
+    .mailbox-feed-title {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--aurora-emerald);
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .mailbox-note-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 12px 14px;
+      position: relative;
+    }
+
+    .mailbox-note-card.from-yangiee {
+      border-color: rgba(255, 117, 181, 0.35);
+      background: rgba(255, 117, 181, 0.06);
+    }
+
+    .mailbox-note-card.from-patrick {
+      border-color: rgba(244, 208, 63, 0.35);
+      background: rgba(244, 208, 63, 0.06);
+    }
+
+    .mailbox-note-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .mailbox-note-badge {
+      font-family: var(--font-heading);
+      font-size: 8.5px;
+      letter-spacing: 1px;
+      color: var(--cute-pink);
+    }
+
+    .from-patrick .mailbox-note-badge {
+      color: var(--starlight-gold);
+    }
+
+    .mailbox-note-time {
+      font-family: var(--font-heading);
+      font-size: 8px;
+      color: rgba(254, 252, 243, 0.4);
+    }
+
+    .mailbox-note-text {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: rgba(254, 252, 243, 0.9);
+      word-break: break-word;
+    }
+
+    .mailbox-note-del {
+      background: none;
+      border: none;
+      color: rgba(254, 252, 243, 0.3);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .mailbox-note-del:hover {
+      color: #ff4d4d;
     }
   </style>
 </head>
@@ -1753,6 +2036,9 @@
       <button class="vault-lock-btn" id="vault-lock-btn" title="Secret Vault">
         🔐 <span>VAULT</span>
       </button>
+      <button class="vault-lock-btn mailbox-btn" id="mailbox-btn" title="Starlight Mailbox">
+        💌 <span>MAILBOX</span>
+      </button>
     </header>
 
     <!-- Center Hero Screen -->
@@ -1764,6 +2050,16 @@
       <div class="motd-card" id="motd-card">
         <div class="motd-label">❖ Message of the Day ❖</div>
         <div class="motd-text" id="motd-text">Loading today’s message from the stars…</div>
+      </div>
+
+      <!-- Mailbox Quick Card -->
+      <div class="mailbox-quick-card" id="mailbox-quick-card" title="Open Mailbox 💌">
+        <div class="mailbox-quick-header">
+          <span class="mailbox-quick-label">💌 STARLIGHT MAILBOX</span>
+          <span class="mailbox-quick-btn-tag">WRITE NOTE ✦</span>
+        </div>
+        <div class="mailbox-quick-body" id="mailbox-quick-body">"Leave a sweet note in the stars for each other..."</div>
+        <div class="mailbox-quick-meta" id="mailbox-quick-meta">Tap to view saved notes or leave a new one</div>
       </div>
 
       <!-- Days Met Counter Badge -->
@@ -1984,6 +2280,36 @@
 
   <!-- Goodnight Signal Button (visible 10 PM – 5:59 AM) -->
   <button id="goodnight-signal-btn" class="goodnight-signal-btn">🌙 Going to Bed Now</button>
+
+  <!-- Starlight Mailbox Modal -->
+  <div id="mailbox-modal" class="mailbox-modal-overlay">
+    <div class="mailbox-modal-card">
+      <div class="mailbox-modal-title">💌 STARLIGHT MAILBOX</div>
+      <div class="mailbox-modal-sub">Leave a sweet note — it saves here & notifies Patrick! 📲</div>
+
+      <!-- Sender Toggle Pills -->
+      <div class="mailbox-sender-pills">
+        <button class="sender-pill active" id="sender-yangiee" data-sender="Yangiee">💖 From Yangiee</button>
+        <button class="sender-pill" id="sender-patrick" data-sender="Patrick">⭐ From Patrick</button>
+      </div>
+
+      <!-- Input Area -->
+      <textarea id="mailbox-input" class="mailbox-textarea" placeholder="Write your note here, Yangiee..." maxlength="300"></textarea>
+
+      <div class="mailbox-form-footer">
+        <span class="mailbox-char-count"><span id="mailbox-chars">0</span>/300</span>
+        <button class="mailbox-send-btn" id="mailbox-send-btn">✨ SEND NOTE</button>
+      </div>
+
+      <!-- Feed of Notes -->
+      <div class="mailbox-notes-feed">
+        <div class="mailbox-feed-title">❖ SAVED NOTES IN THE STARS ❖</div>
+        <div id="mailbox-notes-list"></div>
+      </div>
+
+      <button class="vault-close-btn" id="mailbox-close-btn">✕ Close Mailbox</button>
+    </div>
+  </div>
 
   <!-- ====================================================================
        SCRIPT ENGINE
@@ -3990,6 +4316,194 @@
     }
 
     /* ======================================================================
+       W. STARLIGHT MAILBOX & LEAVE A MESSAGE ENGINE
+       ====================================================================== */
+    let currentSender = 'Yangiee';
+
+    function getSavedMailboxNotes() {
+      try {
+        return JSON.parse(localStorage.getItem('starlight_mailbox_notes') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveMailboxNotes(notes) {
+      localStorage.setItem('starlight_mailbox_notes', JSON.stringify(notes));
+    }
+
+    function renderMailboxFeed() {
+      const notes = getSavedMailboxNotes();
+      const listEl = document.getElementById('mailbox-notes-list');
+      const quickBody = document.getElementById('mailbox-quick-body');
+      const quickMeta = document.getElementById('mailbox-quick-meta');
+      const quickCard = document.getElementById('mailbox-quick-card');
+
+      if (quickCard) {
+        quickCard.style.opacity = '1';
+        quickCard.style.transform = 'translateY(0)';
+      }
+
+      if (notes.length > 0) {
+        const latest = notes[0];
+        if (quickBody) quickBody.textContent = `"${latest.text}"`;
+        if (quickMeta) quickMeta.textContent = `— ${latest.sender === 'Yangiee' ? '💖 Yangiee' : '⭐ Patrick'} (${latest.timestamp})`;
+      } else {
+        if (quickBody) quickBody.textContent = `"Leave a sweet note in the stars for each other..."`;
+        if (quickMeta) quickMeta.textContent = `Tap to view saved notes or leave a new one`;
+      }
+
+      if (!listEl) return;
+
+      if (notes.length === 0) {
+        listEl.innerHTML = `<div style="font-family:var(--font-heading);font-size:10px;color:rgba(254,252,243,0.35);text-align:center;padding:12px 0;">No notes left yet! Be the first to leave one ✨</div>`;
+        return;
+      }
+
+      listEl.innerHTML = notes.map((note, idx) => `
+        <div class="mailbox-note-card ${note.sender === 'Yangiee' ? 'from-yangiee' : 'from-patrick'}">
+          <div class="mailbox-note-header">
+            <span class="mailbox-note-badge">${note.sender === 'Yangiee' ? '💖 Yangiee' : '⭐ Patrick'}</span>
+            <div>
+              <span class="mailbox-note-time">${note.timestamp}</span>
+              <button class="mailbox-note-del" onclick="deleteMailboxNote(${idx})" title="Delete Note">×</button>
+            </div>
+          </div>
+          <div class="mailbox-note-text">${escapeHtml(note.text)}</div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    window.deleteMailboxNote = function(idx) {
+      const notes = getSavedMailboxNotes();
+      notes.splice(idx, 1);
+      saveMailboxNotes(notes);
+      renderMailboxFeed();
+      showPopToast('Note removed from the stars 💫');
+    };
+
+    async function sendMailboxNote() {
+      const input = document.getElementById('mailbox-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) {
+        input.focus();
+        return;
+      }
+
+      const pst = getPSTDate();
+      const timeStr = getLocalTimeStr(pst) + ', ' + pst.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const newNote = {
+        id: Date.now(),
+        sender: currentSender,
+        text: text,
+        timestamp: timeStr
+      };
+
+      const notes = getSavedMailboxNotes();
+      notes.unshift(newNote); // latest first
+      saveMailboxNotes(notes);
+
+      input.value = '';
+      const charsEl = document.getElementById('mailbox-chars');
+      if (charsEl) charsEl.textContent = '0';
+
+      renderMailboxFeed();
+
+      // Push notification via ntfy.sh
+      const ntfyMsg = `💌 ${currentSender}: "${text}"`;
+      const titleParam = encodeURIComponent(`💌 New Note from ${currentSender}`);
+      const ntfyUrl = `https://ntfy.sh/${NTFY_CHANNEL}?title=${titleParam}&priority=high&tags=love_letter,heart`;
+
+      try {
+        try {
+          await fetch(ntfyUrl, { method: 'POST', body: ntfyMsg });
+        } catch (e1) {
+          await fetch(ntfyUrl, { method: 'POST', mode: 'no-cors', body: ntfyMsg });
+        }
+      } catch (e) { console.warn("ntfy note fail", e); }
+
+      // Particles & UI response
+      playStarfallChimes();
+      triggerHaptic([30, 60, 120]);
+
+      for (let i = 0; i < 20; i++) {
+        cuteSparkles.push({
+          x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+          y: window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+          vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8,
+          size: Math.random() * 12 + 6, alpha: 1.0,
+          color: currentSender === 'Yangiee' ? '#FF75B5' : '#F4D03F',
+          isHeart: true
+        });
+      }
+
+      showPopToast(`Note saved & sent to Patrick! 💌✨`, 4000);
+    }
+
+    function initMailbox() {
+      const modal = document.getElementById('mailbox-modal');
+      const mailboxBtn = document.getElementById('mailbox-btn');
+      const quickCard = document.getElementById('mailbox-quick-card');
+      const closeBtn = document.getElementById('mailbox-close-btn');
+      const sendBtn = document.getElementById('mailbox-send-btn');
+      const input = document.getElementById('mailbox-input');
+      const charsEl = document.getElementById('mailbox-chars');
+      const pillYangiee = document.getElementById('sender-yangiee');
+      const pillPatrick = document.getElementById('sender-patrick');
+
+      if (mailboxBtn) mailboxBtn.addEventListener('click', () => {
+        if (modal) modal.classList.add('active');
+        renderMailboxFeed();
+        setTimeout(() => { if (input) input.focus(); }, 300);
+      });
+
+      if (quickCard) quickCard.addEventListener('click', () => {
+        if (modal) modal.classList.add('active');
+        renderMailboxFeed();
+        setTimeout(() => { if (input) input.focus(); }, 300);
+      });
+
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (modal) modal.classList.remove('active');
+      });
+
+      if (sendBtn) sendBtn.addEventListener('click', sendMailboxNote);
+
+      if (input) {
+        input.addEventListener('input', () => {
+          if (charsEl) charsEl.textContent = input.value.length;
+        });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            sendMailboxNote();
+          }
+        });
+      }
+
+      if (pillYangiee && pillPatrick) {
+        pillYangiee.addEventListener('click', () => {
+          currentSender = 'Yangiee';
+          pillYangiee.classList.add('active');
+          pillPatrick.classList.remove('active');
+          if (input) input.placeholder = 'Write your note here, Yangiee...';
+        });
+        pillPatrick.addEventListener('click', () => {
+          currentSender = 'Patrick';
+          pillPatrick.classList.add('active');
+          pillYangiee.classList.remove('active');
+          if (input) input.placeholder = 'Write your note here for Yangiee...';
+        });
+      }
+
+      renderMailboxFeed();
+    }
+
+    /* ======================================================================
        O. ENTRANCE ANIMATION
        ====================================================================== */
     function playEntranceAnimation() {
@@ -4069,6 +4583,7 @@
       try { initCareJar(); } catch (e) { console.error('careJar', e); }
       try { initVault(); } catch (e) { console.error('vault', e); }
       try { initGoodnightSignal(); } catch (e) { console.error('goodnightSignal', e); }
+      try { initMailbox(); } catch (e) { console.error('mailbox', e); }
 
       // Audio track pill switching
       try {
