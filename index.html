@@ -294,7 +294,10 @@
       -ms-overflow-style: none;
       padding-bottom: 8px;
     }
-    .hero-center::-webkit-scrollbar { display: none; }
+
+    .hero-center::-webkit-scrollbar {
+      display: none;
+    }
 
     .hero-heading {
       font-family: var(--font-display);
@@ -1098,309 +1101,603 @@
        14. MOTD — MESSAGE OF THE DAY CARD
        ========================================================================== */
     .motd-card {
-      width: 100%; max-width: 420px;
-      background: linear-gradient(135deg, rgba(123,44,191,0.2), rgba(69,162,158,0.15));
-      border: 1px solid rgba(123,44,191,0.45);
-      border-radius: 16px; padding: 10px 16px;
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      text-align: center; opacity: 0; transform: translateY(10px);
-      box-shadow: 0 4px 18px rgba(123,44,191,0.18);
-      pointer-events: auto; transition: opacity 0.8s ease, transform 0.8s ease;
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.2), rgba(69, 162, 158, 0.15));
+      border: 1px solid rgba(123, 44, 191, 0.45);
+      border-radius: 16px;
+      padding: 10px 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      box-shadow: 0 4px 18px rgba(123, 44, 191, 0.18);
+      pointer-events: auto;
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
+
     .motd-label {
-      font-family: var(--font-heading); font-size: 8px;
-      letter-spacing: 2.5px; color: var(--aurora-emerald);
-      text-transform: uppercase; margin-bottom: 4px;
+      font-family: var(--font-heading);
+      font-size: 8px;
+      letter-spacing: 2.5px;
+      color: var(--aurora-emerald);
+      text-transform: uppercase;
+      margin-bottom: 4px;
     }
+
     .motd-text {
-      font-family: var(--font-body); font-size: 11px;
-      line-height: 1.55; color: rgba(254,252,243,0.9);
+      font-family: var(--font-body);
+      font-size: 11px;
+      line-height: 1.55;
+      color: rgba(254, 252, 243, 0.9);
     }
 
     /* ==========================================================================
        15. WEATHER CARE BANNER
        ========================================================================== */
     .weather-banner {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 55;
-      padding: 9px 16px; background: rgba(11,12,16,0.93);
-      border-bottom: 1px solid rgba(244,208,63,0.3);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      display: flex; align-items: center; gap: 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 55;
+      padding: 9px 16px;
+      background: rgba(11, 12, 16, 0.93);
+      border-bottom: 1px solid rgba(244, 208, 63, 0.3);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       transform: translateY(-100%);
-      transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: auto;
     }
-    .weather-banner.visible { transform: translateY(0); }
-    .weather-banner-icon { font-size: 20px; flex-shrink: 0; }
+
+    .weather-banner.visible {
+      transform: translateY(0);
+    }
+
+    .weather-banner-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
     .weather-banner-text {
-      font-family: var(--font-body); font-size: 11.5px;
-      line-height: 1.4; color: rgba(254,252,243,0.92); flex: 1;
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: rgba(254, 252, 243, 0.92);
+      flex: 1;
     }
+
     .weather-banner-dismiss {
-      background: none; border: 1px solid rgba(244,208,63,0.35);
-      border-radius: 10px; color: var(--starlight-gold);
-      font-size: 9px; font-family: var(--font-heading);
-      letter-spacing: 1px; padding: 4px 10px; cursor: pointer;
-      flex-shrink: 0; transition: background 0.2s;
+      background: none;
+      border: 1px solid rgba(244, 208, 63, 0.35);
+      border-radius: 10px;
+      color: var(--starlight-gold);
+      font-size: 9px;
+      font-family: var(--font-heading);
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
     }
-    .weather-banner-dismiss:hover { background: rgba(244,208,63,0.15); }
+
+    .weather-banner-dismiss:hover {
+      background: rgba(244, 208, 63, 0.15);
+    }
 
     /* ==========================================================================
        16. SKY SYNC — DUAL LOCATION CARDS
        ========================================================================== */
     .sky-sync-row {
-      display: flex; flex-direction: column; gap: 4px;
-      width: 100%; max-width: 420px;
-      opacity: 0; transform: translateY(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+      max-width: 420px;
+      opacity: 0;
+      transform: translateY(10px);
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
-    .sky-cards-pair { display: flex; gap: 8px; width: 100%; }
+
+    .sky-cards-pair {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
     .sky-card {
-      flex: 1; background: rgba(15,23,42,0.78);
-      border: 1px solid rgba(69,162,158,0.4);
-      border-radius: 13px; padding: 9px 8px;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      flex: 1;
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(69, 162, 158, 0.4);
+      border-radius: 13px;
+      padding: 9px 8px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       text-align: center;
     }
-    .sky-card.you-card { border-color: rgba(244,208,63,0.4); }
+
+    .sky-card.you-card {
+      border-color: rgba(244, 208, 63, 0.4);
+    }
+
     .sky-card-label {
-      font-family: var(--font-heading); font-size: 7.5px;
-      letter-spacing: 1.8px; text-transform: uppercase;
-      color: var(--aurora-emerald); margin-bottom: 2px;
+      font-family: var(--font-heading);
+      font-size: 7.5px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--aurora-emerald);
+      margin-bottom: 2px;
     }
-    .you-card .sky-card-label { color: var(--starlight-gold); }
-    .sky-card-weather { font-size: 20px; margin: 2px 0; }
+
+    .you-card .sky-card-label {
+      color: var(--starlight-gold);
+    }
+
+    .sky-card-weather {
+      font-size: 20px;
+      margin: 2px 0;
+    }
+
     .sky-card-temp {
-      font-family: var(--font-display); font-size: 13px;
-      font-weight: 700; color: var(--warm-white);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--warm-white);
     }
+
     .sky-card-city {
-      font-family: var(--font-heading); font-size: 8px;
-      color: rgba(254,252,243,0.55); margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-family: var(--font-heading);
+      font-size: 8px;
+      color: rgba(254, 252, 243, 0.55);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+
     .sky-card-time {
-      font-family: var(--font-heading); font-size: 8px;
-      color: rgba(254,252,243,0.4); margin-top: 1px;
+      font-family: var(--font-heading);
+      font-size: 8px;
+      color: rgba(254, 252, 243, 0.4);
+      margin-top: 1px;
     }
+
     .sky-sync-tagline {
-      font-family: var(--font-heading); font-size: 9px;
-      letter-spacing: 1.2px; color: rgba(254,252,243,0.5); text-align: center;
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      color: rgba(254, 252, 243, 0.5);
+      text-align: center;
     }
 
     /* ==========================================================================
        17. CARE JAR / STREAK WIDGET
        ========================================================================== */
     .care-jar-widget {
-      position: fixed; bottom: 220px; right: 18px; z-index: 36;
-      display: flex; flex-direction: column; align-items: center;
-      gap: 3px; pointer-events: auto; cursor: pointer;
-      opacity: 0; transition: opacity 0.6s ease;
+      position: fixed;
+      bottom: 220px;
+      right: 18px;
+      z-index: 36;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      pointer-events: auto;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
-    .care-jar-widget.visible { opacity: 1; }
+
+    .care-jar-widget.visible {
+      opacity: 1;
+    }
+
     .care-jar-widget:hover .care-jar-svg {
       transform: scale(1.07);
-      filter: drop-shadow(0 0 12px rgba(255,117,181,0.65));
+      filter: drop-shadow(0 0 12px rgba(255, 117, 181, 0.65));
     }
+
     .care-jar-svg {
       transition: transform 0.3s ease, filter 0.3s ease;
-      filter: drop-shadow(0 0 6px rgba(255,117,181,0.4));
+      filter: drop-shadow(0 0 6px rgba(255, 117, 181, 0.4));
     }
+
     .care-jar-streak {
-      font-family: var(--font-heading); font-size: 8.5px;
-      letter-spacing: 0.8px; color: var(--cute-pink); text-align: center;
+      font-family: var(--font-heading);
+      font-size: 8.5px;
+      letter-spacing: 0.8px;
+      color: var(--cute-pink);
+      text-align: center;
     }
+
     .care-jar-label {
-      font-family: var(--font-heading); font-size: 7px;
-      letter-spacing: 1px; color: rgba(254,252,243,0.4);
+      font-family: var(--font-heading);
+      font-size: 7px;
+      letter-spacing: 1px;
+      color: rgba(254, 252, 243, 0.4);
       text-transform: uppercase;
     }
+
     .jar-unlock-modal {
-      position: fixed; inset: 0; z-index: 160;
-      background: rgba(11,12,16,0.88);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px; opacity: 0; pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 160;
+      background: rgba(11, 12, 16, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.4s ease;
     }
-    .jar-unlock-modal.active { opacity: 1; pointer-events: auto; }
+
+    .jar-unlock-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .jar-unlock-card {
-      background: linear-gradient(135deg, rgba(255,117,181,0.12), rgba(123,44,191,0.18));
-      border: 1px solid var(--cute-pink); border-radius: 24px;
-      padding: 30px 26px; text-align: center; max-width: 380px; width: 100%;
+      background: linear-gradient(135deg, rgba(255, 117, 181, 0.12), rgba(123, 44, 191, 0.18));
+      border: 1px solid var(--cute-pink);
+      border-radius: 24px;
+      padding: 30px 26px;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
     }
-    .jar-unlock-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+
+    .jar-unlock-icon {
+      font-size: 38px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
     .jar-unlock-title {
-      font-family: var(--font-display); font-size: 17px;
-      color: var(--starlight-gold); margin-bottom: 10px; letter-spacing: 2px;
+      font-family: var(--font-display);
+      font-size: 17px;
+      color: var(--starlight-gold);
+      margin-bottom: 10px;
+      letter-spacing: 2px;
     }
+
     .jar-unlock-body {
-      font-family: var(--font-body); font-size: 13px; line-height: 1.7;
-      color: rgba(254,252,243,0.9); margin-bottom: 18px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(254, 252, 243, 0.9);
+      margin-bottom: 18px;
     }
+
     .jar-unlock-close {
-      padding: 9px 22px; background: rgba(255,117,181,0.2);
-      border: 1px solid var(--cute-pink); border-radius: 18px;
-      color: var(--warm-white); font-family: var(--font-heading);
-      font-size: 10px; letter-spacing: 2px; cursor: pointer;
+      padding: 9px 22px;
+      background: rgba(255, 117, 181, 0.2);
+      border: 1px solid var(--cute-pink);
+      border-radius: 18px;
+      color: var(--warm-white);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 2px;
+      cursor: pointer;
       transition: background 0.2s;
     }
-    .jar-unlock-close:hover { background: rgba(255,117,181,0.38); }
+
+    .jar-unlock-close:hover {
+      background: rgba(255, 117, 181, 0.38);
+    }
 
     /* ==========================================================================
        18. SECRET VAULT
        ========================================================================== */
     .vault-lock-btn {
-      display: flex; align-items: center; gap: 5px;
-      padding: 5px 10px; background: var(--glass-bg);
-      border: 1px solid rgba(123,44,191,0.5);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-radius: 18px; font-size: 10px; letter-spacing: 1.2px;
-      color: rgba(254,252,243,0.75); cursor: pointer;
-      transition: all 0.2s ease; margin-left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: var(--glass-bg);
+      border: 1px solid rgba(123, 44, 191, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 18px;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      color: rgba(254, 252, 243, 0.75);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-left: 8px;
     }
+
     .vault-lock-btn:hover {
       border-color: var(--aurora-violet);
-      box-shadow: 0 0 10px rgba(123,44,191,0.45); color: var(--warm-white);
+      box-shadow: 0 0 10px rgba(123, 44, 191, 0.45);
+      color: var(--warm-white);
     }
+
     .vault-modal-overlay {
-      position: fixed; inset: 0; z-index: 220;
-      background: rgba(11,12,16,0.93);
-      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px; opacity: 0; pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      background: rgba(11, 12, 16, 0.93);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.4s ease;
     }
-    .vault-modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .vault-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .vault-modal-card {
-      background: rgba(15,23,42,0.97);
-      border: 1.5px solid rgba(123,44,191,0.65); border-radius: 24px;
-      padding: 28px 24px; text-align: center; max-width: 380px; width: 100%;
-      box-shadow: 0 12px 40px rgba(123,44,191,0.35);
+      background: rgba(15, 23, 42, 0.97);
+      border: 1.5px solid rgba(123, 44, 191, 0.65);
+      border-radius: 24px;
+      padding: 28px 24px;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(123, 44, 191, 0.35);
       transform: scale(0.9);
-      transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-      max-height: 88vh; overflow-y: auto; scrollbar-width: none;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-height: 88vh;
+      overflow-y: auto;
+      scrollbar-width: none;
     }
-    .vault-modal-card::-webkit-scrollbar { display: none; }
-    .vault-modal-overlay.active .vault-modal-card { transform: scale(1); }
-    .vault-icon-anim { font-size: 34px; margin-bottom: 8px; display: block; }
+
+    .vault-modal-card::-webkit-scrollbar {
+      display: none;
+    }
+
+    .vault-modal-overlay.active .vault-modal-card {
+      transform: scale(1);
+    }
+
+    .vault-icon-anim {
+      font-size: 34px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
     .vault-title {
-      font-family: var(--font-display); font-size: 15px;
-      color: var(--aurora-violet); letter-spacing: 2px; margin-bottom: 4px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: var(--aurora-violet);
+      letter-spacing: 2px;
+      margin-bottom: 4px;
     }
+
     .vault-subtitle {
-      font-family: var(--font-heading); font-size: 9px; letter-spacing: 2px;
-      color: rgba(254,252,243,0.4); text-transform: uppercase; margin-bottom: 18px;
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(254, 252, 243, 0.4);
+      text-transform: uppercase;
+      margin-bottom: 18px;
     }
-    .vault-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
-    .vault-input {
-      flex: 1; background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(123,44,191,0.4); border-radius: 12px;
-      padding: 10px 14px; color: var(--warm-white);
-      font-family: var(--font-heading); font-size: 14px;
-      letter-spacing: 4px; text-align: center; outline: none;
-      transition: border-color 0.2s ease;
-    }
-    .vault-input:focus { border-color: var(--aurora-violet); }
-    .vault-input.shake { animation: vault-shake 0.4s ease; }
-    @keyframes vault-shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-8px); }
-      75% { transform: translateX(8px); }
-    }
-    .vault-submit-btn {
-      flex-shrink: 0; padding: 10px 14px;
-      background: linear-gradient(135deg, rgba(123,44,191,0.4), rgba(69,162,158,0.4));
-      border: 1px solid var(--aurora-violet); border-radius: 12px;
-      color: var(--warm-white); font-family: var(--font-heading);
-      font-size: 10px; letter-spacing: 1.5px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .vault-submit-btn:hover { background: linear-gradient(135deg, rgba(123,44,191,0.65), rgba(69,162,158,0.65)); }
-    .vault-hint {
-      font-family: var(--font-heading); font-size: 9px; letter-spacing: 1.2px;
-      color: rgba(254,252,243,0.3); margin-bottom: 14px;
-    }
-    .vault-close-btn {
-      padding: 8px 18px; background: transparent;
-      border: 1px solid rgba(254,252,243,0.2); border-radius: 14px;
-      color: rgba(254,252,243,0.45); font-family: var(--font-heading);
-      font-size: 10px; letter-spacing: 2px; cursor: pointer;
-      transition: all 0.2s; margin-top: 8px;
-    }
-    .vault-close-btn:hover { border-color: rgba(254,252,243,0.4); color: var(--warm-white); }
-    .vault-unlock-content { display: none; }
-    .vault-unlock-title {
-      font-family: var(--font-display); font-size: 15px;
-      color: var(--starlight-gold); letter-spacing: 2px;
+
+    .vault-input-row {
+      display: flex;
+      gap: 8px;
       margin-bottom: 12px;
     }
+
+    .vault-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(123, 44, 191, 0.4);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: var(--warm-white);
+      font-family: var(--font-heading);
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .vault-input:focus {
+      border-color: var(--aurora-violet);
+    }
+
+    .vault-input.shake {
+      animation: vault-shake 0.4s ease;
+    }
+
+    @keyframes vault-shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-8px);
+      }
+
+      75% {
+        transform: translateX(8px);
+      }
+    }
+
+    .vault-submit-btn {
+      flex-shrink: 0;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.4), rgba(69, 162, 158, 0.4));
+      border: 1px solid var(--aurora-violet);
+      border-radius: 12px;
+      color: var(--warm-white);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vault-submit-btn:hover {
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.65), rgba(69, 162, 158, 0.65));
+    }
+
+    .vault-hint {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      color: rgba(254, 252, 243, 0.3);
+      margin-bottom: 14px;
+    }
+
+    .vault-close-btn {
+      padding: 8px 18px;
+      background: transparent;
+      border: 1px solid rgba(254, 252, 243, 0.2);
+      border-radius: 14px;
+      color: rgba(254, 252, 243, 0.45);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+
+    .vault-close-btn:hover {
+      border-color: rgba(254, 252, 243, 0.4);
+      color: var(--warm-white);
+    }
+
+    .vault-unlock-content {
+      display: none;
+    }
+
+    .vault-unlock-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: var(--starlight-gold);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
     .vault-love-note {
-      font-family: var(--font-body); font-size: 12px; line-height: 1.75;
-      color: rgba(254,252,243,0.9); margin-bottom: 14px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      line-height: 1.75;
+      color: rgba(254, 252, 243, 0.9);
+      margin-bottom: 14px;
       padding: 13px 15px;
-      background: rgba(255,117,181,0.08);
-      border: 1px solid rgba(255,117,181,0.25); border-radius: 14px;
+      background: rgba(255, 117, 181, 0.08);
+      border: 1px solid rgba(255, 117, 181, 0.25);
+      border-radius: 14px;
       text-align: left;
     }
+
     .vault-spotify-link {
-      display: inline-flex; align-items: center; gap: 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       padding: 9px 16px;
       background: linear-gradient(135deg, #1DB954, #158a3e);
-      border: none; border-radius: 18px; color: #fff;
-      font-family: var(--font-heading); font-size: 10px;
-      font-weight: 600; letter-spacing: 1.2px; cursor: pointer;
-      text-decoration: none; margin-bottom: 10px;
+      border: none;
+      border-radius: 18px;
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 10px;
       transition: transform 0.2s, box-shadow 0.2s;
     }
+
     .vault-spotify-link:hover {
-      transform: scale(1.05); box-shadow: 0 6px 20px rgba(29,185,84,0.45);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(29, 185, 84, 0.45);
     }
 
     /* ==========================================================================
        19. GOODNIGHT SIGNAL BUTTON
        ========================================================================== */
     .goodnight-signal-btn {
-      position: fixed; bottom: 170px; left: 50%;
+      position: fixed;
+      bottom: 170px;
+      left: 50%;
       transform: translateX(-50%) translateY(30px);
-      z-index: 36; display: none; align-items: center; gap: 8px;
+      z-index: 36;
+      display: none;
+      align-items: center;
+      gap: 8px;
       padding: 11px 22px;
-      background: linear-gradient(135deg, rgba(123,44,191,0.58), rgba(11,12,16,0.88));
-      border: 1.5px solid rgba(123,44,191,0.75);
-      border-radius: 28px; color: var(--warm-white);
-      font-family: var(--font-heading); font-size: 11px;
-      font-weight: 600; letter-spacing: 1.8px; cursor: pointer;
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.58), rgba(11, 12, 16, 0.88));
+      border: 1.5px solid rgba(123, 44, 191, 0.75);
+      border-radius: 28px;
+      color: var(--warm-white);
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       animation: gn-pulse 3s ease-in-out infinite;
-      opacity: 0; pointer-events: none;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s;
     }
+
     .goodnight-signal-btn.visible {
-      opacity: 1; pointer-events: auto;
+      opacity: 1;
+      pointer-events: auto;
       transform: translateX(-50%) translateY(0);
     }
+
     .goodnight-signal-btn:hover {
-      background: linear-gradient(135deg, rgba(123,44,191,0.82), rgba(15,23,42,0.96));
-      box-shadow: 0 10px 36px rgba(123,44,191,0.65);
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.82), rgba(15, 23, 42, 0.96));
+      box-shadow: 0 10px 36px rgba(123, 44, 191, 0.65);
     }
+
     @keyframes gn-pulse {
-      0%, 100% { box-shadow: 0 6px 24px rgba(123,44,191,0.35); }
-      50% { box-shadow: 0 6px 38px rgba(123,44,191,0.7), 0 0 16px rgba(255,117,181,0.28); }
+
+      0%,
+      100% {
+        box-shadow: 0 6px 24px rgba(123, 44, 191, 0.35);
+      }
+
+      50% {
+        box-shadow: 0 6px 38px rgba(123, 44, 191, 0.7), 0 0 16px rgba(255, 117, 181, 0.28);
+      }
     }
+
     .goodnight-signal-btn.sent {
-      background: linear-gradient(135deg, rgba(69,162,158,0.65), rgba(15,23,42,0.9));
-      border-color: var(--aurora-emerald); pointer-events: none; animation: none;
+      background: linear-gradient(135deg, rgba(69, 162, 158, 0.65), rgba(15, 23, 42, 0.9));
+      border-color: var(--aurora-emerald);
+      pointer-events: none;
+      animation: none;
     }
 
     /* ==========================================================================
        20. WATER BUTTON IN CARE BUBBLE
        ========================================================================== */
     .water-btn {
-      background: linear-gradient(135deg, rgba(69,162,158,0.35), rgba(244,208,63,0.22));
-      border: 1px solid var(--aurora-emerald); color: var(--warm-white);
+      background: linear-gradient(135deg, rgba(69, 162, 158, 0.35), rgba(244, 208, 63, 0.22));
+      border: 1px solid var(--aurora-emerald);
+      color: var(--warm-white);
     }
+
     .water-btn:hover {
-      background: linear-gradient(135deg, rgba(69,162,158,0.58), rgba(244,208,63,0.42));
+      background: linear-gradient(135deg, rgba(69, 162, 158, 0.58), rgba(244, 208, 63, 0.42));
       transform: scale(1.03);
     }
   </style>
@@ -1473,7 +1770,7 @@
       <div class="days-met-badge" id="days-met-badge">
         <span class="days-icon">💖</span>
         <span class="days-count" id="days-met-count">0</span>
-        <span class="days-label">DAYS TOGETHER ❖ JAN 27, 2024</span>
+        <span class="days-label">Since the first day ❖ JAN 27, 2024</span>
       </div>
 
       <!-- Dual Location Sky Sync -->
@@ -1629,17 +1926,21 @@
   <!-- Care Jar Streak Widget -->
   <div id="care-jar-widget" class="care-jar-widget" title="Tap to check in! 🌿">
     <svg width="52" height="84" viewBox="0 0 60 95" class="care-jar-svg" xmlns="http://www.w3.org/2000/svg">
-      <rect x="14" y="2" width="32" height="9" rx="3" fill="rgba(255,117,181,0.7)" stroke="#FF75B5" stroke-width="1.2"/>
-      <path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" fill="rgba(11,12,16,0.6)" stroke="#FF75B5" stroke-width="1.5" stroke-opacity="0.7"/>
-      <clipPath id="jcp"><path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z"/></clipPath>
-      <rect id="jar-fill-rect" x="6" y="90" width="48" height="0" fill="rgba(255,117,181,0.28)" clip-path="url(#jcp)"/>
-      <circle id="jar-star-0" cx="20" cy="76" r="4" fill="#F4D03F" opacity="0.1"/>
-      <circle id="jar-star-1" cx="36" cy="73" r="4" fill="#FF75B5" opacity="0.1"/>
-      <circle id="jar-star-2" cx="22" cy="62" r="4" fill="#F4D03F" opacity="0.1"/>
-      <circle id="jar-star-3" cx="38" cy="63" r="4" fill="#FF75B5" opacity="0.1"/>
-      <circle id="jar-star-4" cx="18" cy="50" r="4" fill="#F4D03F" opacity="0.1"/>
-      <circle id="jar-star-5" cx="30" cy="48" r="4.5" fill="#FF75B5" opacity="0.1"/>
-      <circle id="jar-star-6" cx="42" cy="51" r="4" fill="#F4D03F" opacity="0.1"/>
+      <rect x="14" y="2" width="32" height="9" rx="3" fill="rgba(255,117,181,0.7)" stroke="#FF75B5"
+        stroke-width="1.2" />
+      <path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" fill="rgba(11,12,16,0.6)"
+        stroke="#FF75B5" stroke-width="1.5" stroke-opacity="0.7" />
+      <clipPath id="jcp">
+        <path d="M11 14 Q6 14 6 22 L6 80 Q6 90 18 90 L42 90 Q54 90 54 80 L54 22 Q54 14 49 14 Z" />
+      </clipPath>
+      <rect id="jar-fill-rect" x="6" y="90" width="48" height="0" fill="rgba(255,117,181,0.28)" clip-path="url(#jcp)" />
+      <circle id="jar-star-0" cx="20" cy="76" r="4" fill="#F4D03F" opacity="0.1" />
+      <circle id="jar-star-1" cx="36" cy="73" r="4" fill="#FF75B5" opacity="0.1" />
+      <circle id="jar-star-2" cx="22" cy="62" r="4" fill="#F4D03F" opacity="0.1" />
+      <circle id="jar-star-3" cx="38" cy="63" r="4" fill="#FF75B5" opacity="0.1" />
+      <circle id="jar-star-4" cx="18" cy="50" r="4" fill="#F4D03F" opacity="0.1" />
+      <circle id="jar-star-5" cx="30" cy="48" r="4.5" fill="#FF75B5" opacity="0.1" />
+      <circle id="jar-star-6" cx="42" cy="51" r="4" fill="#F4D03F" opacity="0.1" />
     </svg>
     <div class="care-jar-streak" id="care-jar-streak">Check in today! 🌿</div>
     <div class="care-jar-label">TAP TO CHECK IN</div>
@@ -1663,7 +1964,8 @@
       <div class="vault-subtitle">Enter your passcode to unlock</div>
       <div id="vault-form-section">
         <div class="vault-input-row">
-          <input type="text" id="vault-input" class="vault-input" placeholder="••••" maxlength="12" autocomplete="off" spellcheck="false"/>
+          <input type="text" id="vault-input" class="vault-input" placeholder="••••" maxlength="12" autocomplete="off"
+            spellcheck="false" />
           <button class="vault-submit-btn" id="vault-submit">OPEN</button>
         </div>
         <div class="vault-hint">Hint: A date that changed everything 💖</div>
@@ -3191,10 +3493,10 @@
     /* ======================================================================
        Q. WEATHER-AWARE SMART CARE ENGINE
        ====================================================================== */
-    let herLatLon = { lat: 15.47, lon: 120.60 }; // Default: Central Luzon PH
+    let herLatLon = { lat: 15.3304, lon: 120.5883 }; // Default fallback: Capas, Tarlac
 
-    const WMO_RAIN_CODES = new Set([51,53,55,61,63,65,80,81,82,95,96,99]);
-    const WMO_THUNDER_CODES = new Set([95,96,99]);
+    const WMO_RAIN_CODES = new Set([51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99]);
+    const WMO_THUNDER_CODES = new Set([95, 96, 99]);
 
     function wmoToCondition(code) {
       if (WMO_THUNDER_CODES.has(code)) return 'thunderstorm';
@@ -3221,7 +3523,7 @@
           if (d.success) return { lat: d.latitude, lon: d.longitude, city: d.city || d.region || 'Philippines', region: d.region || '', country: d.country_code || 'PH' };
         }
       } catch (e) { console.warn('IP geo failed:', e); }
-      return { lat: 15.47, lon: 120.60, city: 'Philippines', region: '', country: 'PH' };
+      return { lat: 15.3304, lon: 120.5883, city: 'Philippines', region: '', country: 'PH' };
     }
 
     async function fetchOpenMeteo(lat, lon) {
@@ -3257,13 +3559,14 @@
 
     async function initWeatherEngine() {
       initWeatherBannerDismiss();
-      const loc = await getIPLocation();
-      herLatLon = { lat: loc.lat, lon: loc.lon };
+      // Yangiee's location is hardcoded — IP lookup always returns Patrick's location (Malaybalay)
+      const YANGIEE_LOC = { lat: 15.3304, lon: 120.5883, city: 'Capas', region: 'Tarlac' };
+      herLatLon = { lat: YANGIEE_LOC.lat, lon: YANGIEE_LOC.lon };
 
       const herCityEl = document.getElementById('sky-her-city');
-      if (herCityEl) herCityEl.textContent = loc.region ? `${loc.city}, ${loc.region}` : loc.city;
+      if (herCityEl) herCityEl.textContent = `${YANGIEE_LOC.city}, ${YANGIEE_LOC.region}`;
 
-      const weather = await fetchOpenMeteo(loc.lat, loc.lon);
+      const weather = await fetchOpenMeteo(YANGIEE_LOC.lat, YANGIEE_LOC.lon);
       updateSkySyncHerCard(weather);
 
       const lastStatus = localStorage.getItem('ws_last_status') || 'clear';
@@ -3373,7 +3676,7 @@
        S. DUAL LOCATION SKY SYNC
        ====================================================================== */
     // 👇 Patrick's location — update coordinates here if needed
-    const PATRICK_LOC = { lat: 14.5995, lon: 120.9842, city: 'Manila', region: 'NCR' };
+    const PATRICK_LOC = { lat: 8.1575, lon: 125.1278, city: 'Malaybalay', region: 'Bukidnon' };
 
     function haversineKm(lat1, lon1, lat2, lon2) {
       const R = 6371, toRad = x => x * Math.PI / 180;
@@ -3410,7 +3713,7 @@
       if (patTime) patTime.textContent = getLocalTimeStr(getPSTDate());
 
       const tagline = document.getElementById('sky-sync-tagline');
-      if (tagline && herLatLon.lat !== 15.47) {
+      if (tagline) {
         const km = haversineKm(herLatLon.lat, herLatLon.lon, PATRICK_LOC.lat, PATRICK_LOC.lon);
         tagline.textContent = `${km} km apart \u2022 Under the same sky \uD83C\uDF0C`;
       }
@@ -3643,21 +3946,36 @@
       btn.innerHTML = '\uD83C\uDF19 Sending...';
       const pst = getPSTDate();
       const msg = `\uD83C\uDF19 Yangiee is going to sleep! (${getLocalTimeStr(pst)} PST) Sweet dreams, goodnight! \uD83D\uDC96`;
+      
+      const titleParam = encodeURIComponent('\uD83C\uDF19 Goodnight from Yangiee');
+      const ntfyUrl = `https://ntfy.sh/${NTFY_CHANNEL}?title=${titleParam}&priority=high&tags=sleeping,moon,heart`;
+
       try {
-        await fetch(`https://ntfy.sh/${NTFY_CHANNEL}`, {
-          method: 'POST', body: msg,
-          headers: { 'Title': '\uD83C\uDF19 Goodnight from Yangiee', 'Priority': 'high', 'Tags': 'sleeping,moon,heart' }
-        });
+        try {
+          await fetch(ntfyUrl, {
+            method: 'POST',
+            body: msg
+          });
+        } catch (e1) {
+          // Fallback with mode: 'no-cors' so browser will send cross-origin request without CORS restrictions
+          await fetch(ntfyUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: msg
+          });
+        }
+
         btn.innerHTML = '\u2713 Goodnight Sent! \uD83C\uDF19\u2728';
         btn.classList.add('sent');
         playStarfallChimes();
         triggerHaptic([50, 100, 150, 100, 50]);
-        showPopToast('Sweet dreams, Yangiee! \uD83C\uDF19 Rest deeply, I love you! \uD83D\uDC96', 4500);
+        showPopToast('Sweet dreams, Yangiee! \uD83C\uDF19 Rest deeply, Muahhh! \uD83D\uDC96', 4500);
         setTimeout(() => {
           btn.classList.remove('visible');
           setTimeout(() => { btn.style.display = 'none'; }, 450);
         }, 8000);
       } catch (err) {
+        console.error("Signal error:", err);
         btn.innerHTML = prev;
         btn.dataset.sent = 'false';
         showPopToast('Could not send signal — check your connection. \uD83D\uDC95', 3000);
