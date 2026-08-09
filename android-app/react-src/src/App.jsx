@@ -254,7 +254,7 @@ export default function App() {
               onToggle={handleAudioToggle}
               onPresetChange={handlePresetChange}
             />
-            <SleepSwitch isSleeping={isSleeping} onToggle={handleSleepToggle} />
+            <SleepSwitch isSleeping={isSleeping} onToggle={handleSleepToggle} timeOfDay={timeOfDay} />
           </div>
 
           {/* Care bubble FAB */}

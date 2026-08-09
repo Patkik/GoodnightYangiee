@@ -1493,9 +1493,10 @@
     function getTimeOfDayModePST() {
       const pst = getPSTDate();
       const hours = pst.getHours();
+      if (hours >= 3 && hours < 6) return 'mornight'; // 3:00 AM - 5:59 AM PST
       if (hours >= 6 && hours < 18) return 'day'; // 6:00 AM - 5:59 PM PST
       if (hours >= 18 && hours <= 23) return 'evening'; // 6:00 PM - 11:59 PM PST
-      return 'night'; // 12:00 AM - 5:59 AM PST
+      return 'night'; // 12:00 AM - 2:59 AM PST
     }
 
     function isDayModePST() {
@@ -1522,6 +1523,7 @@
 
     function applyTimeOfDayMode() {
       const mode = getTimeOfDayModePST();
+      const isMornight = mode === 'mornight';
       const isDay = mode === 'day';
       const isEvening = mode === 'evening';
 
@@ -1529,7 +1531,9 @@
 
       const heroHeading = document.getElementById('hero-heading');
       if (heroHeading) {
-        if (isDay) {
+        if (isMornight) {
+          heroHeading.innerHTML = 'GOOD <span>MORNIGHT</span>';
+        } else if (isDay) {
           heroHeading.innerHTML = 'GOOD <span>MORNING</span>';
         } else if (isEvening) {
           heroHeading.innerHTML = 'GOOD EVENING <span>YANGIEE</span>';
@@ -1540,27 +1544,27 @@
 
       const brandSub = document.querySelector('.brand-sub');
       if (brandSub) {
-        brandSub.textContent = isDay ? 'FOR YANGIEE ✦ SOLAR STAGE' : (isEvening ? 'FOR YANGIEE ✦ EVENING STAGE' : 'FOR YANGIEE ✦ CELESTIAL STAGE');
+        brandSub.textContent = isMornight ? 'FOR YANGIEE ✦ MORNIGHT STAGE' : (isDay ? 'FOR YANGIEE ✦ SOLAR STAGE' : (isEvening ? 'FOR YANGIEE ✦ EVENING STAGE' : 'FOR YANGIEE ✦ CELESTIAL STAGE'));
       }
 
       const startTitle = document.querySelector('.start-title');
       if (startTitle) {
-        startTitle.textContent = isDay ? 'Starlight Sanctuary ✦ Dawn Edition' : (isEvening ? 'Starlight Sanctuary ✦ Evening Edition' : 'Starlight Sanctuary');
+        startTitle.textContent = isMornight ? 'Starlight Sanctuary ✦ Mornight Edition' : (isDay ? 'Starlight Sanctuary ✦ Dawn Edition' : (isEvening ? 'Starlight Sanctuary ✦ Evening Edition' : 'Starlight Sanctuary'));
       }
 
       const startSub = document.querySelector('.start-subtitle');
       if (startSub) {
-        startSub.textContent = isDay ? 'A Golden Morning Greeting for Yangiee' : (isEvening ? 'A Warm Evening Greeting for Yangiee' : 'A Starlight Transmission for Yangiee');
+        startSub.textContent = isMornight ? 'A Cozy Mornight Transmission for Yangiee' : (isDay ? 'A Golden Morning Greeting for Yangiee' : (isEvening ? 'A Warm Evening Greeting for Yangiee' : 'A Starlight Transmission for Yangiee'));
       }
 
       const startBtn = document.getElementById('init-btn');
       if (startBtn) {
-        startBtn.textContent = isDay ? 'Rise & Shine, Universe' : (isEvening ? 'Enter Evening Sanctuary' : 'Wake The Universe');
+        startBtn.textContent = isMornight ? 'Enter Mornight Sanctuary' : (isDay ? 'Rise & Shine, Universe' : (isEvening ? 'Enter Evening Sanctuary' : 'Wake The Universe'));
       }
 
       const heroHint = document.getElementById('hero-hint');
       if (heroHint) {
-        heroHint.textContent = isDay ? 'TILT PHONE OR SWIPE TO EXPLORE THE DAWN' : (isEvening ? 'TILT PHONE OR SWIPE TO EXPLORE THE EVENING' : 'TILT PHONE OR SWIPE TO EXPLORE');
+        heroHint.textContent = isMornight ? 'TILT PHONE OR SWIPE TO EXPLORE THE MORNIGHT' : (isDay ? 'TILT PHONE OR SWIPE TO EXPLORE THE DAWN' : (isEvening ? 'TILT PHONE OR SWIPE TO EXPLORE THE EVENING' : 'TILT PHONE OR SWIPE TO EXPLORE'));
       }
 
       const scrollPromptText = document.querySelector('#scroll-prompt span');
@@ -1570,17 +1574,17 @@
 
       const sleepSwitchLabel = document.getElementById('sleep-switch-label');
       if (sleepSwitchLabel) {
-        sleepSwitchLabel.textContent = isDay ? 'HOLD TO REST THE SUN' : 'HOLD TO BLOW OUT THE STARS';
+        sleepSwitchLabel.textContent = isMornight ? 'HOLD TO SLEEP THIS MORNIGHT' : (isDay ? 'HOLD TO REST THE SUN' : 'HOLD TO BLOW OUT THE STARS');
       }
 
       const boMsg1 = document.getElementById('bo-msg1');
       if (boMsg1) {
-        boMsg1.textContent = isDay ? 'Have a wonderful day, Yangiee.' : (isEvening ? 'Good evening & rest well, Yangiee.' : 'Rest well, goodnight, Yangiee.');
+        boMsg1.textContent = isMornight ? 'Rest well, good mornight, Yangiee.' : (isDay ? 'Have a wonderful day, Yangiee.' : (isEvening ? 'Good evening & rest well, Yangiee.' : 'Rest well, goodnight, Yangiee.'));
       }
 
       const boMsg2 = document.getElementById('bo-msg2');
       if (boMsg2) {
-        boMsg2.textContent = isDay ? "May your day be filled with warmth & magic. ✦ Magandang umaga!" : (isEvening ? "May your evening be calm & glowing. ✦ Magandang gabi!" : "See you in tomorrow's light. ✦ Matulog ka na anong oras na, batang toh");
+        boMsg2.textContent = isMornight ? "It's mornight now, get some cozy rest. ✦ Matulog ka na batang toh" : (isDay ? "May your day be filled with warmth & magic. ✦ Magandang umaga!" : (isEvening ? "May your evening be calm & glowing. ✦ Magandang gabi!" : "See you in tomorrow's light. ✦ Matulog ka na anong oras na, batang toh"));
       }
     }
 
@@ -3647,9 +3651,12 @@
       const prev = btn.innerHTML;
       btn.innerHTML = '\uD83C\uDF19 Sending...';
       const pst = getPSTDate();
-      const msg = `\uD83C\uDF19 Yangiee is going to sleep! (${getLocalTimeStr(pst)} PST) Sweet dreams, goodnight! \uD83D\uDC96`;
+      const hours = pst.getHours();
+      const isMornight = hours >= 3 && hours < 6;
+      const greetingWord = isMornight ? 'good mornight' : 'goodnight';
+      const msg = `🌙 Yangiee is going to sleep! (${getLocalTimeStr(pst)} PST) Sweet dreams, ${greetingWord}! 💖`;
       
-      const titleParam = encodeURIComponent('\uD83C\uDF19 Goodnight from Yangiee');
+      const titleParam = encodeURIComponent(`🌙 ${isMornight ? 'Good Mornight' : 'Goodnight'} from Yangiee`);
       const ntfyUrl = `https://ntfy.sh/${NTFY_CHANNEL}?title=${titleParam}&priority=high&tags=sleeping,moon,heart`;
 
       try {

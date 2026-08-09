@@ -259,7 +259,7 @@ export function AudioPill({ isPlaying, preset, onToggle, onPresetChange }) {
 }
 
 // ─── SLEEP SWITCH ─────────────────────────────────────────────────────────────
-export function SleepSwitch({ isSleeping, onToggle }) {
+export function SleepSwitch({ isSleeping, onToggle, timeOfDay }) {
   return (
     <div className="sleep-switch-container dissipatable">
       <div className="sleep-switch" onClick={onToggle} id="sleep-switch">
@@ -270,7 +270,7 @@ export function SleepSwitch({ isSleeping, onToggle }) {
               : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" /></svg>
             }
           </span>
-          {isSleeping ? 'GOOD MORNING — TAP TO WAKE UP' : 'GOODNIGHT — HOLD TO SLEEP'}
+          {isSleeping ? 'GOOD MORNING — TAP TO WAKE UP' : (timeOfDay === 'mornight' ? 'GOOD MORNIGHT — HOLD TO SLEEP' : 'GOODNIGHT — HOLD TO SLEEP')}
         </div>
       </div>
     </div>

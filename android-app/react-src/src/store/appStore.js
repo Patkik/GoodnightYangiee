@@ -33,13 +33,20 @@ export function getPSTDate() {
 }
 
 function getTimeOfDay(hour) {
-  if (hour >= 5 && hour < 12) return 'morning';
+  if (hour >= 3 && hour < 6) return 'mornight';
+  if (hour >= 6 && hour < 12) return 'morning';
   if (hour >= 12 && hour < 18) return 'afternoon';
   if (hour >= 18 && hour < 22) return 'evening';
   return 'night';
 }
 function getGreeting(tod) {
-  const map = { morning: 'Good Morning', afternoon: 'Good Afternoon', evening: 'Good Evening', night: 'Good Night' };
+  const map = {
+    mornight: 'Good Mornight',
+    morning: 'Good Morning',
+    afternoon: 'Good Afternoon',
+    evening: 'Good Evening',
+    night: 'Good Night'
+  };
   return map[tod] || 'Good Night';
 }
 
