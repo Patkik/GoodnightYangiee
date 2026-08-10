@@ -177,6 +177,42 @@ export default function App() {
     }
   }, [isSleeping, setSleeping, kiroWakeUp, kiroStartSleep, showToast]);
 
+  const handleSyncUpdate = useCallback(async () => {
+    try {
+      showToast('Checking GitHub for updates…');
+      const rawUrl = `https://raw.githubusercontent.com/Patkik/GoodnightYangiee/main/version.json?t=${Date.now()}`;
+      const res = await fetch(rawUrl, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Sync check failed (${res.status})`);
+
+      const data = await res.json();
+      const remoteCommit = data.commit;
+      const storedCommit = localStorage.getItem('gn_sync_commit');
+
+      if (!storedCommit) {
+        localStorage.setItem('gn_sync_commit', remoteCommit || 'fresh');
+        showToast('Sync bookmark saved. You’re ready to update.', 2800);
+        return;
+      }
+
+      if (remoteCommit && storedCommit !== remoteCommit) {
+        localStorage.setItem('gn_sync_commit', remoteCommit);
+        showToast(`Sync update found — refreshing now ✨`, 3200);
+        if ('serviceWorker' in navigator) {
+          try {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(registrations.map(reg => reg.update()));
+          } catch {}
+        }
+        setTimeout(() => window.location.reload(), 900);
+      } else {
+        showToast('Your app is already synced with the latest update.', 2600);
+      }
+    } catch (e) {
+      console.warn('Manual sync update error:', e);
+      showToast('Sync check failed. Please try again in a moment.', 2800);
+    }
+  }, [showToast]);
+
   // ── Care bubble integrations (syncs with Kiro stats)
   const handleCareAction = useCallback((action) => {
     if (action === 'water') kiroAddWater();
@@ -221,6 +257,7 @@ export default function App() {
           <SanctuaryHeader
             onVault={() => setModal('vault')}
             onMailbox={() => setModal('mailbox')}
+            onSyncUpdate={handleSyncUpdate}
           />
 
           {/* Hero center scroll area */}

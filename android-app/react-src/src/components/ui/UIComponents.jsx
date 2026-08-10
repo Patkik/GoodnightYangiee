@@ -62,7 +62,7 @@ export function Filigrees({ visible }) {
 }
 
 // ─── HEADER ───────────────────────────────────────────────────────────────────
-export function SanctuaryHeader({ onVault, onMailbox }) {
+export function SanctuaryHeader({ onVault, onMailbox, onSyncUpdate }) {
   return (
     <header className="sanctuary-header dissipatable">
       <div className="brand">
@@ -73,6 +73,14 @@ export function SanctuaryHeader({ onVault, onMailbox }) {
         </div>
       </div>
       <div className="header-nav-icons">
+        <button className="nav-icon-btn sync-update-btn" onClick={onSyncUpdate} id="sync-update-btn" title="Sync Update">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21.5 2v6h-6" />
+            <path d="M2.5 22v-6h6" />
+            <path d="M2 11.5a10 10 0 0 1 18.8-4.3L21.5 8" />
+            <path d="M22 12.5a10 10 0 0 1-18.8 4.2L2.5 16" />
+          </svg>
+        </button>
         <button className="nav-icon-btn" onClick={onMailbox} id="mailbox-btn" title="Starlight Mailbox">
           <SVG d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" size={15} />
         </button>
