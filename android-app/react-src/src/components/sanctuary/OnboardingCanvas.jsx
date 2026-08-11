@@ -10,6 +10,21 @@ export default function OnboardingCanvas() {
   const startTimeRef = useRef(null);
   const lastPhaseRef = useRef(null);
 
+  // Preloaded character images
+  const patImgRef = useRef(null);
+  const yangImgRef = useRef(null);
+
+  useEffect(() => {
+    // Preload 3D character images
+    const patImg = new Image();
+    patImg.src = 'pat_3d.png';
+    patImgRef.current = patImg;
+
+    const yangImg = new Image();
+    yangImg.src = 'yang_3d.png';
+    yangImgRef.current = yangImg;
+  }, []);
+
   useEffect(() => {
     if (!onboardingPhase) {
       startTimeRef.current = null;
@@ -17,8 +32,7 @@ export default function OnboardingCanvas() {
       return;
     }
 
-    // Initialize start time only when beginning or replaying intro
-    if (startTimeRef.current === null || onboardingPhase === 1 && lastPhaseRef.current !== 1) {
+    if (startTimeRef.current === null || (onboardingPhase === 1 && lastPhaseRef.current !== 1)) {
       startTimeRef.current = Date.now();
     }
     lastPhaseRef.current = onboardingPhase;
@@ -36,7 +50,7 @@ export default function OnboardingCanvas() {
     window.addEventListener('resize', resize);
 
     // Stars particle pool
-    const numStars = 150;
+    const numStars = 160;
     const stars = Array.from({ length: numStars }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -47,26 +61,38 @@ export default function OnboardingCanvas() {
       vy: (Math.random() - 0.5) * 0.25,
     }));
 
-    // Atmospheric light trails
-    const numTrails = 45;
+    // Atmospheric descent reentry plasma trails
+    const numTrails = 60;
     const trails = Array.from({ length: numTrails }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height - canvas.height,
-      length: Math.random() * 140 + 80,
-      speed: Math.random() * 14 + 10,
-      alpha: Math.random() * 0.7 + 0.3,
-      color: Math.random() > 0.5 ? 'rgba(249, 226, 175, ' : 'rgba(148, 226, 213, ',
+      length: Math.random() * 160 + 100,
+      speed: Math.random() * 18 + 12,
+      alpha: Math.random() * 0.85 + 0.2,
+      width: Math.random() * 2.5 + 1.2,
+      color: Math.random() > 0.5 ? 'rgba(249, 226, 175, ' : (Math.random() > 0.5 ? 'rgba(148, 226, 213, ' : 'rgba(245, 194, 231, '),
+    }));
+
+    // Landing spark burst particles
+    const sparks = Array.from({ length: 40 }, () => ({
+      x: 0,
+      y: 0,
+      vx: (Math.random() - 0.5) * 14,
+      vy: (Math.random() - 0.5) * 10 - 4,
+      alpha: 1,
+      size: Math.random() * 3 + 1.5,
+      color: Math.random() > 0.5 ? '#F9E2AF' : '#94E2D5',
     }));
 
     const render = () => {
       const now = Date.now();
-      const elapsed = (now - (startTimeRef.current || now)) / 1000; // seconds elapsed since start
+      const elapsed = (now - (startTimeRef.current || now)) / 1000;
       const W = canvas.width;
       const H = canvas.height;
 
       ctx.clearRect(0, 0, W, H);
 
-      // Determine target phase smoothly based on timeline
+      // Phase timeline mapping
       let targetPhase = 1;
       if (elapsed >= 3.5 && elapsed < 7.0) {
         targetPhase = 2;
@@ -76,27 +102,24 @@ export default function OnboardingCanvas() {
         targetPhase = 5;
       }
 
-      // Sync state with store without causing re-start loop
       if (onboardingPhase !== targetPhase && onboardingPhase !== 5) {
         setOnboardingPhase(targetPhase);
       }
 
       const currentPhase = onboardingPhase || targetPhase;
 
-      // ─── 1. COSMIC BACKGROUND & DYNAMIC NEBULA ─────────────────────────────
+      // ─── 1. DYNAMIC COSMIC BACKGROUND & NEBULA ─────────────────────────────
       const bgGrad = ctx.createRadialGradient(W / 2, H * 0.4, 10, W / 2, H / 2, Math.max(W, H));
       if (currentPhase === 1) {
         bgGrad.addColorStop(0, '#1E192C');
         bgGrad.addColorStop(0.5, '#13111E');
         bgGrad.addColorStop(1, '#09080F');
       } else if (currentPhase === 2) {
-        // Transitioning to atmospheric reentry sky
         const progress = Math.min((elapsed - 3.5) / 3.5, 1);
-        bgGrad.addColorStop(0, `rgba(37, 27, 56, ${1 - progress * 0.2})`);
-        bgGrad.addColorStop(0.5, `rgba(23, 18, 38, ${1 - progress * 0.1})`);
-        bgGrad.addColorStop(1, '#0C0A14');
+        bgGrad.addColorStop(0, `rgba(45, 30, 65, ${1 - progress * 0.25})`);
+        bgGrad.addColorStop(0.5, `rgba(28, 20, 42, ${1 - progress * 0.15})`);
+        bgGrad.addColorStop(1, '#0D0B18');
       } else {
-        // Phase 3, 4, 5: Grounded Planet Horizon Background
         bgGrad.addColorStop(0, '#1E1E2E');
         bgGrad.addColorStop(0.6, '#1B192A');
         bgGrad.addColorStop(1, '#110F1D');
@@ -104,12 +127,12 @@ export default function OnboardingCanvas() {
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // Shifting nebulae
+      // Nebulae clouds
       const timeSec = elapsed * 0.6;
       const neb1X = W * 0.3 + Math.sin(timeSec) * 40;
       const neb1Y = H * 0.3 + Math.cos(timeSec * 0.8) * 30;
-      const nebGrad1 = ctx.createRadialGradient(neb1X, neb1Y, 20, neb1X, neb1Y, 320);
-      nebGrad1.addColorStop(0, 'rgba(249, 226, 175, 0.09)');
+      const nebGrad1 = ctx.createRadialGradient(neb1X, neb1Y, 20, neb1X, neb1Y, 340);
+      nebGrad1.addColorStop(0, 'rgba(249, 226, 175, 0.1)');
       nebGrad1.addColorStop(0.5, 'rgba(203, 166, 247, 0.05)');
       nebGrad1.addColorStop(1, 'transparent');
       ctx.fillStyle = nebGrad1;
@@ -117,8 +140,8 @@ export default function OnboardingCanvas() {
 
       const neb2X = W * 0.7 + Math.cos(timeSec * 0.7) * 40;
       const neb2Y = H * 0.5 + Math.sin(timeSec * 0.9) * 30;
-      const nebGrad2 = ctx.createRadialGradient(neb2X, neb2Y, 20, neb2X, neb2Y, 340);
-      nebGrad2.addColorStop(0, 'rgba(148, 226, 213, 0.1)');
+      const nebGrad2 = ctx.createRadialGradient(neb2X, neb2Y, 20, neb2X, neb2Y, 360);
+      nebGrad2.addColorStop(0, 'rgba(148, 226, 213, 0.11)');
       nebGrad2.addColorStop(0.5, 'rgba(245, 194, 231, 0.04)');
       nebGrad2.addColorStop(1, 'transparent');
       ctx.fillStyle = nebGrad2;
@@ -130,8 +153,7 @@ export default function OnboardingCanvas() {
         if (star.alpha > 1 || star.alpha < 0.1) star.speed = -star.speed;
         
         if (currentPhase === 2) {
-          // Accelerate downward during descent
-          star.y += (star.radius * 4.2);
+          star.y += (star.radius * 5.5);
           if (star.y > H) star.y = 0;
         } else {
           star.x += star.vx;
@@ -142,14 +164,15 @@ export default function OnboardingCanvas() {
           if (star.y > H) star.y = 0;
         }
 
-        ctx.fillStyle = `rgba(239, 241, 245, ${star.alpha * 0.85})`;
+        ctx.fillStyle = `rgba(239, 241, 245, ${star.alpha * 0.88})`;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // ─── 3. PHASE 2 LIGHT TRAILS ────────────────────────────────────────────
+      // ─── 3. PHASE 2 SPECTACULAR DESCENT REENTRY TRAILS & FRICTION AURA ──────
       if (currentPhase === 2) {
+        // High speed reentry light trails
         trails.forEach(t => {
           t.y += t.speed;
           if (t.y > H + t.length) {
@@ -158,79 +181,121 @@ export default function OnboardingCanvas() {
           }
           const grad = ctx.createLinearGradient(t.x, t.y - t.length, t.x, t.y);
           grad.addColorStop(0, 'transparent');
+          grad.addColorStop(0.7, `${t.color}${t.alpha * 0.6})`);
           grad.addColorStop(1, `${t.color}${t.alpha})`);
           ctx.strokeStyle = grad;
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = t.width;
           ctx.beginPath();
           ctx.moveTo(t.x, t.y - t.length);
           ctx.lineTo(t.x, t.y);
           ctx.stroke();
         });
+
+        // Atmospheric entry friction glow core
+        const frictionGlow = ctx.createRadialGradient(W / 2, H * 0.5, 20, W / 2, H * 0.5, 280);
+        frictionGlow.addColorStop(0, 'rgba(249, 226, 175, 0.18)');
+        frictionGlow.addColorStop(0.5, 'rgba(245, 194, 231, 0.12)');
+        frictionGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = frictionGlow;
+        ctx.fillRect(0, 0, W, H);
       }
 
-      // ─── 4. CHARACTER POSITIONS & PHYSICS ──────────────────────────────────
-      let patX = W * 0.36;
-      let patY = H * 0.60;
-      let yangX = W * 0.64;
-      let yangY = H * 0.60;
+      // ─── 4. CHARACTER POSITIONS & 3D AVATAR RENDERING ──────────────────────
+      let patX = W * 0.35;
+      let patY = H * 0.58;
+      let yangX = W * 0.65;
+      let yangY = H * 0.58;
 
       let patScale = 1;
       let yangScale = 1;
+      let jitterX = 0;
+      let jitterY = 0;
 
       if (currentPhase === 1) {
         // Phase 1: Cosmic Play — Floating orbital chase
         const t = elapsed * 1.5;
-        patX = W * 0.42 + Math.cos(t) * 95;
-        patY = H * 0.45 + Math.sin(t * 1.2) * 55;
+        patX = W * 0.40 + Math.cos(t) * 110;
+        patY = H * 0.44 + Math.sin(t * 1.2) * 60;
 
-        yangX = W * 0.58 + Math.cos(t + Math.PI) * 95;
-        yangY = H * 0.45 + Math.sin(t * 1.2 + Math.PI * 0.5) * 55;
+        yangX = W * 0.60 + Math.cos(t + Math.PI) * 110;
+        yangY = H * 0.44 + Math.sin(t * 1.2 + Math.PI * 0.5) * 60;
       } else if (currentPhase === 2) {
-        // Phase 2: Atmospheric Descent — Plunge downward smoothly
+        // Phase 2: Atmospheric Descent — Plunge downward with speed jitter
         const prog = Math.min((elapsed - 3.5) / 3.5, 1);
         const easeProg = Math.pow(prog, 2);
 
-        patX = W * 0.42 - (1 - easeProg) * 35;
-        patY = H * 0.32 + easeProg * (H * 0.28);
+        jitterX = (Math.random() - 0.5) * 4;
+        jitterY = (Math.random() - 0.5) * 4;
 
-        yangX = W * 0.58 + (1 - easeProg) * 35;
-        yangY = H * 0.32 + easeProg * (H * 0.28);
+        patX = W * 0.40 - (1 - easeProg) * 40 + jitterX;
+        patY = H * 0.30 + easeProg * (H * 0.28) + jitterY;
+
+        yangX = W * 0.60 + (1 - easeProg) * 40 + jitterX;
+        yangY = H * 0.30 + easeProg * (H * 0.28) + jitterY;
+
+        // Friction burn ring behind character descent
+        [ { x: patX, c: 'rgba(249, 226, 175, 0.4)' }, { x: yangX, c: 'rgba(148, 226, 213, 0.4)' } ].forEach(char => {
+          const burnGlow = ctx.createRadialGradient(char.x, patY - 20, 5, char.x, patY - 20, 60);
+          burnGlow.addColorStop(0, char.c);
+          burnGlow.addColorStop(1, 'transparent');
+          ctx.fillStyle = burnGlow;
+          ctx.beginPath();
+          ctx.arc(char.x, patY - 20, 60, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
       } else if (currentPhase === 3 || currentPhase === 4) {
-        // Phase 3 & 4: Landing & Horizon lock
+        // Phase 3 & 4: Touchdown & Sonic shockwave ripple
         const prog = Math.min((elapsed - 7.0) / 2.5, 1);
-        patX = W * 0.36;
-        patY = H * 0.60;
-        yangX = W * 0.64;
-        yangY = H * 0.60;
+        patX = W * 0.34;
+        patY = H * 0.58;
+        yangX = W * 0.66;
+        yangY = H * 0.58;
 
         // Shockwave ripple at landing
-        if (prog < 0.5) {
-          const ringR = prog * 320;
-          ctx.strokeStyle = `rgba(249, 226, 175, ${0.5 - prog})`;
-          ctx.lineWidth = 2.2;
+        if (prog < 0.6) {
+          const ringR = prog * 360;
+          ctx.strokeStyle = `rgba(249, 226, 175, ${0.6 - prog})`;
+          ctx.lineWidth = 2.5;
           ctx.beginPath();
           ctx.ellipse(W / 2, H * 0.72, ringR, ringR * 0.25, 0, 0, Math.PI * 2);
           ctx.stroke();
+
+          // Spark particles
+          if (prog < 0.3) {
+            sparks.forEach(s => {
+              if (s.x === 0) { s.x = W / 2; s.y = H * 0.72; }
+              s.x += s.vx;
+              s.y += s.vy;
+              s.alpha -= 0.03;
+              if (s.alpha > 0) {
+                ctx.fillStyle = s.color;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            });
+          }
         }
       } else {
-        // Phase 5: Selection Stage Idle with Breathing Physics & Hover Stances
+        // Phase 5: Selection Stage Idle with Hover Physics
         const idleWiggle = Math.sin(now / 700) * 4;
         const breathY = Math.sin(now / 1100) * 3;
 
-        patX = W * 0.34;
-        patY = H * 0.58 + breathY;
+        patX = W * 0.32;
+        patY = H * 0.56 + breathY;
 
-        yangX = W * 0.66;
-        yangY = H * 0.58 + breathY + idleWiggle * 0.5;
+        yangX = W * 0.68;
+        yangY = H * 0.56 + breathY + idleWiggle * 0.5;
 
         if (hoveredPersona === 'pat') {
-          patX += 18;
-          patScale = 1.1;
-          yangScale = 0.92;
+          patX += 20;
+          patScale = 1.12;
+          yangScale = 0.90;
         } else if (hoveredPersona === 'yang') {
-          yangX -= 18;
-          yangScale = 1.1;
-          patScale = 0.92;
+          yangX -= 20;
+          yangScale = 1.12;
+          patScale = 0.90;
         }
       }
 
@@ -239,12 +304,12 @@ export default function OnboardingCanvas() {
         const horizonY = H * 0.72;
         const horizGrad = ctx.createLinearGradient(0, horizonY - 40, 0, H);
         horizGrad.addColorStop(0, 'rgba(27, 25, 42, 0)');
-        horizGrad.addColorStop(0.2, 'rgba(30, 30, 46, 0.85)');
+        horizGrad.addColorStop(0.2, 'rgba(30, 30, 46, 0.88)');
         horizGrad.addColorStop(1, 'rgba(15, 14, 25, 0.98)');
         ctx.fillStyle = horizGrad;
         ctx.fillRect(0, horizonY - 40, W, H - horizonY + 40);
 
-        // Stylized horizon glow line
+        // Horizon glow line
         const lineGrad = ctx.createLinearGradient(0, 0, W, 0);
         lineGrad.addColorStop(0, 'transparent');
         lineGrad.addColorStop(0.35, 'rgba(249, 226, 175, 0.45)');
@@ -259,43 +324,73 @@ export default function OnboardingCanvas() {
         ctx.stroke();
       }
 
-      // ─── 6. CHARACTER GLOW AURAS & SILHOUETTE AVATARS ──────────────────────
-      // Pat Aura (Warm Amber)
-      const patGlow = ctx.createRadialGradient(patX, patY, 5, patX, patY, 85 * patScale);
-      patGlow.addColorStop(0, hoveredPersona === 'pat' ? 'rgba(249, 226, 175, 0.5)' : 'rgba(249, 226, 175, 0.28)');
+      // ─── 6. DRAW 3D CHARACTER AVATAR MODELS & AURAS ────────────────────────
+      const avatarSize = Math.min(W * 0.28, 140);
+
+      // PAT 3D Character Avatar
+      const patGlow = ctx.createRadialGradient(patX, patY, 5, patX, patY, (avatarSize * 0.7) * patScale);
+      patGlow.addColorStop(0, hoveredPersona === 'pat' ? 'rgba(249, 226, 175, 0.55)' : 'rgba(249, 226, 175, 0.3)');
       patGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = patGlow;
       ctx.beginPath();
-      ctx.arc(patX, patY, 85 * patScale, 0, Math.PI * 2);
+      ctx.arc(patX, patY, (avatarSize * 0.7) * patScale, 0, Math.PI * 2);
       ctx.fill();
 
-      // Yang Aura (Bioluminescent Teal & Aurora Violet)
-      const yangGlow = ctx.createRadialGradient(yangX, yangY, 5, yangX, yangY, 85 * yangScale);
-      yangGlow.addColorStop(0, hoveredPersona === 'yang' ? 'rgba(148, 226, 213, 0.55)' : 'rgba(148, 226, 213, 0.3)');
-      yangGlow.addColorStop(0.6, 'rgba(203, 166, 247, 0.18)');
+      if (patImgRef.current && patImgRef.current.complete && patImgRef.current.naturalWidth > 0) {
+        ctx.save();
+        ctx.translate(patX, patY);
+        ctx.scale(patScale, patScale);
+        ctx.beginPath();
+        ctx.arc(0, 0, avatarSize / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(patImgRef.current, -avatarSize / 2, -avatarSize / 2, avatarSize, avatarSize);
+        ctx.restore();
+
+        // Avatar ring border
+        ctx.strokeStyle = 'rgba(249, 226, 175, 0.6)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(patX, patY, (avatarSize / 2) * patScale, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // YANG 3D Character Avatar
+      const yangGlow = ctx.createRadialGradient(yangX, yangY, 5, yangX, yangY, (avatarSize * 0.7) * yangScale);
+      yangGlow.addColorStop(0, hoveredPersona === 'yang' ? 'rgba(148, 226, 213, 0.6)' : 'rgba(148, 226, 213, 0.32)');
+      yangGlow.addColorStop(0.6, 'rgba(203, 166, 247, 0.2)');
       yangGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = yangGlow;
       ctx.beginPath();
-      ctx.arc(yangX, yangY, 85 * yangScale, 0, Math.PI * 2);
+      ctx.arc(yangX, yangY, (avatarSize * 0.7) * yangScale, 0, Math.PI * 2);
       ctx.fill();
 
-      // Yang Glowing Arm Tattoos Effect (Pulsing Teal Light)
-      const tattooPulse = (Math.sin(now / 400) + 1) / 2; // 0..1
+      if (yangImgRef.current && yangImgRef.current.complete && yangImgRef.current.naturalWidth > 0) {
+        ctx.save();
+        ctx.translate(yangX, yangY);
+        ctx.scale(yangScale, yangScale);
+        ctx.beginPath();
+        ctx.arc(0, 0, avatarSize / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(yangImgRef.current, -avatarSize / 2, -avatarSize / 2, avatarSize, avatarSize);
+        ctx.restore();
+
+        // Avatar ring border
+        ctx.strokeStyle = 'rgba(148, 226, 213, 0.6)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(yangX, yangY, (avatarSize / 2) * yangScale, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Yang Glowing Arm Tattoos Pulse Effect
+      const tattooPulse = (Math.sin(now / 400) + 1) / 2;
       if (currentPhase === 5 || hoveredPersona === 'yang') {
-        const armGlowL = ctx.createRadialGradient(yangX - 14, yangY + 12, 2, yangX - 14, yangY + 12, 28);
-        armGlowL.addColorStop(0, `rgba(148, 226, 213, ${0.45 + tattooPulse * 0.45})`);
+        const armGlowL = ctx.createRadialGradient(yangX - avatarSize * 0.3, yangY + avatarSize * 0.2, 2, yangX - avatarSize * 0.3, yangY + avatarSize * 0.2, 30);
+        armGlowL.addColorStop(0, `rgba(148, 226, 213, ${0.5 + tattooPulse * 0.45})`);
         armGlowL.addColorStop(1, 'transparent');
         ctx.fillStyle = armGlowL;
         ctx.beginPath();
-        ctx.arc(yangX - 14, yangY + 12, 28, 0, Math.PI * 2);
-        ctx.fill();
-
-        const armGlowR = ctx.createRadialGradient(yangX + 14, yangY + 12, 2, yangX + 14, yangY + 12, 28);
-        armGlowR.addColorStop(0, `rgba(148, 226, 213, ${0.45 + tattooPulse * 0.45})`);
-        armGlowR.addColorStop(1, 'transparent');
-        ctx.fillStyle = armGlowR;
-        ctx.beginPath();
-        ctx.arc(yangX + 14, yangY + 12, 28, 0, Math.PI * 2);
+        ctx.arc(yangX - avatarSize * 0.3, yangY + avatarSize * 0.2, 30, 0, Math.PI * 2);
         ctx.fill();
       }
 

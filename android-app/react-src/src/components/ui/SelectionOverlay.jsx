@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../../store/appStore.js';
+import CharacterAvatar3D from './CharacterAvatar3D.jsx';
 
 export default function SelectionOverlay() {
   const onboardingPhase = useAppStore(s => s.onboardingPhase);
@@ -45,7 +46,7 @@ export default function SelectionOverlay() {
         >
           <div className="card-badge pat-badge">THE ANCHOR</div>
           <div className="char-avatar-ring pat-ring">
-            <span className="char-emoji">🌍</span>
+            <CharacterAvatar3D persona="pat" isFocused={hoveredPersona === 'pat'} />
           </div>
           <h2 className="char-name pat-name">Pat</h2>
           <div className="char-role">Structure · Steadiness · Clarity</div>
@@ -72,7 +73,7 @@ export default function SelectionOverlay() {
         >
           <div className="card-badge yang-badge">THE CATALYST</div>
           <div className="char-avatar-ring yang-ring">
-            <span className="char-emoji">✨</span>
+            <CharacterAvatar3D persona="yang" isFocused={hoveredPersona === 'yang'} />
           </div>
           <h2 className="char-name yang-name">Yang</h2>
           <div className="char-role">Flow · Creative Spark · Agility</div>
