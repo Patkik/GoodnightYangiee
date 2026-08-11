@@ -7,14 +7,26 @@ export default function OnboardingCanvas() {
   const setOnboardingPhase = useAppStore(s => s.setOnboardingPhase);
   const hoveredPersona = useAppStore(s => s.hoveredPersona);
 
+  const startTimeRef = useRef(null);
+  const lastPhaseRef = useRef(null);
+
   useEffect(() => {
-    if (!onboardingPhase) return;
+    if (!onboardingPhase) {
+      startTimeRef.current = null;
+      lastPhaseRef.current = null;
+      return;
+    }
+
+    // Initialize start time only when beginning or replaying intro
+    if (startTimeRef.current === null || onboardingPhase === 1 && lastPhaseRef.current !== 1) {
+      startTimeRef.current = Date.now();
+    }
+    lastPhaseRef.current = onboardingPhase;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animationFrameId;
-    let startTime = Date.now();
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -24,60 +36,64 @@ export default function OnboardingCanvas() {
     window.addEventListener('resize', resize);
 
     // Stars particle pool
-    const numStars = 140;
+    const numStars = 150;
     const stars = Array.from({ length: numStars }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 1.8 + 0.5,
+      radius: Math.random() * 2 + 0.5,
       alpha: Math.random(),
-      speed: Math.random() * 0.02 + 0.005,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.2,
+      speed: Math.random() * 0.02 + 0.006,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
     }));
 
     // Atmospheric light trails
-    const numTrails = 40;
+    const numTrails = 45;
     const trails = Array.from({ length: numTrails }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height - canvas.height,
-      length: Math.random() * 120 + 80,
-      speed: Math.random() * 12 + 10,
+      length: Math.random() * 140 + 80,
+      speed: Math.random() * 14 + 10,
       alpha: Math.random() * 0.7 + 0.3,
       color: Math.random() > 0.5 ? 'rgba(249, 226, 175, ' : 'rgba(148, 226, 213, ',
     }));
 
     const render = () => {
       const now = Date.now();
-      const elapsed = (now - startTime) / 1000; // seconds
+      const elapsed = (now - (startTimeRef.current || now)) / 1000; // seconds elapsed since start
       const W = canvas.width;
       const H = canvas.height;
 
       ctx.clearRect(0, 0, W, H);
 
-      // Automatic phase progression based on timeline
-      if (elapsed < 4.5 && onboardingPhase !== 1) {
-        setOnboardingPhase(1);
-      } else if (elapsed >= 4.5 && elapsed < 8.5 && onboardingPhase === 1) {
-        setOnboardingPhase(2);
-      } else if (elapsed >= 8.5 && elapsed < 11.5 && onboardingPhase === 2) {
-        setOnboardingPhase(3);
-      } else if (elapsed >= 11.5 && onboardingPhase === 3) {
-        setOnboardingPhase(5);
+      // Determine target phase smoothly based on timeline
+      let targetPhase = 1;
+      if (elapsed >= 3.5 && elapsed < 7.0) {
+        targetPhase = 2;
+      } else if (elapsed >= 7.0 && elapsed < 9.5) {
+        targetPhase = 3;
+      } else if (elapsed >= 9.5) {
+        targetPhase = 5;
       }
 
-      const currentPhase = onboardingPhase || (elapsed < 4.5 ? 1 : elapsed < 8.5 ? 2 : elapsed < 11.5 ? 3 : 5);
+      // Sync state with store without causing re-start loop
+      if (onboardingPhase !== targetPhase && onboardingPhase !== 5) {
+        setOnboardingPhase(targetPhase);
+      }
 
-      // ─── 1. COSMIC BACKGROUND & NEBULA ──────────────────────────────────────
+      const currentPhase = onboardingPhase || targetPhase;
+
+      // ─── 1. COSMIC BACKGROUND & DYNAMIC NEBULA ─────────────────────────────
       const bgGrad = ctx.createRadialGradient(W / 2, H * 0.4, 10, W / 2, H / 2, Math.max(W, H));
       if (currentPhase === 1) {
         bgGrad.addColorStop(0, '#1E192C');
         bgGrad.addColorStop(0.5, '#13111E');
         bgGrad.addColorStop(1, '#09080F');
       } else if (currentPhase === 2) {
-        // Deep space transitioning to atmospheric entry
-        const progress = Math.min((elapsed - 4.5) / 4, 1);
-        bgGrad.addColorStop(0, `rgba(37, 27, 56, ${1 - progress * 0.3})`);
-        bgGrad.addColorStop(0.5, `rgba(23, 18, 38, ${1 - progress * 0.2})`);
+        // Transitioning to atmospheric reentry sky
+        const progress = Math.min((elapsed - 3.5) / 3.5, 1);
+        bgGrad.addColorStop(0, `rgba(37, 27, 56, ${1 - progress * 0.2})`);
+        bgGrad.addColorStop(0.5, `rgba(23, 18, 38, ${1 - progress * 0.1})`);
         bgGrad.addColorStop(1, '#0C0A14');
       } else {
         // Phase 3, 4, 5: Grounded Planet Horizon Background
@@ -89,11 +105,11 @@ export default function OnboardingCanvas() {
       ctx.fillRect(0, 0, W, H);
 
       // Shifting nebulae
-      const timeSec = elapsed * 0.5;
+      const timeSec = elapsed * 0.6;
       const neb1X = W * 0.3 + Math.sin(timeSec) * 40;
       const neb1Y = H * 0.3 + Math.cos(timeSec * 0.8) * 30;
-      const nebGrad1 = ctx.createRadialGradient(neb1X, neb1Y, 20, neb1X, neb1Y, 300);
-      nebGrad1.addColorStop(0, 'rgba(249, 226, 175, 0.08)');
+      const nebGrad1 = ctx.createRadialGradient(neb1X, neb1Y, 20, neb1X, neb1Y, 320);
+      nebGrad1.addColorStop(0, 'rgba(249, 226, 175, 0.09)');
       nebGrad1.addColorStop(0.5, 'rgba(203, 166, 247, 0.05)');
       nebGrad1.addColorStop(1, 'transparent');
       ctx.fillStyle = nebGrad1;
@@ -101,8 +117,8 @@ export default function OnboardingCanvas() {
 
       const neb2X = W * 0.7 + Math.cos(timeSec * 0.7) * 40;
       const neb2Y = H * 0.5 + Math.sin(timeSec * 0.9) * 30;
-      const nebGrad2 = ctx.createRadialGradient(neb2X, neb2Y, 20, neb2X, neb2Y, 320);
-      nebGrad2.addColorStop(0, 'rgba(148, 226, 213, 0.09)');
+      const nebGrad2 = ctx.createRadialGradient(neb2X, neb2Y, 20, neb2X, neb2Y, 340);
+      nebGrad2.addColorStop(0, 'rgba(148, 226, 213, 0.1)');
       nebGrad2.addColorStop(0.5, 'rgba(245, 194, 231, 0.04)');
       nebGrad2.addColorStop(1, 'transparent');
       ctx.fillStyle = nebGrad2;
@@ -115,7 +131,7 @@ export default function OnboardingCanvas() {
         
         if (currentPhase === 2) {
           // Accelerate downward during descent
-          star.y += (star.radius * 3.5);
+          star.y += (star.radius * 4.2);
           if (star.y > H) star.y = 0;
         } else {
           star.x += star.vx;
@@ -153,68 +169,68 @@ export default function OnboardingCanvas() {
       }
 
       // ─── 4. CHARACTER POSITIONS & PHYSICS ──────────────────────────────────
-      let patX = W * 0.38;
-      let patY = H * 0.62;
-      let yangX = W * 0.62;
-      let yangY = H * 0.62;
+      let patX = W * 0.36;
+      let patY = H * 0.60;
+      let yangX = W * 0.64;
+      let yangY = H * 0.60;
 
       let patScale = 1;
       let yangScale = 1;
 
       if (currentPhase === 1) {
         // Phase 1: Cosmic Play — Floating orbital chase
-        const t = elapsed * 1.4;
-        patX = W * 0.42 + Math.cos(t) * 90;
-        patY = H * 0.45 + Math.sin(t * 1.2) * 50;
+        const t = elapsed * 1.5;
+        patX = W * 0.42 + Math.cos(t) * 95;
+        patY = H * 0.45 + Math.sin(t * 1.2) * 55;
 
-        yangX = W * 0.58 + Math.cos(t + Math.PI) * 90;
-        yangY = H * 0.45 + Math.sin(t * 1.2 + Math.PI * 0.5) * 50;
+        yangX = W * 0.58 + Math.cos(t + Math.PI) * 95;
+        yangY = H * 0.45 + Math.sin(t * 1.2 + Math.PI * 0.5) * 55;
       } else if (currentPhase === 2) {
-        // Phase 2: Atmospheric Descent — Tilt and plunge downward
-        const prog = Math.min((elapsed - 4.5) / 4, 1);
+        // Phase 2: Atmospheric Descent — Plunge downward smoothly
+        const prog = Math.min((elapsed - 3.5) / 3.5, 1);
         const easeProg = Math.pow(prog, 2);
 
-        patX = W * 0.42 - (1 - easeProg) * 30;
-        patY = H * 0.35 + easeProg * (H * 0.27);
+        patX = W * 0.42 - (1 - easeProg) * 35;
+        patY = H * 0.32 + easeProg * (H * 0.28);
 
-        yangX = W * 0.58 + (1 - easeProg) * 30;
-        yangY = H * 0.35 + easeProg * (H * 0.27);
+        yangX = W * 0.58 + (1 - easeProg) * 35;
+        yangY = H * 0.32 + easeProg * (H * 0.28);
       } else if (currentPhase === 3 || currentPhase === 4) {
         // Phase 3 & 4: Landing & Horizon lock
-        const prog = Math.min((elapsed - 8.5) / 3, 1);
-        patX = W * 0.38;
-        patY = H * 0.62;
-        yangX = W * 0.62;
-        yangY = H * 0.62;
+        const prog = Math.min((elapsed - 7.0) / 2.5, 1);
+        patX = W * 0.36;
+        patY = H * 0.60;
+        yangX = W * 0.64;
+        yangY = H * 0.60;
 
         // Shockwave ripple at landing
-        if (prog < 0.4) {
-          const ringR = prog * 280;
-          ctx.strokeStyle = `rgba(249, 226, 175, ${0.4 - prog})`;
-          ctx.lineWidth = 2;
+        if (prog < 0.5) {
+          const ringR = prog * 320;
+          ctx.strokeStyle = `rgba(249, 226, 175, ${0.5 - prog})`;
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
           ctx.ellipse(W / 2, H * 0.72, ringR, ringR * 0.25, 0, 0, Math.PI * 2);
           ctx.stroke();
         }
       } else {
-        // Phase 5: Selection Stage Idle with Hover Physics
+        // Phase 5: Selection Stage Idle with Breathing Physics & Hover Stances
         const idleWiggle = Math.sin(now / 700) * 4;
         const breathY = Math.sin(now / 1100) * 3;
 
-        patX = W * 0.36;
-        patY = H * 0.60 + breathY;
+        patX = W * 0.34;
+        patY = H * 0.58 + breathY;
 
-        yangX = W * 0.64;
-        yangY = H * 0.60 + breathY + idleWiggle * 0.5;
+        yangX = W * 0.66;
+        yangY = H * 0.58 + breathY + idleWiggle * 0.5;
 
         if (hoveredPersona === 'pat') {
-          patX += 15;
-          patScale = 1.08;
-          yangScale = 0.94;
+          patX += 18;
+          patScale = 1.1;
+          yangScale = 0.92;
         } else if (hoveredPersona === 'yang') {
-          yangX -= 15;
-          yangScale = 1.08;
-          patScale = 0.94;
+          yangX -= 18;
+          yangScale = 1.1;
+          patScale = 0.92;
         }
       }
 
@@ -231,9 +247,9 @@ export default function OnboardingCanvas() {
         // Stylized horizon glow line
         const lineGrad = ctx.createLinearGradient(0, 0, W, 0);
         lineGrad.addColorStop(0, 'transparent');
-        lineGrad.addColorStop(0.35, 'rgba(249, 226, 175, 0.4)');
-        lineGrad.addColorStop(0.5, 'rgba(245, 194, 231, 0.6)');
-        lineGrad.addColorStop(0.65, 'rgba(148, 226, 213, 0.4)');
+        lineGrad.addColorStop(0.35, 'rgba(249, 226, 175, 0.45)');
+        lineGrad.addColorStop(0.5, 'rgba(245, 194, 231, 0.65)');
+        lineGrad.addColorStop(0.65, 'rgba(148, 226, 213, 0.45)');
         lineGrad.addColorStop(1, 'transparent');
         ctx.strokeStyle = lineGrad;
         ctx.lineWidth = 1.5;
@@ -243,43 +259,43 @@ export default function OnboardingCanvas() {
         ctx.stroke();
       }
 
-      // ─── 6. DRAW CHARACTER AURAS & PARTICLES ──────────────────────────────
+      // ─── 6. CHARACTER GLOW AURAS & SILHOUETTE AVATARS ──────────────────────
       // Pat Aura (Warm Amber)
-      const patGlow = ctx.createRadialGradient(patX, patY, 5, patX, patY, 80 * patScale);
-      patGlow.addColorStop(0, hoveredPersona === 'pat' ? 'rgba(249, 226, 175, 0.45)' : 'rgba(249, 226, 175, 0.25)');
+      const patGlow = ctx.createRadialGradient(patX, patY, 5, patX, patY, 85 * patScale);
+      patGlow.addColorStop(0, hoveredPersona === 'pat' ? 'rgba(249, 226, 175, 0.5)' : 'rgba(249, 226, 175, 0.28)');
       patGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = patGlow;
       ctx.beginPath();
-      ctx.arc(patX, patY, 80 * patScale, 0, Math.PI * 2);
+      ctx.arc(patX, patY, 85 * patScale, 0, Math.PI * 2);
       ctx.fill();
 
       // Yang Aura (Bioluminescent Teal & Aurora Violet)
-      const yangGlow = ctx.createRadialGradient(yangX, yangY, 5, yangX, yangY, 80 * yangScale);
-      yangGlow.addColorStop(0, hoveredPersona === 'yang' ? 'rgba(148, 226, 213, 0.5)' : 'rgba(148, 226, 213, 0.28)');
-      yangGlow.addColorStop(0.6, 'rgba(203, 166, 247, 0.15)');
+      const yangGlow = ctx.createRadialGradient(yangX, yangY, 5, yangX, yangY, 85 * yangScale);
+      yangGlow.addColorStop(0, hoveredPersona === 'yang' ? 'rgba(148, 226, 213, 0.55)' : 'rgba(148, 226, 213, 0.3)');
+      yangGlow.addColorStop(0.6, 'rgba(203, 166, 247, 0.18)');
       yangGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = yangGlow;
       ctx.beginPath();
-      ctx.arc(yangX, yangY, 80 * yangScale, 0, Math.PI * 2);
+      ctx.arc(yangX, yangY, 85 * yangScale, 0, Math.PI * 2);
       ctx.fill();
 
       // Yang Glowing Arm Tattoos Effect (Pulsing Teal Light)
       const tattooPulse = (Math.sin(now / 400) + 1) / 2; // 0..1
       if (currentPhase === 5 || hoveredPersona === 'yang') {
-        const armGlow = ctx.createRadialGradient(yangX - 12, yangY + 10, 2, yangX - 12, yangY + 10, 25);
-        armGlow.addColorStop(0, `rgba(148, 226, 213, ${0.4 + tattooPulse * 0.4})`);
-        armGlow.addColorStop(1, 'transparent');
-        ctx.fillStyle = armGlow;
+        const armGlowL = ctx.createRadialGradient(yangX - 14, yangY + 12, 2, yangX - 14, yangY + 12, 28);
+        armGlowL.addColorStop(0, `rgba(148, 226, 213, ${0.45 + tattooPulse * 0.45})`);
+        armGlowL.addColorStop(1, 'transparent');
+        ctx.fillStyle = armGlowL;
         ctx.beginPath();
-        ctx.arc(yangX - 12, yangY + 10, 25, 0, Math.PI * 2);
+        ctx.arc(yangX - 14, yangY + 12, 28, 0, Math.PI * 2);
         ctx.fill();
 
-        const armGlowR = ctx.createRadialGradient(yangX + 12, yangY + 10, 2, yangX + 12, yangY + 10, 25);
-        armGlowR.addColorStop(0, `rgba(148, 226, 213, ${0.4 + tattooPulse * 0.4})`);
+        const armGlowR = ctx.createRadialGradient(yangX + 14, yangY + 12, 2, yangX + 14, yangY + 12, 28);
+        armGlowR.addColorStop(0, `rgba(148, 226, 213, ${0.45 + tattooPulse * 0.45})`);
         armGlowR.addColorStop(1, 'transparent');
         ctx.fillStyle = armGlowR;
         ctx.beginPath();
-        ctx.arc(yangX + 12, yangY + 10, 25, 0, Math.PI * 2);
+        ctx.arc(yangX + 14, yangY + 12, 28, 0, Math.PI * 2);
         ctx.fill();
       }
 

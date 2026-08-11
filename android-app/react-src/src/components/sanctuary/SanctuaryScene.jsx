@@ -393,19 +393,149 @@ function CometSystem() {
 // ─── Camera Rig ───────────────────────────────────────────────────────────────
 function CameraRig({ isKiroMode }) {
   const { camera, viewport } = useThree();
+  const isTelescopeActive = useAppStore(s => s.isTelescopeActive);
+  const telescopePan = useAppStore(s => s.telescopePan);
 
   useFrame((_, delta) => {
     const aspect = viewport.width / viewport.height;
     const baseZ = 14;
-    const targetZ = isKiroMode ? 0.1 : Math.max(baseZ, Math.min(22, baseZ * (1 / Math.max(aspect, 0.45))));
-    const dest = isKiroMode
-      ? new THREE.Vector3(0, 0, 0.1)
-      : new THREE.Vector3(0, 0.5, targetZ);
-    camera.position.lerp(dest, delta * 2.2);
-    camera.lookAt(0, 0.5, 0);
+
+    if (isTelescopeActive) {
+      const destX = -telescopePan.x * 0.05;
+      const destY = -telescopePan.y * 0.05;
+      camera.position.lerp(new THREE.Vector3(destX, destY + 0.5, 8), delta * 3.5);
+      camera.lookAt(destX, destY + 0.5, 0);
+    } else {
+      const targetZ = isKiroMode ? 0.1 : Math.max(baseZ, Math.min(22, baseZ * (1 / Math.max(aspect, 0.45))));
+      const dest = isKiroMode
+        ? new THREE.Vector3(0, 0, 0.1)
+        : new THREE.Vector3(0, 0.5, targetZ);
+      camera.position.lerp(dest, delta * 2.2);
+      camera.lookAt(0, 0.5, 0);
+    }
   });
 
   return null;
+}
+
+// ─── Deep Space Telescope 3D Objects Group ───────────────────────────────────
+function TelescopeGroup() {
+  const isTelescopeActive = useAppStore(s => s.isTelescopeActive);
+  const telescopePan = useAppStore(s => s.telescopePan);
+  const setLockedTarget = useAppStore(s => s.setLockedTarget);
+  const galaxyRef = useRef();
+
+  const galaxyParticles = useMemo(() => {
+    const count = 1200;
+    const pos = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const palette = ['#CBA6F7', '#94E2D5', '#F9E2AF', '#F5C2E7'];
+
+    for (let i = 0; i < count; i++) {
+      const radius = Math.random() * 8 + 0.5;
+      const spinAngle = radius * 1.5;
+      const branchAngle = ((i % 3) * (2 * Math.PI)) / 3;
+
+      const x = Math.cos(spinAngle + branchAngle) * radius + (Math.random() - 0.5) * 0.5;
+      const y = (Math.random() - 0.5) * 0.8;
+      const z = Math.sin(spinAngle + branchAngle) * radius + (Math.random() - 0.5) * 0.5;
+
+      pos[i * 3] = x;
+      pos[i * 3 + 1] = y;
+      pos[i * 3 + 2] = z;
+
+      const c = new THREE.Color(palette[i % palette.length]);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+    return { pos, colors };
+  }, []);
+
+  const targets = useMemo(() => [
+    {
+      id: 'galaxy',
+      pos: new THREE.Vector3(-15, 12, -40),
+      title: 'Secret Heart Galaxy',
+      body: 'A majestic deep space spiral galaxy hidden beyond visible light. Its spiral arms shine with 1,200 glowing starlight particles created from eternal love for Yangiee.',
+      icon: '🌌',
+      catalog: 'CATALOG: HY-2026 • 12,000 LIGHT YEARS',
+    },
+    {
+      id: 'planet_yangiee',
+      pos: new THREE.Vector3(18, -10, -45),
+      title: 'Planet Yangiee',
+      body: 'An otherworldly celestial world with glowing teal oceans and violet rings, reflecting Yangiee’s radiant aura.',
+      icon: '🪐',
+      catalog: 'CATALOG: PY-8090 • 4,800 LIGHT YEARS',
+    },
+    {
+      id: 'heart_constellation',
+      pos: new THREE.Vector3(0, 22, -35),
+      title: 'Constellation of Eternal Love',
+      body: 'An ancient star cluster shaped like a heart, pulsing with starlight across the galaxy whenever Patrick thinks of Yangiee.',
+      icon: '💖',
+      catalog: 'CATALOG: LC-1024 • 8,500 LIGHT YEARS',
+    },
+  ], []);
+
+  useFrame((_, delta) => {
+    if (!isTelescopeActive) return;
+    if (galaxyRef.current) {
+      galaxyRef.current.rotation.y += delta * 0.15;
+    }
+
+    const panVec = new THREE.Vector3(-telescopePan.x * 0.05, -telescopePan.y * 0.05, 0);
+    let nearest = null;
+    let minDist = 3.5;
+
+    targets.forEach(t => {
+      const dist = panVec.distanceTo(new THREE.Vector3(t.pos.x * 0.2, t.pos.y * 0.2, 0));
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = t;
+      }
+    });
+
+    setLockedTarget(nearest);
+  });
+
+  if (!isTelescopeActive) return null;
+
+  return (
+    <group>
+      {/* 1. Spiral Galaxy */}
+      <group position={[-15, 12, -40]} ref={galaxyRef}>
+        <points>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[galaxyParticles.pos, 3]} />
+            <bufferAttribute attach="attributes-color" args={[galaxyParticles.colors, 3]} />
+          </bufferGeometry>
+          <pointsMaterial size={0.6} vertexColors transparent opacity={0.95} />
+        </points>
+      </group>
+
+      {/* 2. Planet Yangiee */}
+      <group position={[18, -10, -45]}>
+        <mesh>
+          <sphereGeometry args={[3.2, 32, 32]} />
+          <meshStandardMaterial color="#94E2D5" emissive="#114444" roughness={0.3} />
+        </mesh>
+        <mesh rotation={[Math.PI / 3, 0, 0]}>
+          <ringGeometry args={[4.2, 6.5, 32]} />
+          <meshBasicMaterial color="#CBA6F7" transparent opacity={0.65} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+
+      {/* 3. Constellation of Hearts */}
+      <group position={[0, 22, -35]}>
+        <mesh>
+          <sphereGeometry args={[1.2, 16, 16]} />
+          <meshBasicMaterial color="#F5C2E7" />
+        </mesh>
+      </group>
+    </group>
+  );
 }
 
 // ─── Scene Lighting by Time-of-Day ────────────────────────────────────────────
@@ -478,6 +608,9 @@ export default function SanctuaryScene({ timeOfDay, onPlanetClick, isKiroMode })
         <Suspense fallback={null}>
           <CelestialPlanet timeOfDay={timeOfDay} onClick={onPlanetClick} />
         </Suspense>
+
+        {/* Deep Space Telescope Objects */}
+        <TelescopeGroup />
 
         {/* Camera Drift + Zoom Rig */}
         <CameraRig isKiroMode={isKiroMode} />

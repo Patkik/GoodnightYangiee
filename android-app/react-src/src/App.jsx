@@ -28,6 +28,8 @@ import KiroHaven from './components/kiro/KiroHaven.jsx';
 import TouchEffectsCanvas from './components/ui/TouchEffectsCanvas.jsx';
 import OnboardingCanvas from './components/sanctuary/OnboardingCanvas.jsx';
 import SelectionOverlay from './components/ui/SelectionOverlay.jsx';
+import TelescopeOverlay from './components/ui/TelescopeOverlay.jsx';
+import DiscoveryModal from './components/ui/DiscoveryModal.jsx';
 
 // Lazy-load heavy 3D sanctuary scene
 const SanctuaryScene = lazy(() => import('./components/sanctuary/SanctuaryScene.jsx'));
@@ -92,6 +94,7 @@ export default function App() {
   const setAudioPreset  = useAppStore(s => s.setAudioPreset);
   const setSleeping     = useAppStore(s => s.setSleeping);
   const showToast       = useAppStore(s => s.showToast);
+  const openTelescope   = useAppStore(s => s.openTelescope);
 
   // Apply initial theme on mount
   useEffect(() => {
@@ -270,14 +273,7 @@ export default function App() {
             onVault={() => setModal('vault')}
             onMailbox={() => setModal('mailbox')}
             onSyncUpdate={handleSyncUpdate}
-            onTelescope={() => {
-              const btn = document.getElementById('telescope-btn');
-              if (btn) btn.click();
-              else {
-                const scopeOverlay = document.getElementById('telescope-scope-overlay');
-                if (scopeOverlay) scopeOverlay.classList.add('active');
-              }
-            }}
+            onTelescope={openTelescope}
           />
 
           {/* Hero center scroll area */}
@@ -294,27 +290,13 @@ export default function App() {
               onNote={() => setModal('note')}
               onCare={() => setModal('care')}
               onKiro={() => setKiroOpen(true)}
-              onTelescope={() => {
-                const btn = document.getElementById('telescope-btn');
-                if (btn) btn.click();
-                else {
-                  const scopeOverlay = document.getElementById('telescope-scope-overlay');
-                  if (scopeOverlay) scopeOverlay.classList.add('active');
-                }
-              }}
+              onTelescope={openTelescope}
             />
 
             <QuoteCard quote={currentQuote} onRefresh={nextQuote} />
 
             <TelescopeActionCard
-              onTelescope={() => {
-                if (window.enterTelescopeMode) {
-                  window.enterTelescopeMode();
-                } else {
-                  const scopeOverlay = document.getElementById('telescope-scope-overlay');
-                  if (scopeOverlay) scopeOverlay.classList.add('active');
-                }
-              }}
+              onTelescope={openTelescope}
             />
 
             <div className="scroll-indicator-compact dissipatable" style={{ fontFamily: 'var(--font-heading)', fontSize: '9px', letterSpacing: '2px', color: 'var(--subtext-gray)', opacity: 0.7 }}>
@@ -368,6 +350,10 @@ export default function App() {
       {/* ── ONBOARDING & SELECTION SEQUENCE ───────────────────────────── */}
       <OnboardingCanvas />
       <SelectionOverlay />
+
+      {/* ── TELESCOPE & DISCOVERY MODAL ──────────────────────────────── */}
+      <TelescopeOverlay />
+      <DiscoveryModal />
 
       {/* Start overlay (renders on top of everything until tapped) */}
       {!isStarted && <StartOverlay onStart={handleStart} />}

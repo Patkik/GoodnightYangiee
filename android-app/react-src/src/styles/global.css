@@ -1364,3 +1364,263 @@ body.theme-yang {
   text-align: center;
 }
 
+/* 30. EYE TOGGLE BUTTON & DISSIPATION GLOW */
+.eye-toggle-btn.dissipated-active {
+  background: rgba(249, 226, 175, 0.25) !important;
+  border-color: var(--starlight-gold) !important;
+  color: var(--starlight-gold) !important;
+  box-shadow: 0 0 16px rgba(249, 226, 175, 0.6) !important;
+  animation: eye-glow 2s ease-in-out infinite;
+}
+@keyframes eye-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(249, 226, 175, 0.4); }
+  50% { box-shadow: 0 0 25px rgba(249, 226, 175, 0.8); }
+}
+
+/* 31. COSMIC TELESCOPE SCOPE OVERLAY & RETICLE */
+.telescope-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 550;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
+  background: radial-gradient(circle at center, transparent 34vmin, rgba(5, 5, 12, 0.94) 46vmin, rgba(2, 2, 7, 0.99) 56vmin);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.telescope-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.scope-lens-viewport {
+  position: relative;
+  width: clamp(280px, 82vmin, 680px);
+  height: clamp(280px, 82vmin, 680px);
+  border-radius: 50%;
+  border: 3px solid rgba(249, 226, 175, 0.45);
+  box-shadow: 
+    0 0 0 9999px rgba(3, 3, 8, 0.96),
+    0 0 50px rgba(0, 0, 0, 0.9),
+    inset 0 0 60px rgba(0, 0, 0, 0.85),
+    inset 0 0 25px rgba(148, 226, 213, 0.25);
+  transform: scale(0.4);
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+.telescope-overlay.active .scope-lens-viewport {
+  transform: scale(1);
+}
+
+.scope-reticle-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.reticle-ring-outer { stroke: rgba(249, 226, 175, 0.4); stroke-width: 1.5; fill: none; }
+.reticle-ring-inner { stroke: rgba(148, 226, 213, 0.35); stroke-width: 1; fill: none; }
+.reticle-ring-center { stroke: rgba(203, 166, 247, 0.4); stroke-width: 1; fill: none; }
+.reticle-line { stroke: rgba(249, 226, 175, 0.5); stroke-width: 1.2; }
+.tick-mark { stroke: rgba(245, 194, 231, 0.6); stroke-width: 1; }
+
+.reticle-target-box {
+  fill: none;
+  stroke: rgba(245, 194, 231, 0.5);
+  stroke-width: 1.5;
+  transition: stroke 0.3s ease, transform 0.3s ease, stroke-width 0.3s ease;
+  transform-origin: center;
+}
+.scope-lens-viewport.target-locked .reticle-target-box {
+  stroke: #F9E2AF;
+  stroke-width: 2.5;
+  animation: targetPulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes targetPulse {
+  0% { transform: scale(0.9) rotate(0deg); stroke: #F9E2AF; }
+  100% { transform: scale(1.15) rotate(45deg); stroke: #F5C2E7; }
+}
+
+.reticle-dot { fill: #F9E2AF; opacity: 0.8; }
+
+.lens-glare {
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(135deg, transparent 42%, rgba(255, 255, 255, 0.08) 46%, rgba(245, 194, 231, 0.12) 50%, rgba(148, 226, 213, 0.08) 54%, transparent 58%);
+  pointer-events: none;
+  transform: rotate(-25deg);
+  mix-blend-mode: overlay;
+}
+
+.scope-hud {
+  position: absolute;
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: rgba(205, 214, 244, 0.7);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.scope-hud.top-left { top: 12%; left: 14%; text-align: left; }
+.scope-hud.top-right { top: 12%; right: 14%; text-align: right; }
+.scope-hud.bottom-left { bottom: 12%; left: 14%; text-align: left; }
+.scope-hud.bottom-right { bottom: 12%; right: 14%; text-align: right; }
+
+.hud-label { font-size: 7px; color: var(--subtext-gray); letter-spacing: 2px; }
+.hud-val { color: var(--amber-glow); font-weight: 600; text-shadow: 0 0 8px rgba(249, 226, 175, 0.5); }
+
+.scope-lock-card {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: rgba(30, 30, 46, 0.88);
+  border: 1px solid var(--amber-glow-soft);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 8px 18px;
+  border-radius: 20px;
+  text-align: center;
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 15px rgba(249, 226, 175, 0.2);
+  animation: lock-card-pop 0.4s ease;
+}
+@keyframes lock-card-pop {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.lock-icon { font-family: var(--font-heading); font-size: 9px; color: var(--aurora-emerald); letter-spacing: 2px; text-transform: uppercase; }
+.lock-title { font-family: var(--font-display); font-size: 13px; color: var(--amber-glow); letter-spacing: 1px; margin-top: 2px; }
+.lock-desc { font-family: var(--font-body); font-size: 10px; color: var(--lavender-gray); opacity: 0.8; }
+
+.scope-controls {
+  position: absolute;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 160;
+}
+
+.exit-scope-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: rgba(30, 30, 46, 0.85);
+  border: 1px solid var(--amber-glow-soft);
+  border-radius: 30px;
+  color: var(--amber-glow);
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.exit-scope-btn:hover {
+  background: rgba(245, 194, 231, 0.2);
+  border-color: var(--amber-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(249, 226, 175, 0.3);
+}
+.scope-hint {
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--subtext-gray);
+  text-transform: uppercase;
+  opacity: 0.85;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* 32. DISCOVERY MODAL CARD */
+.discovery-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: rgba(10, 10, 18, 0.88);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: modal-fade-in 0.4s ease;
+}
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.discovery-card {
+  position: relative;
+  width: min(90%, 420px);
+  background: linear-gradient(145deg, rgba(30, 30, 46, 0.95), rgba(27, 25, 42, 0.98));
+  border: 1px solid var(--amber-glow-soft);
+  border-radius: 24px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(249, 226, 175, 0.2);
+  animation: card-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes card-pop {
+  from { transform: scale(0.9) translateY(20px); }
+  to { transform: scale(1) translateY(0); }
+}
+
+.discovery-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  background: rgba(249, 226, 175, 0.15);
+  border: 1px solid var(--amber-glow);
+  border-radius: 12px;
+  color: var(--amber-glow);
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.discovery-icon { font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 0 12px rgba(249, 226, 175, 0.5)); }
+.discovery-title { font-family: var(--font-display); font-size: 18px; color: var(--amber-glow); letter-spacing: 2px; margin-bottom: 6px; }
+.discovery-sub { font-family: var(--font-heading); font-size: 10px; color: var(--aurora-emerald); letter-spacing: 1.5px; margin-bottom: 18px; text-transform: uppercase; }
+.discovery-body { font-family: var(--font-body); font-size: 13px; line-height: 1.7; color: var(--lavender-gray); margin-bottom: 24px; }
+.discovery-close-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(245, 194, 231, 0.2), rgba(249, 226, 175, 0.2));
+  border: 1px solid var(--amber-glow);
+  border-radius: 16px;
+  color: var(--amber-glow);
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.discovery-close-btn:hover {
+  background: var(--amber-glow);
+  color: #110F1D;
+}
+
+

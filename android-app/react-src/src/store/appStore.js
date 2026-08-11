@@ -134,7 +134,21 @@ export const useAppStore = create((set, get) => ({
   weatherBannerMsg: '',
   weatherBannerVisible: false,
 
+  // ── Cosmic Telescope & Discovery State
+  isTelescopeActive: false,
+  telescopeZoom: 3.5,
+  telescopePan: { x: 0, y: 0 },
+  lockedTarget: null,
+  discoveryModalData: null,
+
   // ── Actions ─────────────────────────────────────────────────────────────────
+
+  openTelescope: () => set({ isTelescopeActive: true, isDissipated: true }),
+  closeTelescope: () => set({ isTelescopeActive: false, isDissipated: false, lockedTarget: null }),
+  setTelescopePan: (pan) => set(s => ({ telescopePan: typeof pan === 'function' ? pan(s.telescopePan) : pan })),
+  setLockedTarget: (target) => set({ lockedTarget: target }),
+  openDiscoveryModal: (data) => set({ discoveryModalData: data }),
+  closeDiscoveryModal: () => set({ discoveryModalData: null }),
 
   start: () => {
     const isFirst = get().isFirstInstallation;
