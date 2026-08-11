@@ -1347,16 +1347,112 @@ body.theme-yang {
 .frame-corner-accents .bottom-left { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; border-bottom-left-radius: 4px; }
 .frame-corner-accents .bottom-right { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; border-bottom-right-radius: 4px; }
 
-.select-persona-btn {
-  width: 100%;
-  padding: 12px 20px;
-  border-radius: 20px;
+/* INTRO PHASE SUBTITLE DISPLAY */
+.intro-phase-subtitle-container {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(30, 30, 46, 0.82);
+  border: 1px solid var(--amber-glow-soft);
+  padding: 8px 20px;
+  border-radius: 30px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  animation: subtitle-fade-in 0.4s ease;
+}
+@keyframes subtitle-fade-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.intro-phase-subtitle {
   font-family: var(--font-heading);
   font-size: 11px;
   letter-spacing: 2px;
+  color: var(--starlight-gold);
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.intro-skip-link {
+  background: transparent;
+  border: none;
+  color: var(--subtext-gray);
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s ease;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+.intro-skip-link:hover {
+  color: var(--starlight-gold);
+  opacity: 1;
+}
+
+/* SKY-STYLE 3D STAGE SELECTION CONTROLS */
+.sky-selection-buttons-container {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 640px;
+  z-index: 210;
+  margin-top: auto;
+  margin-bottom: 24px;
+}
+
+.sky-select-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 220px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 16px;
+  border-radius: 24px;
+  background: rgba(30, 30, 46, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.sky-select-item.softened {
+  opacity: 0.45;
+  transform: scale(0.92);
+}
+.sky-select-item.focused {
+  transform: translateY(-8px) scale(1.06);
+  opacity: 1;
+  background: rgba(30, 30, 46, 0.75);
+  border-color: rgba(249, 226, 175, 0.4);
+}
+
+.sky-hero-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 2px;
+}
+.pat-title { color: var(--starlight-gold); }
+.yang-title { color: var(--aurora-emerald); }
+
+.sky-hero-role {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--subtext-gray);
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 .pat-btn {
   background: linear-gradient(135deg, rgba(249, 226, 175, 0.25), rgba(201, 123, 75, 0.3));
