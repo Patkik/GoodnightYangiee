@@ -62,7 +62,7 @@ export function Filigrees({ visible }) {
 }
 
 // ─── HEADER ───────────────────────────────────────────────────────────────────
-export function SanctuaryHeader({ onVault, onMailbox, onSyncUpdate }) {
+export function SanctuaryHeader({ onVault, onMailbox, onSyncUpdate, onTelescope }) {
   return (
     <header className="sanctuary-header dissipatable">
       <div className="brand">
@@ -79,6 +79,15 @@ export function SanctuaryHeader({ onVault, onMailbox, onSyncUpdate }) {
             <path d="M2.5 22v-6h6" />
             <path d="M2 11.5a10 10 0 0 1 18.8-4.3L21.5 8" />
             <path d="M22 12.5a10 10 0 0 1-18.8 4.2L2.5 16" />
+          </svg>
+        </button>
+        <button className="nav-icon-btn telescope-nav-btn" onClick={onTelescope} id="telescope-btn" title="Cosmic Telescope View">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m10.065 13.935 6.84-6.84"/>
+            <path d="m13.586 3.586 6.828 6.828a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0L9.343 7.828a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.828 0z"/>
+            <path d="m6.5 17.5 3-3"/>
+            <path d="M3 21l3.5-3.5"/>
+            <path d="m14 10 3 3"/>
           </svg>
         </button>
         <button className="nav-icon-btn" onClick={onMailbox} id="mailbox-btn" title="Starlight Mailbox">
@@ -98,13 +107,11 @@ export function HeroHeading({ greeting, pstDate }) {
   const timeStr = pstDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila' });
   const dayStr = pstDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'Asia/Manila' });
   return (
-    <>
-      <div className="hero-heading">
-        <span>{greeting},</span>
-        <br />Yangiee
-      </div>
-      <div className="live-clock">{timeStr} PHT — {dayStr}</div>
-    </>
+    <div className="hero-center dissipatable">
+      <div className="hero-heading">{greeting},<br />Yangiee</div>
+      <div className="live-clock">{timeStr}</div>
+      <div className="live-date">{dayStr} PST • MANILA</div>
+    </div>
   );
 }
 
@@ -191,7 +198,7 @@ const QuickSVG = ({ d }) => (
     <path d={d} />
   </svg>
 );
-export function QuickActions({ onNote, onCare, onKiro }) {
+export function QuickActions({ onNote, onCare, onKiro, onTelescope }) {
   return (
     <div className="quick-action-row dissipatable">
       <button className="quick-action-btn" onClick={onNote} id="note-btn">
@@ -220,6 +227,30 @@ export function QuoteCard({ quote, onRefresh }) {
       </div>
       <div className="quote-text">"{quote?.text}"</div>
       <div className="quote-author">— {quote?.author}</div>
+    </div>
+  );
+}
+
+// ─── TELESCOPE ACTION CARD (BELOW QUOTE BOX) ─────────────────────────────────
+export function TelescopeActionCard({ onTelescope }) {
+  return (
+    <div className="telescope-action-card dissipatable">
+      <button className="telescope-btn-main" onClick={onTelescope} id="telescope-btn-main" title="Observe Universe Telescope">
+        <div className="telescope-btn-icon-wrapper">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m10.065 13.935 6.84-6.84"/>
+            <path d="m13.586 3.586 6.828 6.828a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0L9.343 7.828a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.828 0z"/>
+            <path d="m6.5 17.5 3-3"/>
+            <path d="M3 21l3.5-3.5"/>
+            <path d="m14 10 3 3"/>
+          </svg>
+        </div>
+        <div className="telescope-btn-text">
+          <span className="telescope-title">COSMIC TELESCOPE 🔭</span>
+          <span className="telescope-subtitle">Observe Universe & Discover Deep Space Secrets</span>
+        </div>
+        <span className="telescope-arrow">✦</span>
+      </button>
     </div>
   );
 }

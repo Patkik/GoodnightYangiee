@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hakdog — Celestial Sanctuary ✦ Installation & Digital Gateway</title>
+  <meta name="theme-color" content="#1E1E2E">
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-midnight: #1E1E2E;
+      --bg-plum: #1B192A;
+      --pastel-pink: #F5C2E7;
+      --amber-glow: #F9E2AF;
+      --amber-glow-soft: rgba(249, 226, 175, 0.4);
+      --lavender-gray: #CDD6F4;
+      --subtext-gray: #A6ADC8;
+      --aurora-emerald: #94E2D5;
+      --aurora-violet: #CBA6F7;
+      --font-display: 'Cinzel Decorative', serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 50% 10%, #2A283E, #1E1E2E 60%, #11101D);
+      font-family: var(--font-body);
+      color: var(--lavender-gray);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Starlight Background */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.25;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(245, 194, 231, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(148, 226, 213, 0.12), transparent 40%);
+    }
+
+    .gateway-container {
+      position: relative;
+      z-index: 10;
+      width: min(100%, 540px);
+      background: rgba(30, 30, 46, 0.75);
+      border: 1px solid rgba(249, 226, 175, 0.3);
+      border-radius: 28px;
+      padding: 40px 28px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(249, 226, 175, 0.15);
+      text-align: center;
+    }
+
+    .brand-logo-glow {
+      width: 84px;
+      height: 84px;
+      border-radius: 24px;
+      box-shadow: 0 0 35px rgba(245, 194, 231, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
+      margin-bottom: 20px;
+      object-fit: cover;
+      animation: logoPulse 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes logoPulse {
+      0% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 194, 231, 0.4); }
+      100% { transform: scale(1.06); box-shadow: 0 0 45px rgba(245, 194, 231, 0.7); }
+    }
+
+    .gateway-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      letter-spacing: 3px;
+      color: var(--amber-glow);
+      margin-bottom: 6px;
+      text-shadow: 0 0 12px rgba(249, 226, 175, 0.4);
+    }
+
+    .gateway-sub {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--aurora-emerald);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    /* Live Release Badge */
+    .release-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(249, 226, 175, 0.12);
+      border: 1px solid var(--amber-glow-soft);
+      border-radius: 20px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--amber-glow);
+      margin-bottom: 28px;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--aurora-emerald);
+      box-shadow: 0 0 10px var(--aurora-emerald);
+      animation: dotPulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+
+    /* Action Buttons Stack */
+    .action-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .download-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(249, 226, 175, 0.25), rgba(245, 194, 231, 0.25));
+      border: 1px solid var(--amber-glow);
+      border-radius: 20px;
+      color: var(--amber-glow);
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(249, 226, 175, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(249, 226, 175, 0.4), rgba(245, 194, 231, 0.4));
+      box-shadow: 0 12px 35px rgba(249, 226, 175, 0.4);
+    }
+
+    .web-app-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      color: var(--lavender-gray);
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .web-app-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--pastel-pink);
+      color: var(--pastel-pink);
+    }
+
+    /* GitHub Metadata Bar */
+    .github-info-card {
+      background: rgba(20, 20, 32, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .repo-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .repo-name {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      color: var(--amber-glow);
+      font-weight: 600;
+    }
+
+    .repo-sub {
+      font-size: 10px;
+      color: var(--subtext-gray);
+    }
+
+    .repo-link-btn {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: var(--lavender-gray);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .repo-link-btn:hover {
+      background: var(--amber-glow);
+      color: var(--bg-midnight);
+    }
+
+    /* PWA Install Banner */
+    .pwa-banner {
+      margin-top: 24px;
+      padding: 14px 18px;
+      background: rgba(148, 226, 213, 0.1);
+      border: 1px stroke var(--aurora-emerald);
+      border-radius: 16px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--aurora-emerald);
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="film-grain"></div>
+
+  <div class="gateway-container">
+    <img src="icon-192.png" class="brand-logo-glow" alt="Hakdog Sanctuary Logo" onerror="this.onerror=null; this.src='logo.png';" />
+    
+    <h1 class="gateway-title">HAKDOG SANCTUARY</h1>
+    <div class="gateway-sub">Celestial Gateway for Yangiee ✦ Always Up-To-Date</div>
+
+    <!-- Live Version Badge from GitHub Releases API -->
+    <div class="release-badge" id="release-badge">
+      <div class="pulse-dot"></div>
+      <span id="version-text">CONNECTING TO GITHUB...</span>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-stack">
+      <!-- Direct Link to Latest GitHub APK -->
+      <a id="apk-download-btn" href="https://github.com/Patkik/GoodnightYangiee/releases/latest" class="download-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span id="apk-btn-text">Download Latest Android App (.APK)</span>
+      </a>
+
+      <!-- Web Version Direct Launch -->
+      <a href="index.html" class="web-app-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+        <span>Launch Instant Web Sanctuary 🌌</span>
+      </a>
+    </div>
+
+    <!-- GitHub Repository Link -->
+    <div class="github-info-card">
+      <div class="repo-meta">
+        <span class="repo-name">Patkik / GoodnightYangiee</span>
+        <span class="repo-sub" id="repo-commit-info">Linked directly to GitHub Repository</span>
+      </div>
+      <a href="https://github.com/Patkik/GoodnightYangiee" target="_blank" rel="noopener" class="repo-link-btn">
+        View Repo ↗
+      </a>
+    </div>
+
+    <!-- PWA Install Hint -->
+    <div id="pwa-banner" class="pwa-banner">
+      💡 <strong>Instant Home Screen App:</strong> Tap your browser menu & select <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong> for an offline native app experience!
+    </div>
+  </div>
+
+  <script>
+    // GitHub Repo Configuration
+    const REPO_OWNER = 'Patkik';
+    const REPO_NAME = 'GoodnightYangiee';
+    const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest`;
+
+    async function fetchLatestGitHubRelease() {
+      const versionText = document.getElementById('version-text');
+      const apkBtn = document.getElementById('apk-download-btn');
+      const apkBtnText = document.getElementById('apk-btn-text');
+      const commitInfo = document.getElementById('repo-commit-info');
+
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error('Release API error');
+        
+        const data = await response.json();
+        const tagName = data.tag_name || 'v2.0.0';
+        
+        // Find APK asset in GitHub Release
+        const apkAsset = data.assets && data.assets.find(a => a.name.toLowerCase().endsWith('.apk'));
+        const directDownloadUrl = apkAsset ? apkAsset.browser_download_url : `https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${tagName}/app-debug.apk`;
+        
+        versionText.innerText = `LATEST RELEASE: ${tagName.toUpperCase()}`;
+        apkBtn.href = directDownloadUrl;
+        apkBtnText.innerText = `Download Latest Android App (${tagName})`;
+        if (commitInfo) commitInfo.innerText = `Release Date: ${new Date(data.published_at).toLocaleDateString()}`;
+      } catch (err) {
+        console.warn('GitHub API offline or rate-limited, using fallback release URL:', err);
+        versionText.innerText = 'LATEST RELEASE: LIVE ON GITHUB';
+        apkBtn.href = `https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/latest`;
+        apkBtnText.innerText = 'Download Latest APK from GitHub 🚀';
+      }
+    }
+
+    fetchLatestGitHubRelease();
+  </script>
+</body>
+</html>

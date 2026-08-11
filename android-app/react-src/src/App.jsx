@@ -14,6 +14,7 @@ import {
   ConnectionCard,
   QuickActions,
   QuoteCard,
+  TelescopeActionCard,
   AudioPill,
   SleepSwitch,
   CareBubbleBtn,
@@ -258,6 +259,14 @@ export default function App() {
             onVault={() => setModal('vault')}
             onMailbox={() => setModal('mailbox')}
             onSyncUpdate={handleSyncUpdate}
+            onTelescope={() => {
+              const btn = document.getElementById('telescope-btn');
+              if (btn) btn.click();
+              else {
+                const scopeOverlay = document.getElementById('telescope-scope-overlay');
+                if (scopeOverlay) scopeOverlay.classList.add('active');
+              }
+            }}
           />
 
           {/* Hero center scroll area */}
@@ -274,9 +283,28 @@ export default function App() {
               onNote={() => setModal('note')}
               onCare={() => setModal('care')}
               onKiro={() => setKiroOpen(true)}
+              onTelescope={() => {
+                const btn = document.getElementById('telescope-btn');
+                if (btn) btn.click();
+                else {
+                  const scopeOverlay = document.getElementById('telescope-scope-overlay');
+                  if (scopeOverlay) scopeOverlay.classList.add('active');
+                }
+              }}
             />
 
             <QuoteCard quote={currentQuote} onRefresh={nextQuote} />
+
+            <TelescopeActionCard
+              onTelescope={() => {
+                if (window.enterTelescopeMode) {
+                  window.enterTelescopeMode();
+                } else {
+                  const scopeOverlay = document.getElementById('telescope-scope-overlay');
+                  if (scopeOverlay) scopeOverlay.classList.add('active');
+                }
+              }}
+            />
 
             <div className="scroll-indicator-compact dissipatable" style={{ fontFamily: 'var(--font-heading)', fontSize: '9px', letterSpacing: '2px', color: 'var(--subtext-gray)', opacity: 0.7 }}>
               · · ·

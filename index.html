@@ -1144,6 +1144,348 @@
       .compact-audio-pill { padding: 6px 10px; }
       .sleep-switch { height: 44px; font-size: 10px; }
     }
+
+    /* ==========================================================================
+       TELESCOPE DEEP-SPACE OVERLAY & SNIPER SCOPE STYLES
+       ========================================================================== */
+    .telescope-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
+      background: radial-gradient(circle at center, transparent 34vmin, rgba(5, 5, 12, 0.94) 46vmin, rgba(2, 2, 7, 0.99) 56vmin);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .telescope-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .scope-lens-viewport {
+      position: relative;
+      width: clamp(280px, 82vmin, 680px);
+      height: clamp(280px, 82vmin, 680px);
+      border-radius: 50%;
+      border: 3px solid rgba(249, 226, 175, 0.45);
+      box-shadow: 
+        0 0 0 9999px rgba(3, 3, 8, 0.96),
+        0 0 50px rgba(0, 0, 0, 0.9),
+        inset 0 0 60px rgba(0, 0, 0, 0.85),
+        inset 0 0 25px rgba(148, 226, 213, 0.25);
+      transform: scale(0.4);
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .telescope-overlay.active .scope-lens-viewport {
+      transform: scale(1);
+    }
+
+    .scope-reticle-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .reticle-ring-outer { stroke: rgba(249, 226, 175, 0.4); stroke-width: 1.5; fill: none; }
+    .reticle-ring-inner { stroke: rgba(148, 226, 213, 0.35); stroke-width: 1; fill: none; }
+    .reticle-ring-center { stroke: rgba(203, 166, 247, 0.4); stroke-width: 1; fill: none; }
+    .reticle-line { stroke: rgba(249, 226, 175, 0.5); stroke-width: 1.2; }
+    .tick-mark { stroke: rgba(245, 194, 231, 0.6); stroke-width: 1; }
+    
+    .reticle-target-box {
+      fill: none;
+      stroke: rgba(245, 194, 231, 0.5);
+      stroke-width: 1.5;
+      transition: stroke 0.3s ease, transform 0.3s ease, stroke-width 0.3s ease;
+      transform-origin: center;
+    }
+
+    .telescope-overlay.target-locked .reticle-target-box {
+      stroke: #F9E2AF;
+      stroke-width: 2.5;
+      animation: targetPulse 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes targetPulse {
+      0% { transform: scale(0.9) rotate(0deg); stroke: #F9E2AF; }
+      100% { transform: scale(1.15) rotate(45deg); stroke: #F5C2E7; }
+    }
+
+    .reticle-dot { fill: #F9E2AF; opacity: 0.8; }
+
+    /* Lens Sheen Glare Reflection */
+    .lens-glare {
+      position: absolute;
+      inset: -50%;
+      background: linear-gradient(135deg, transparent 42%, rgba(255, 255, 255, 0.08) 46%, rgba(245, 194, 231, 0.12) 50%, rgba(148, 226, 213, 0.08) 54%, transparent 58%);
+      pointer-events: none;
+      transform: rotate(-25deg);
+      mix-blend-mode: overlay;
+    }
+
+    /* Scope HUD Telemetry */
+    .scope-hud {
+      position: absolute;
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: rgba(205, 214, 244, 0.7);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .scope-hud.top-left { top: 12%; left: 14%; text-align: left; }
+    .scope-hud.top-right { top: 12%; right: 14%; text-align: right; }
+    .scope-hud.bottom-left { bottom: 12%; left: 14%; text-align: left; }
+    .scope-hud.bottom-right { bottom: 12%; right: 14%; text-align: right; }
+
+    .hud-label { font-size: 7px; color: var(--subtext-gray); letter-spacing: 2px; }
+    .hud-val { color: var(--amber-glow); font-weight: 600; text-shadow: 0 0 8px rgba(249, 226, 175, 0.5); }
+
+    /* Lock Card Banner */
+    .scope-lock-card {
+      position: absolute;
+      bottom: 18%;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30, 30, 46, 0.88);
+      border: 1px solid var(--amber-glow-soft);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 8px 18px;
+      border-radius: 20px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 15px rgba(249, 226, 175, 0.2);
+    }
+    .telescope-overlay.target-locked .scope-lock-card {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .lock-icon { font-family: var(--font-heading); font-size: 9px; color: var(--aurora-emerald); letter-spacing: 2px; text-transform: uppercase; }
+    .lock-title { font-family: var(--font-display); font-size: 13px; color: var(--amber-glow); letter-spacing: 1px; margin-top: 2px; }
+    .lock-desc { font-family: var(--font-body); font-size: 10px; color: var(--lavender-gray); opacity: 0.8; }
+
+    /* Scope Bottom Bar Controls */
+    .scope-controls {
+      position: absolute;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 160;
+    }
+
+    .exit-scope-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: rgba(30, 30, 46, 0.85);
+      border: 1px solid var(--amber-glow-soft);
+      border-radius: 30px;
+      color: var(--amber-glow);
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .exit-scope-btn:hover {
+      background: rgba(245, 194, 231, 0.2);
+      border-color: var(--amber-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(249, 226, 175, 0.3);
+    }
+    .scope-hint {
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--subtext-gray);
+      text-transform: uppercase;
+      opacity: 0.85;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    /* Telescope Discovery Modal */
+    .discovery-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(10, 10, 18, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .discovery-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .discovery-card {
+      position: relative;
+      width: min(90%, 420px);
+      background: linear-gradient(145deg, rgba(30, 30, 46, 0.95), rgba(27, 25, 42, 0.98));
+      border: 1px solid var(--amber-glow-soft);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(249, 226, 175, 0.2);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .discovery-modal-overlay.active .discovery-card {
+      transform: scale(1) translateY(0);
+    }
+    .discovery-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(249, 226, 175, 0.15);
+      border: 1px solid var(--amber-glow);
+      border-radius: 12px;
+      color: var(--amber-glow);
+      font-family: var(--font-heading);
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .discovery-icon { font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 0 12px rgba(249, 226, 175, 0.5)); }
+    .discovery-title { font-family: var(--font-display); font-size: 18px; color: var(--amber-glow); letter-spacing: 2px; margin-bottom: 6px; }
+    .discovery-sub { font-family: var(--font-heading); font-size: 10px; color: var(--aurora-emerald); letter-spacing: 1.5px; margin-bottom: 18px; text-transform: uppercase; }
+    .discovery-body { font-family: var(--font-body); font-size: 13px; line-height: 1.7; color: var(--lavender-gray); margin-bottom: 24px; }
+    .discovery-close-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(245, 194, 231, 0.2), rgba(249, 226, 175, 0.2));
+      border: 1px solid var(--amber-glow);
+      border-radius: 16px;
+      color: var(--amber-glow);
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .discovery-close-btn:hover {
+      background: var(--amber-glow);
+      color: var(--bg-midnight);
+      box-shadow: 0 0 20px rgba(249, 226, 175, 0.5);
+    }
+
+    /* Telescope Action Card below Quote Box */
+    .telescope-action-card {
+      width: min(92%, 480px);
+      margin: 12px auto 0 auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .telescope-btn-main {
+      width: 100%;
+      padding: 12px 18px;
+      background: linear-gradient(135deg, rgba(249, 226, 175, 0.14), rgba(245, 194, 231, 0.16), rgba(148, 226, 213, 0.14));
+      border: 1px solid var(--amber-glow-soft);
+      border-radius: 20px;
+      color: var(--amber-glow);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 15px rgba(249, 226, 175, 0.15);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .telescope-btn-main:hover,
+    .telescope-btn-main:active {
+      transform: translateY(-2px) scale(1.02);
+      border-color: var(--amber-glow);
+      background: linear-gradient(135deg, rgba(249, 226, 175, 0.25), rgba(245, 194, 231, 0.25), rgba(148, 226, 213, 0.2));
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(249, 226, 175, 0.35);
+    }
+
+    .telescope-btn-icon-wrapper {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(249, 226, 175, 0.2);
+      border: 1px solid rgba(249, 226, 175, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--amber-glow);
+    }
+
+    .telescope-btn-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      flex-grow: 1;
+    }
+
+    .telescope-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      letter-spacing: 1.8px;
+      font-weight: 700;
+      color: var(--amber-glow);
+      text-shadow: 0 0 8px rgba(249, 226, 175, 0.5);
+    }
+
+    .telescope-subtitle {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--lavender-gray);
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .telescope-arrow {
+      font-size: 12px;
+      color: var(--aurora-emerald);
+      animation: arrowPulse 2s infinite ease-in-out;
+    }
+
+    #app-ui.dissipated .telescope-action-card {
+      opacity: 0 !important;
+      transform: scale(0.94) translateY(14px) !important;
+      filter: blur(12px) !important;
+      pointer-events: none !important;
+    }
   </style>
 </head>
 
@@ -1203,6 +1545,15 @@
         <button class="nav-icon-btn" id="care-nav-btn" title="Care Reminder">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
+        <button class="nav-icon-btn telescope-nav-btn" id="telescope-btn" title="Cosmic Telescope View">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m10.065 13.935 6.84-6.84"/>
+            <path d="m13.586 3.586 6.828 6.828a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0L9.343 7.828a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.828 0z"/>
+            <path d="m6.5 17.5 3-3"/>
+            <path d="M3 21l3.5-3.5"/>
+            <path d="m14 10 3 3"/>
+          </svg>
+        </button>
         <button class="nav-icon-btn gyro-badge" id="gyro-btn" title="Toggle Gyro Parallax">
           <div class="gyro-dot"></div>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1260,6 +1611,15 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           <span class="quick-action-label">Mailbox</span>
         </button>
+        <button class="quick-action-btn" id="btn-quick-telescope" title="Deep Space Telescope">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m10.065 13.935 6.84-6.84"/>
+            <path d="m13.586 3.586 6.828 6.828a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0L9.343 7.828a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.828 0z"/>
+            <path d="m6.5 17.5 3-3"/>
+            <path d="M3 21l3.5-3.5"/>
+          </svg>
+          <span class="quick-action-label">Scope</span>
+        </button>
         <button class="quick-action-btn" id="btn-quick-streak" title="Streak & Check-in">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
           <span class="quick-action-label" id="quick-streak-label">1 Day</span>
@@ -1287,6 +1647,26 @@
         </div>
         <div class="quote-text" id="quote-text">"Loading quote from the stars..."</div>
         <div class="quote-author" id="quote-author">— Hakdog Sanctuary</div>
+      </div>
+
+      <!-- Dedicated Telescope Action Button (Below Quote Box) -->
+      <div class="telescope-action-card" id="telescope-action-card">
+        <button class="telescope-btn-main" id="telescope-btn-main" onclick="enterTelescopeMode(event)" title="Observe Universe Telescope">
+          <div class="telescope-btn-icon-wrapper">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m10.065 13.935 6.84-6.84"/>
+              <path d="m13.586 3.586 6.828 6.828a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0L9.343 7.828a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.828 0z"/>
+              <path d="m6.5 17.5 3-3"/>
+              <path d="M3 21l3.5-3.5"/>
+              <path d="m14 10 3 3"/>
+            </svg>
+          </div>
+          <div class="telescope-btn-text">
+            <span class="telescope-title">COSMIC TELESCOPE 🔭</span>
+            <span class="telescope-subtitle">Observe Universe & Discover Deep Space Secrets</span>
+          </div>
+          <span class="telescope-arrow">✦</span>
+        </button>
       </div>
 
       <!-- Gesture / Scroll Indicator -->
@@ -1477,6 +1857,89 @@
         <div id="mailbox-notes-list"></div>
       </div>
       <button class="vault-close-btn" id="mailbox-close-btn">✕ Close Mailbox</button>
+    </div>
+  </div>
+
+  <!-- Telescope Deep Space Scope Overlay -->
+  <div id="telescope-scope-overlay" class="telescope-overlay">
+    <div class="scope-lens-viewport">
+      <!-- Reticle Vector Overlay -->
+      <svg class="scope-reticle-svg" viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="185" class="reticle-ring-outer" />
+        <circle cx="200" cy="200" r="170" class="reticle-ring-inner" stroke-dasharray="4 4" />
+        <circle cx="200" cy="200" r="95" class="reticle-ring-center" stroke-dasharray="2 4" />
+        
+        <line x1="20" y1="200" x2="160" y2="200" class="reticle-line" />
+        <line x1="240" y1="200" x2="380" y2="200" class="reticle-line" />
+        <line x1="200" y1="20" x2="200" y2="160" class="reticle-line" />
+        <line x1="200" y1="240" x2="200" y2="380" class="reticle-line" />
+        
+        <rect x="186" y="186" width="28" height="28" class="reticle-target-box" />
+        <circle cx="200" cy="200" r="3" class="reticle-dot" />
+
+        <line x1="170" y1="200" x2="170" y2="205" class="tick-mark" />
+        <line x1="140" y1="200" x2="140" y2="208" class="tick-mark" />
+        <line x1="110" y1="200" x2="110" y2="205" class="tick-mark" />
+        <line x1="230" y1="200" x2="230" y2="205" class="tick-mark" />
+        <line x1="260" y1="200" x2="260" y2="208" class="tick-mark" />
+        <line x1="290" y1="200" x2="290" y2="205" class="tick-mark" />
+        
+        <line x1="200" y1="170" x2="205" y2="170" class="tick-mark" />
+        <line x1="200" y1="140" x2="208" y2="140" class="tick-mark" />
+        <line x1="200" y1="110" x2="205" y2="110" class="tick-mark" />
+        <line x1="200" y1="230" x2="205" y2="230" class="tick-mark" />
+        <line x1="200" y1="260" x2="208" y2="260" class="tick-mark" />
+        <line x1="200" y1="290" x2="205" y2="290" class="tick-mark" />
+      </svg>
+
+      <!-- Lens Sheen -->
+      <div class="lens-glare"></div>
+
+      <!-- Scope HUD Telemetry Display -->
+      <div class="scope-hud top-left">
+        <div class="hud-label">OBSERVATION MODE</div>
+        <div class="hud-val">DEEP SPACE INFRARED</div>
+      </div>
+      <div class="scope-hud top-right">
+        <div class="hud-label">OPTICAL ZOOM</div>
+        <div class="hud-val" id="scope-zoom-val">3.5x MAGNIFICATION</div>
+      </div>
+      <div class="scope-hud bottom-left">
+        <div class="hud-label">TARGET SENSORS</div>
+        <div class="hud-val" id="scope-target-val">SCANNING UNIVERSE...</div>
+      </div>
+      <div class="scope-hud bottom-right">
+        <div class="hud-label">CELESTIAL BEARING</div>
+        <div class="hud-val" id="scope-coords-val">RA 18h 42m / DEC +41°</div>
+      </div>
+
+      <!-- Lock Card Banner -->
+      <div class="scope-lock-card" id="scope-lock-card">
+        <div class="lock-icon">✦ DEEP SPACE SECRET DETECTED ✦</div>
+        <div class="lock-title" id="scope-lock-title">Secret Heart Galaxy</div>
+        <div class="lock-desc" id="scope-lock-desc">Tap to unlock hidden celestial memory</div>
+      </div>
+    </div>
+
+    <!-- Scope Bottom Bar Controls -->
+    <div class="scope-controls">
+      <button class="exit-scope-btn" id="exit-scope-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span>Lower Telescope</span>
+      </button>
+      <div class="scope-hint">Drag screen to scan deep space • Tap secrets to discover memory</div>
+    </div>
+  </div>
+
+  <!-- Telescope Discovery Modal Card -->
+  <div id="discovery-modal" class="discovery-modal-overlay">
+    <div class="discovery-card">
+      <div class="discovery-badge">DEEP SPACE DISCOVERY</div>
+      <div class="discovery-icon" id="discovery-icon">🌌</div>
+      <div class="discovery-title" id="discovery-title">SECRET HEART GALAXY</div>
+      <div class="discovery-sub" id="discovery-sub">CATALOG: HY-2026 • 12,000 LIGHT YEARS</div>
+      <div class="discovery-body" id="discovery-body">A majestic deep space spiral galaxy hidden beyond normal sight...</div>
+      <button class="discovery-close-btn" id="discovery-close-btn">Keep Exploring ✦</button>
     </div>
   </div>
 
@@ -1681,6 +2144,14 @@
     let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
     let gyro = { alpha: 0, beta: 0, gamma: 0 };
     let isBlackoutActive = false;
+    let isTelescopeActive = false;
+    let telescopeGroup = null;
+    let secretGalaxyMesh = null;
+    let secretPlanetMesh = null;
+    let secretConstellationMesh = null;
+    let deepSpaceObjects = [];
+    let currentLockedTarget = null;
+    let savedCameraZ = 18;
 
     // Twinkle data — per-star phase offsets for shimmer
     let starTwinklePhases = null;
@@ -2006,10 +2477,142 @@
         constellationGroup.add(new THREE.LineSegments(lineGeo, lineMat));
         scene.add(constellationGroup);
 
+        // Deep Space Telescope Objects (Hidden until telescope mode)
+        initTelescopeDeepSpaceObjects(starFlareTexture);
+
         updateResponsiveLayout();
         window.addEventListener('resize', onWindowResize);
       } catch (e) {
         console.error("Three.js init error:", e);
+      }
+    }
+
+    function initTelescopeDeepSpaceObjects(starFlareTexture) {
+      try {
+        telescopeGroup = new THREE.Group();
+        telescopeGroup.visible = false;
+        deepSpaceObjects = [];
+
+        // 1. Secret Heart Galaxy
+        const galaxyGroup = new THREE.Group();
+        galaxyGroup.position.set(-9.5, 5.2, -14);
+        const particleCount = 1400;
+        const gGeo = new THREE.BufferGeometry();
+        const gPos = new Float32Array(particleCount * 3);
+        const gCol = new Float32Array(particleCount * 3);
+        const cCore = new THREE.Color(0xF9E2AF);
+        const cMid = new THREE.Color(0xF5C2E7);
+        const cOuter = new THREE.Color(0x94E2D5);
+
+        for (let i = 0; i < particleCount; i++) {
+          const r = Math.pow(Math.random(), 2) * 5.8 + 0.2;
+          const arms = 2;
+          const theta = (i % arms) * Math.PI + r * 1.6 + (Math.random() - 0.5) * 0.4;
+          const x = Math.cos(theta) * r;
+          const z = Math.sin(theta) * r;
+          const y = (Math.random() - 0.5) * (1.2 / (r + 0.4));
+          gPos[i * 3] = x; gPos[i * 3 + 1] = y; gPos[i * 3 + 2] = z;
+          const ratio = r / 5.8;
+          const color = ratio < 0.25 ? cCore : ratio < 0.65 ? cMid : cOuter;
+          gCol[i * 3] = color.r; gCol[i * 3 + 1] = color.g; gCol[i * 3 + 2] = color.b;
+        }
+        gGeo.setAttribute('position', new THREE.BufferAttribute(gPos, 3));
+        gGeo.setAttribute('color', new THREE.BufferAttribute(gCol, 3));
+        const gMat = new THREE.PointsMaterial({
+          size: 0.5,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.95,
+          blending: THREE.AdditiveBlending,
+          map: starFlareTexture,
+          depthWrite: false
+        });
+        galaxyGroup.add(new THREE.Points(gGeo, gMat));
+        const gCore = new THREE.Mesh(new THREE.SphereGeometry(0.7, 16, 16), new THREE.MeshBasicMaterial({ color: 0xFFF5D0, transparent: true, opacity: 0.85 }));
+        galaxyGroup.add(gCore);
+        galaxyGroup.userData = {
+          id: 'galaxy',
+          title: 'Secret Heart Galaxy',
+          sub: 'CATALOG: HY-2026 • 12,000 LIGHT YEARS',
+          icon: '🌌',
+          body: 'A majestic deep space spiral galaxy hidden beyond visible light. Its spiral arms shine with 1,400 glowing starlight particles created from eternal love for Yangiee. Only visible through your cosmic telescope.'
+        };
+        secretGalaxyMesh = galaxyGroup;
+        telescopeGroup.add(galaxyGroup);
+        deepSpaceObjects.push(galaxyGroup);
+
+        // 2. Secret Ringed Planet (Planet Celestia Prime)
+        const planetGroup = new THREE.Group();
+        planetGroup.position.set(10.5, -4.2, -15);
+        planetGroup.rotation.z = Math.PI / 6;
+        const pMesh = new THREE.Mesh(
+          new THREE.SphereGeometry(1.8, 32, 32),
+          new THREE.MeshStandardMaterial({ color: 0x1E293B, emissive: 0x0F172A, roughness: 0.4, metalness: 0.8 })
+        );
+        planetGroup.add(pMesh);
+        const ringGeo = new THREE.RingGeometry(2.3, 3.8, 64);
+        ringGeo.rotateX(Math.PI / 2);
+        const ringMesh = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xF9E2AF, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }));
+        planetGroup.add(ringMesh);
+        const ringGeo2 = new THREE.RingGeometry(4.0, 4.4, 64);
+        ringGeo2.rotateX(Math.PI / 2);
+        const ringMesh2 = new THREE.Mesh(ringGeo2, new THREE.MeshBasicMaterial({ color: 0xF5C2E7, side: THREE.DoubleSide, transparent: true, opacity: 0.5 }));
+        planetGroup.add(ringMesh2);
+        planetGroup.userData = {
+          id: 'planet',
+          title: 'Planet Celestia Prime',
+          sub: 'CATALOG: ST-007 • DEEP OUTER RIM',
+          icon: '🪐',
+          body: 'A peaceful ringed exoplanet floating in peaceful deep space. Legend says every sweet goodnight wish whispered before sleep creates a new glowing ring around this world.'
+        };
+        secretPlanetMesh = planetGroup;
+        telescopeGroup.add(planetGroup);
+        deepSpaceObjects.push(planetGroup);
+
+        // 3. Secret Heart Constellation
+        const heartGroup = new THREE.Group();
+        heartGroup.position.set(0, 8.5, -12);
+        const hCoords = [
+          { x: 0, y: 0.8, z: 0 },
+          { x: -1.0, y: 1.8, z: 0 },
+          { x: -2.0, y: 1.0, z: 0 },
+          { x: -1.6, y: -0.4, z: 0 },
+          { x: 0, y: -2.0, z: 0 },
+          { x: 1.6, y: -0.4, z: 0 },
+          { x: 2.0, y: 1.0, z: 0 },
+          { x: 1.0, y: 1.8, z: 0 },
+          { x: 0, y: 0.8, z: 0 }
+        ];
+        const hLineMat = new THREE.LineBasicMaterial({ color: 0xF5C2E7, transparent: true, opacity: 0.85 });
+        const hLineGeo = new THREE.BufferGeometry();
+        const hLinePos = [];
+        for (let i = 0; i < hCoords.length - 1; i++) {
+          hLinePos.push(hCoords[i].x, hCoords[i].y, hCoords[i].z);
+          hLinePos.push(hCoords[i + 1].x, hCoords[i + 1].y, hCoords[i + 1].z);
+        }
+        hLineGeo.setAttribute('position', new THREE.Float32BufferAttribute(hLinePos, 3));
+        heartGroup.add(new THREE.LineSegments(hLineGeo, hLineMat));
+        const gemG = new THREE.OctahedronGeometry(0.25, 0);
+        const gemM = new THREE.MeshBasicMaterial({ color: 0xFFF5D0 });
+        hCoords.forEach(c => {
+          const m = new THREE.Mesh(gemG, gemM);
+          m.position.set(c.x, c.y, c.z);
+          heartGroup.add(m);
+        });
+        heartGroup.userData = {
+          id: 'constellation',
+          title: 'Eternal Heart Constellation',
+          sub: 'CATALOG: LOVE-777 • ZENITH SKY',
+          icon: '💖',
+          body: 'Nine diamond stars forming a sacred celestial heart. Written across the deep space sky: "Yangiee & Patrick, bound together across space and time forever."'
+        };
+        secretConstellationMesh = heartGroup;
+        telescopeGroup.add(heartGroup);
+        deepSpaceObjects.push(heartGroup);
+
+        scene.add(telescopeGroup);
+      } catch (e) {
+        console.error("Error creating deep space objects:", e);
       }
     }
 
@@ -2194,9 +2797,25 @@
           // Camera parallax (mouse + gyro)
           mouse.x += (mouse.targetX - mouse.x) * 0.05;
           mouse.y += (mouse.targetY - mouse.y) * 0.05;
-          camera.position.x = mouse.x * 2.5 + (gyro.gamma / 18);
-          camera.position.y = -mouse.y * 2.5 - (gyro.beta / 18);
-          camera.lookAt(0, 0, 0);
+
+          if (isTelescopeActive) {
+            camera.position.x = mouse.x * 14.0 + (gyro.gamma / 8);
+            camera.position.y = -mouse.y * 9.0 - (gyro.beta / 8);
+            camera.lookAt(0, 0, 0);
+
+            if (secretGalaxyMesh) secretGalaxyMesh.rotation.y += 0.005;
+            if (secretPlanetMesh) {
+              secretPlanetMesh.rotation.y += 0.003;
+              if (secretPlanetMesh.children[0]) secretPlanetMesh.children[0].rotation.y += 0.006;
+            }
+            if (secretConstellationMesh) secretConstellationMesh.rotation.y += 0.002;
+
+            updateTelescopeTargetLock();
+          } else {
+            camera.position.x = mouse.x * 2.5 + (gyro.gamma / 18);
+            camera.position.y = -mouse.y * 2.5 - (gyro.beta / 18);
+            camera.lookAt(0, 0, 0);
+          }
 
           // Radiant Constellation Star Nodes Pulse & Rotation
           if (constellationGroup) {
@@ -2556,6 +3175,109 @@
       }
     }
 
+    function updateTelescopeTargetLock() {
+      if (!camera || deepSpaceObjects.length === 0) return;
+      const screenCenter = new THREE.Vector2(0, 0);
+      let closestObj = null;
+      let minDistance = Infinity;
+
+      deepSpaceObjects.forEach(obj => {
+        const tempV = new THREE.Vector3();
+        obj.getWorldPosition(tempV);
+        tempV.project(camera);
+        const distance = Math.hypot(tempV.x - screenCenter.x, tempV.y - screenCenter.y);
+        if (distance < minDistance && tempV.z < 1) {
+          minDistance = distance;
+          closestObj = obj;
+        }
+      });
+
+      const scopeOverlay = document.getElementById('telescope-scope-overlay');
+      const lockTitleEl = document.getElementById('scope-lock-title');
+      const coordsValEl = document.getElementById('scope-coords-val');
+      const targetValEl = document.getElementById('scope-target-val');
+
+      if (coordsValEl) {
+        const ra = Math.floor(Math.abs(camera.position.x * 1.5) + 12);
+        const dec = Math.floor(camera.position.y * 2.5 + 40);
+        coordsValEl.innerText = `RA ${ra}h ${(ra * 3) % 60}m / DEC +${dec}°`;
+      }
+
+      if (closestObj && minDistance < 0.45) {
+        if (currentLockedTarget !== closestObj) {
+          currentLockedTarget = closestObj;
+          triggerHaptic([15, 30]);
+        }
+        if (scopeOverlay) scopeOverlay.classList.add('target-locked');
+        if (lockTitleEl) lockTitleEl.innerText = closestObj.userData.title;
+        if (targetValEl) targetValEl.innerText = `LOCKED: ${closestObj.userData.title.toUpperCase()}`;
+      } else {
+        currentLockedTarget = null;
+        if (scopeOverlay) scopeOverlay.classList.remove('target-locked');
+        if (targetValEl) targetValEl.innerText = 'SCANNING UNIVERSE...';
+      }
+    }
+
+    window.enterTelescopeMode = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      isTelescopeActive = true;
+      toggleDissipationMode(true);
+      const overlay = document.getElementById('telescope-scope-overlay');
+      if (overlay) overlay.classList.add('active');
+      if (telescopeGroup) telescopeGroup.visible = true;
+
+      if (camera) {
+        savedCameraZ = camera.position.z;
+        if (typeof gsap !== 'undefined') {
+          gsap.to(camera.position, { z: 8.5, duration: 1.2, ease: "power2.inOut" });
+        } else {
+          camera.position.z = 8.5;
+        }
+      }
+      triggerHaptic([30, 50]);
+    };
+
+    window.exitTelescopeMode = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      isTelescopeActive = false;
+      const overlay = document.getElementById('telescope-scope-overlay');
+      if (overlay) {
+        overlay.classList.remove('active');
+        overlay.classList.remove('target-locked');
+      }
+      toggleDissipationMode(false);
+
+      if (camera) {
+        if (typeof gsap !== 'undefined') {
+          gsap.to(camera.position, { z: savedCameraZ, duration: 1.0, ease: "power2.out", onComplete: () => {
+            if (telescopeGroup) telescopeGroup.visible = false;
+          }});
+        } else {
+          camera.position.z = savedCameraZ;
+          if (telescopeGroup) telescopeGroup.visible = false;
+        }
+      }
+      currentLockedTarget = null;
+      triggerHaptic([20]);
+    };
+
+    function openDiscoveryModal(data) {
+      if (!data) return;
+      const overlay = document.getElementById('discovery-modal');
+      if (!overlay) return;
+      document.getElementById('discovery-icon').innerText = data.icon || '🌌';
+      document.getElementById('discovery-title').innerText = data.title || 'DEEP SPACE DISCOVERY';
+      document.getElementById('discovery-sub').innerText = data.sub || '';
+      document.getElementById('discovery-body').innerText = data.body || '';
+      overlay.classList.add('active');
+      triggerHaptic([40, 80]);
+    }
+
+    function closeDiscoveryModal() {
+      const overlay = document.getElementById('discovery-modal');
+      if (overlay) overlay.classList.remove('active');
+    }
+
     function initInteractionEvents() {
       let lastTouchTime = 0;
 
@@ -2563,7 +3285,7 @@
         if (e.pointerType === 'touch') {
           lastTouchTime = Date.now();
           const hit = checkStarNodeHit(e.clientX, e.clientY);
-          if (!hit && !e.target.closest('#app-ui') && !e.target.closest('.card-modal-overlay') && !e.target.closest('#start-overlay')) {
+          if (!hit && !e.target.closest('#app-ui') && !e.target.closest('.card-modal-overlay') && !e.target.closest('#start-overlay') && !e.target.closest('#telescope-scope-overlay') && !e.target.closest('#discovery-modal')) {
             toggleDissipationMode();
           }
         }
@@ -2572,13 +3294,33 @@
       window.addEventListener('click', (e) => {
         if (Date.now() - lastTouchTime < 300) return;
         const hit = checkStarNodeHit(e.clientX, e.clientY);
-        if (!hit && !e.target.closest('#app-ui') && !e.target.closest('.card-modal-overlay') && !e.target.closest('#start-overlay') && !e.target.closest('#dissipation-hint')) {
+        if (!hit && !e.target.closest('#app-ui') && !e.target.closest('.card-modal-overlay') && !e.target.closest('#start-overlay') && !e.target.closest('#dissipation-hint') && !e.target.closest('#telescope-scope-overlay') && !e.target.closest('#discovery-modal')) {
           toggleDissipationMode();
         }
       });
 
       const hintEl = document.getElementById('dissipation-hint');
       if (hintEl) hintEl.addEventListener('click', () => toggleDissipationMode(false));
+
+      const mainTelescopeBtn = document.getElementById('telescope-btn-main');
+      if (mainTelescopeBtn) mainTelescopeBtn.addEventListener('click', window.enterTelescopeMode);
+
+      const tBtn = document.getElementById('telescope-btn');
+      if (tBtn) tBtn.addEventListener('click', window.enterTelescopeMode);
+
+      const qtBtn = document.getElementById('btn-quick-telescope');
+      if (qtBtn) qtBtn.addEventListener('click', window.enterTelescopeMode);
+
+      const exitScopeBtn = document.getElementById('exit-scope-btn');
+      if (exitScopeBtn) exitScopeBtn.addEventListener('click', window.exitTelescopeMode);
+
+      const scopeLockCard = document.getElementById('scope-lock-card');
+      if (scopeLockCard) scopeLockCard.addEventListener('click', () => {
+        if (currentLockedTarget) openDiscoveryModal(currentLockedTarget.userData);
+      });
+
+      const discoveryCloseBtn = document.getElementById('discovery-close-btn');
+      if (discoveryCloseBtn) discoveryCloseBtn.addEventListener('click', closeDiscoveryModal);
 
       if ($modalClose) $modalClose.addEventListener('click', closeMemoryModal);
     }
