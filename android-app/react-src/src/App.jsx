@@ -26,6 +26,8 @@ import {
 } from './components/ui/UIComponents.jsx';
 import KiroHaven from './components/kiro/KiroHaven.jsx';
 import TouchEffectsCanvas from './components/ui/TouchEffectsCanvas.jsx';
+import OnboardingCanvas from './components/sanctuary/OnboardingCanvas.jsx';
+import SelectionOverlay from './components/ui/SelectionOverlay.jsx';
 
 // Lazy-load heavy 3D sanctuary scene
 const SanctuaryScene = lazy(() => import('./components/sanctuary/SanctuaryScene.jsx'));
@@ -63,31 +65,40 @@ function NoteModal({ isOpen, onClose }) {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   // Global state
-  const isStarted      = useAppStore(s => s.isStarted);
-  const isDissipated   = useAppStore(s => s.isDissipated);
-  const timeOfDay      = useAppStore(s => s.timeOfDay);
-  const greeting       = useAppStore(s => s.greeting);
-  const pstDate        = useAppStore(s => s.pstDate);
-  const daysMet        = useAppStore(s => s.daysMet);
-  const herWeather     = useAppStore(s => s.herWeather);
-  const yourWeather    = useAppStore(s => s.yourWeather);
-  const quoteIndex     = useAppStore(s => s.quoteIndex);
-  const toastMsg       = useAppStore(s => s.toastMsg);
-  const toastVisible   = useAppStore(s => s.toastVisible);
-  const wBannerMsg     = useAppStore(s => s.weatherBannerMsg);
-  const wBannerVisible = useAppStore(s => s.weatherBannerVisible);
-  const audioPlaying   = useAppStore(s => s.audioPlaying);
-  const audioPreset    = useAppStore(s => s.audioPreset);
-  const isSleeping     = useAppStore(s => s.isSleeping);
-  const careLeaves     = useAppStore(s => s.careLeaves);
+  const isStarted       = useAppStore(s => s.isStarted);
+  const isDissipated    = useAppStore(s => s.isDissipated);
+  const timeOfDay       = useAppStore(s => s.timeOfDay);
+  const greeting        = useAppStore(s => s.greeting);
+  const pstDate         = useAppStore(s => s.pstDate);
+  const daysMet         = useAppStore(s => s.daysMet);
+  const herWeather      = useAppStore(s => s.herWeather);
+  const yourWeather     = useAppStore(s => s.yourWeather);
+  const quoteIndex      = useAppStore(s => s.quoteIndex);
+  const toastMsg        = useAppStore(s => s.toastMsg);
+  const toastVisible    = useAppStore(s => s.toastVisible);
+  const wBannerMsg      = useAppStore(s => s.weatherBannerMsg);
+  const wBannerVisible  = useAppStore(s => s.weatherBannerVisible);
+  const audioPlaying    = useAppStore(s => s.audioPlaying);
+  const audioPreset     = useAppStore(s => s.audioPreset);
+  const isSleeping      = useAppStore(s => s.isSleeping);
+  const careLeaves      = useAppStore(s => s.careLeaves);
+  const onboardingPhase = useAppStore(s => s.onboardingPhase);
+  const selectedPersona = useAppStore(s => s.selectedPersona);
 
-  const start          = useAppStore(s => s.start);
-  const toggleDissipate= useAppStore(s => s.toggleDissipate);
-  const nextQuote      = useAppStore(s => s.nextQuote);
-  const setAudioPlaying= useAppStore(s => s.setAudioPlaying);
-  const setAudioPreset = useAppStore(s => s.setAudioPreset);
-  const setSleeping    = useAppStore(s => s.setSleeping);
-  const showToast      = useAppStore(s => s.showToast);
+  const start           = useAppStore(s => s.start);
+  const toggleDissipate = useAppStore(s => s.toggleDissipate);
+  const nextQuote       = useAppStore(s => s.nextQuote);
+  const setAudioPlaying = useAppStore(s => s.setAudioPlaying);
+  const setAudioPreset  = useAppStore(s => s.setAudioPreset);
+  const setSleeping     = useAppStore(s => s.setSleeping);
+  const showToast       = useAppStore(s => s.showToast);
+
+  // Apply initial theme on mount
+  useEffect(() => {
+    if (selectedPersona) {
+      document.body.className = `theme-${selectedPersona}`;
+    }
+  }, [selectedPersona]);
 
   // Kiro store
   const kiroStartSleep = useKiroStore(s => s.startSleep);
@@ -353,6 +364,10 @@ export default function App() {
         onClose={() => setKiroOpen(false)}
         timeOfDay={timeOfDay}
       />
+
+      {/* ── ONBOARDING & SELECTION SEQUENCE ───────────────────────────── */}
+      <OnboardingCanvas />
+      <SelectionOverlay />
 
       {/* Start overlay (renders on top of everything until tapped) */}
       {!isStarted && <StartOverlay onStart={handleStart} />}

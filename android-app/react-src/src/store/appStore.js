@@ -84,6 +84,16 @@ export const useAppStore = create((set, get) => ({
   isDissipated: false,
   activeModal: null, // 'vault' | 'mailbox' | 'care' | 'kiro' | null
 
+  // ── Character Persona & Onboarding State
+  selectedPersona: (() => {
+    try { return localStorage.getItem('hakdog_persona') || null; } catch { return null; }
+  })(),
+  isFirstInstallation: (() => {
+    try { return localStorage.getItem('is_first_installation') !== 'false'; } catch { return true; }
+  })(),
+  onboardingPhase: null, // 1: Cosmic Play, 2: Descent, 3: Landing, 4: Integration, 5: Selection, null: Done
+  hoveredPersona: null, // 'pat' | 'yang' | null
+
   // ── Time / Greeting
   pstDate: getPSTDate(),
   timeOfDay: getTimeOfDay(getPSTDate().getHours()),
@@ -126,7 +136,40 @@ export const useAppStore = create((set, get) => ({
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
-  start: () => set({ isStarted: true }),
+  start: () => {
+    const isFirst = get().isFirstInstallation;
+    const hasPersona = Boolean(get().selectedPersona);
+    if (isFirst || !hasPersona) {
+      set({ isStarted: true, onboardingPhase: 1 });
+    } else {
+      set({ isStarted: true, onboardingPhase: null });
+      // Apply theme for existing persona
+      const p = get().selectedPersona;
+      if (p) document.body.className = `theme-${p}`;
+    }
+  },
+
+  setOnboardingPhase: (phase) => set({ onboardingPhase: phase }),
+
+  setHoveredPersona: (persona) => set({ hoveredPersona: persona }),
+
+  setPersona: (persona) => {
+    try {
+      localStorage.setItem('hakdog_persona', persona);
+      localStorage.setItem('is_first_installation', 'false');
+    } catch (e) {}
+    document.body.className = `theme-${persona}`;
+    set({
+      selectedPersona: persona,
+      isFirstInstallation: false,
+      onboardingPhase: null
+    });
+    get().showToast(`Switched persona to ${persona === 'pat' ? 'Pat (The Anchor) 🌍' : 'Yang (The Catalyst) ✨'}`);
+  },
+
+  replayOnboarding: () => {
+    set({ onboardingPhase: 1, isStarted: true });
+  },
 
   toggleDissipate: () => set(s => ({ isDissipated: !s.isDissipated })),
 

@@ -63,6 +63,9 @@ export function Filigrees({ visible }) {
 
 // ─── HEADER ───────────────────────────────────────────────────────────────────
 export function SanctuaryHeader({ onVault, onMailbox, onSyncUpdate, onTelescope }) {
+  const selectedPersona = useAppStore(s => s.selectedPersona);
+  const replayOnboarding = useAppStore(s => s.replayOnboarding);
+
   return (
     <header className="sanctuary-header dissipatable">
       <div className="brand">
@@ -73,6 +76,14 @@ export function SanctuaryHeader({ onVault, onMailbox, onSyncUpdate, onTelescope 
         </div>
       </div>
       <div className="header-nav-icons">
+        <button
+          className={`nav-persona-badge ${selectedPersona ? `persona-${selectedPersona}` : ''}`}
+          onClick={replayOnboarding}
+          title="Switch Persona / Replay Cosmic Intro"
+        >
+          {selectedPersona === 'pat' ? '🌍 PAT' : selectedPersona === 'yang' ? '✨ YANG' : '✦ CHOOSE PERSONA'}
+        </button>
+
         <button className="nav-icon-btn sync-update-btn" onClick={onSyncUpdate} id="sync-update-btn" title="Sync Update">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21.5 2v6h-6" />
