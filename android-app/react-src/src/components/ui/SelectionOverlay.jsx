@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAppStore } from '../../store/appStore.js';
-import CharacterAvatar3D from './CharacterAvatar3D.jsx';
 
 export default function SelectionOverlay() {
   const onboardingPhase = useAppStore(s => s.onboardingPhase);
@@ -30,62 +29,56 @@ export default function SelectionOverlay() {
   return (
     <div className="selection-stage-overlay">
       <div className="selection-header">
-        <div className="selection-subtitle">GENSHIN-STYLE IDLE SELECTION</div>
+        <div className="selection-subtitle">CELESTIAL SANCTUARY IDENTITIES</div>
         <h1 className="selection-prompt">Are you Pat or Yang?</h1>
-        <div className="selection-hint">Choose your identity to anchor your sanctuary experience</div>
+        <div className="selection-hint">Select your persona to enter your sanctuary</div>
       </div>
 
-      <div className="character-cards-container">
-        {/* PAT CARD */}
+      <div className="photo-frames-container">
+        {/* PAT PHOTO FRAME */}
         <div
-          className={`character-select-card pat-card ${hoveredPersona === 'pat' ? 'focused' : hoveredPersona === 'yang' ? 'softened' : ''}`}
+          className={`persona-photo-item pat-photo-item ${hoveredPersona === 'pat' ? 'focused' : hoveredPersona === 'yang' ? 'softened' : ''}`}
           onMouseEnter={() => setHoveredPersona('pat')}
           onMouseLeave={() => setHoveredPersona(null)}
           onTouchStart={() => setHoveredPersona('pat')}
           onClick={() => setPersona('pat')}
         >
-          <div className="card-badge pat-badge">THE ANCHOR</div>
-          <div className="char-avatar-ring pat-ring">
-            <CharacterAvatar3D persona="pat" isFocused={hoveredPersona === 'pat'} />
+          <div className="photo-frame pat-frame">
+            <img src="pat_photo.jpg" alt="Pat Persona" className="persona-img" />
+            <div className="frame-glow-ring pat-glow"></div>
+            <div className="frame-corner-accents">
+              <span className="corner top-left"></span>
+              <span className="corner top-right"></span>
+              <span className="corner bottom-left"></span>
+              <span className="corner bottom-right"></span>
+            </div>
           </div>
-          <h2 className="char-name pat-name">Pat</h2>
-          <div className="char-role">Structure · Steadiness · Clarity</div>
-          
-          <ul className="char-specs">
-            <li><span className="spec-label">Complexion:</span> Warm, rich brown skin</li>
-            <li><span className="spec-label">Hair:</span> Classic textured fringe</li>
-            <li><span className="spec-label">Palette:</span> Terracotta, Amber Gold, Indigo</li>
-            <li><span className="spec-label">Energy:</span> Grounded & Intuitive Guide</li>
-          </ul>
 
-          <button className="select-char-btn pat-btn">
+          <button className="select-persona-btn pat-btn">
             SELECT PAT ➔
           </button>
         </div>
 
-        {/* YANG CARD */}
+        {/* YANG PHOTO FRAME */}
         <div
-          className={`character-select-card yang-card ${hoveredPersona === 'yang' ? 'focused' : hoveredPersona === 'pat' ? 'softened' : ''}`}
+          className={`persona-photo-item yang-photo-item ${hoveredPersona === 'yang' ? 'focused' : hoveredPersona === 'pat' ? 'softened' : ''}`}
           onMouseEnter={() => setHoveredPersona('yang')}
           onMouseLeave={() => setHoveredPersona(null)}
           onTouchStart={() => setHoveredPersona('yang')}
           onClick={() => setPersona('yang')}
         >
-          <div className="card-badge yang-badge">THE CATALYST</div>
-          <div className="char-avatar-ring yang-ring">
-            <CharacterAvatar3D persona="yang" isFocused={hoveredPersona === 'yang'} />
+          <div className="photo-frame yang-frame">
+            <img src="yang_photo.jpg" alt="Yang Persona" className="persona-img" />
+            <div className="frame-glow-ring yang-glow"></div>
+            <div className="frame-corner-accents">
+              <span className="corner top-left"></span>
+              <span className="corner top-right"></span>
+              <span className="corner bottom-left"></span>
+              <span className="corner bottom-right"></span>
+            </div>
           </div>
-          <h2 className="char-name yang-name">Yang</h2>
-          <div className="char-role">Flow · Creative Spark · Agility</div>
 
-          <ul className="char-specs">
-            <li><span className="spec-label">Complexion:</span> Pale porcelain skin</li>
-            <li><span className="spec-label">Hair:</span> Bleached copper-orange w/ dark roots</li>
-            <li><span className="spec-label">Markings:</span> Glowing bioluminescent arm tattoos</li>
-            <li><span className="spec-label">Energy:</span> Dynamic & Edge-Chic Traveler</li>
-          </ul>
-
-          <button className="select-char-btn yang-btn">
+          <button className="select-persona-btn yang-btn">
             SELECT YANG ➔
           </button>
         </div>
