@@ -1,0 +1,31 @@
+name: Package Kiro Web Assets
+
+on:
+  release:
+    types: [published, created]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package-assets:
+    name: Package Web Assets (dist.zip)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create Web Assets Package (dist.zip)
+        # Zips up web files for Android Local OTA Update System
+        run: |
+          zip -r dist.zip index.html landing.html manifest.json version.json css/ js/ logo.png icon-192.png icon-512.png 2>/dev/null || zip -r dist.zip index.html css/ js/
+
+      - name: Upload Zip to Release Assets
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'release' || github.ref_type == 'tag'
+        with:
+          files: dist.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
