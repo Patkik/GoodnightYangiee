@@ -66,14 +66,14 @@ jobs:
           else
             TAG="v2.0.${{ github.run_number }}"
           fi
-          echo "TARGET_TAG=$TAG" >> $GITHUB_ENV
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "Target Release Tag: $TAG"
 
       - name: Upload APK Asset to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.TARGET_TAG }}
-          name: Hakdog Sanctuary ${{ env.TARGET_TAG }}
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+          name: Hakdog Sanctuary ${{ steps.get_tag.outputs.tag }}
           files: android-app/app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
