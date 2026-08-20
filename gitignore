@@ -1,0 +1,16 @@
+# Gradle & Android Build Artifacts
+.gradle/
+**/build/
+android-app/.gradle/
+android-app/build/
+android-app/app/build/
+
+# Android Local & IDE Files
+local.properties
+.idea/
+*.iml
+.gradle
+
+# System & Misc
+.DS_Store
+Thumbs.db
