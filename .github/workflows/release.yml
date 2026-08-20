@@ -25,16 +25,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Build Web React Assets
+      - name: Sync Root Web Assets to Android App
         run: |
-          cd android-app/react-src
-          npm ci
-          npm run build
+          # Copy all web assets from root into android-app/app/src/main/assets/
+          ASSETS_DIR="android-app/app/src/main/assets"
+          cp -f index.html "$ASSETS_DIR/index.html"
+          cp -f version.json "$ASSETS_DIR/version.json"
+          cp -f manifest.json "$ASSETS_DIR/manifest.json"
+          cp -rf css/ "$ASSETS_DIR/css/"
+          cp -rf js/ "$ASSETS_DIR/js/"
+          # Copy optional web files if they exist
+          [ -f landing.html ] && cp -f landing.html "$ASSETS_DIR/landing.html" || true
+          [ -f sw.js ] && cp -f sw.js "$ASSETS_DIR/sw.js" || true
+          [ -f icon-192.png ] && cp -f icon-192.png "$ASSETS_DIR/icon-192.png" || true
+          [ -f icon-512.png ] && cp -f icon-512.png "$ASSETS_DIR/icon-512.png" || true
+          [ -f logo.png ] && cp -f logo.png "$ASSETS_DIR/logo.png" || true
+          echo "✅ Web assets synced to Android app"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4

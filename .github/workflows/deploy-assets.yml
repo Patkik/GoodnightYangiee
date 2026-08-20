@@ -17,10 +17,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create Web Assets Package (dist.zip)
-        # Zips up web files for Android Local OTA Update System
+      - name: Sync Root Assets to Android App
         run: |
-          zip -r dist.zip index.html landing.html manifest.json version.json css/ js/ logo.png icon-192.png icon-512.png 2>/dev/null || zip -r dist.zip index.html css/ js/
+          ASSETS_DIR="android-app/app/src/main/assets"
+          cp -f index.html "$ASSETS_DIR/index.html"
+          cp -f version.json "$ASSETS_DIR/version.json"
+          cp -f manifest.json "$ASSETS_DIR/manifest.json"
+          cp -rf css/ "$ASSETS_DIR/css/"
+          cp -rf js/ "$ASSETS_DIR/js/"
+          [ -f landing.html ] && cp -f landing.html "$ASSETS_DIR/landing.html" || true
+          [ -f sw.js ] && cp -f sw.js "$ASSETS_DIR/sw.js" || true
+          [ -f icon-192.png ] && cp -f icon-192.png "$ASSETS_DIR/icon-192.png" || true
+          [ -f icon-512.png ] && cp -f icon-512.png "$ASSETS_DIR/icon-512.png" || true
+          [ -f logo.png ] && cp -f logo.png "$ASSETS_DIR/logo.png" || true
+          echo "✅ Assets synced"
+
+      - name: Create Web Assets Package (dist.zip)
+        run: |
+          # Package all web files needed for OTA updates
+          zip -r dist.zip \
+            index.html \
+            version.json \
+            manifest.json \
+            css/ \
+            js/ \
+            -x "*.DS_Store" \
+            2>/dev/null
+          # Add optional files if they exist
+          [ -f landing.html ] && zip -u dist.zip landing.html || true
+          [ -f sw.js ] && zip -u dist.zip sw.js || true
+          [ -f logo.png ] && zip -u dist.zip logo.png || true
+          [ -f icon-192.png ] && zip -u dist.zip icon-192.png || true
+          [ -f icon-512.png ] && zip -u dist.zip icon-512.png || true
+          echo "📦 dist.zip created ($(du -h dist.zip | cut -f1))"
 
       - name: Upload Zip to Release Assets
         uses: softprops/action-gh-release@v2
