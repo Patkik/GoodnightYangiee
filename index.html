@@ -5846,6 +5846,9 @@
     }
 
     async function triggerManualGitHubSync(isManualClick = true) {
+      const banner = document.getElementById('github-sync-banner');
+      if (banner) banner.classList.remove('visible');
+
       if (window.AndroidHost && typeof window.AndroidHost.checkForUpdates === 'function') {
         if (isManualClick) showPopToast('Checking GitHub for OTA updates… 🔄', 3000);
         window.AndroidHost.checkForUpdates();

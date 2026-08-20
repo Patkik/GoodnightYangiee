@@ -135,16 +135,16 @@ class KiroUpdateManager(private val context: Context) {
                     return@Thread
                 }
 
-                // Locate dist.zip asset
-                val downloadUrl = findDistZipUrl(releaseJson)
-                if (downloadUrl.isNullOrEmpty()) {
-                    val msg = "No dist.zip asset attached to release $latestTagName"
+                // Locate dist.zip or fallback to GitHub zipball archive
+                val downloadUrl = findDownloadUrl(releaseJson, repoUrl, latestTagName)
+                if (downloadUrl.isEmpty()) {
+                    val msg = "No valid download source found for release $latestTagName"
                     Log.w(TAG, msg)
                     onResult(UpdateResult.Error(msg))
                     return@Thread
                 }
 
-                Log.d(TAG, "Downloading dist.zip from: $downloadUrl")
+                Log.d(TAG, "Downloading OTA package from: $downloadUrl")
                 downloadAndExtractUpdate(downloadUrl)
 
                 // Validate downloaded package
@@ -170,24 +170,33 @@ class KiroUpdateManager(private val context: Context) {
     }
 
     /**
-     * Parses the browser_download_url for dist.zip from GitHub Release JSON.
+     * Finds download URL: checks for dist.zip asset first, falls back to release zipball or tag archive.
      */
-    private fun findDistZipUrl(releaseJson: JSONObject): String? {
-        val assets = releaseJson.optJSONArray("assets") ?: return null
-        for (i in 0 until assets.length()) {
-            val asset = assets.optJSONObject(i) ?: continue
-            val name = asset.optString("name", "")
-            if (name.equals("dist.zip", ignoreCase = true)) {
-                val url = asset.optString("browser_download_url", "")
-                return if (url.isNotEmpty()) url else null
+    private fun findDownloadUrl(releaseJson: JSONObject, repoUrl: String, tagName: String): String {
+        // 1. Check for dedicated dist.zip asset attached to release
+        val assets = releaseJson.optJSONArray("assets")
+        if (assets != null) {
+            for (i in 0 until assets.length()) {
+                val asset = assets.optJSONObject(i) ?: continue
+                val name = asset.optString("name", "")
+                if (name.equals("dist.zip", ignoreCase = true) || name.endsWith(".zip", ignoreCase = true)) {
+                    val url = asset.optString("browser_download_url", "")
+                    if (url.isNotEmpty()) return url
+                }
             }
         }
-        return null
+
+        // 2. Fallback to GitHub's auto-generated zipball URL for the release
+        val zipball = releaseJson.optString("zipball_url", "")
+        if (zipball.isNotEmpty()) return zipball
+
+        // 3. Fallback to tag archive download
+        return "https://github.com/$repoUrl/archive/refs/tags/$tagName.zip"
     }
 
     /**
      * Downloads and extracts zip to a clean staging directory first,
-     * then atomically replaces updateDir to prevent partial/corrupted files.
+     * then locates index.html and populates updateDir cleanly.
      * Includes Zip Slip vulnerability protection.
      */
     private fun downloadAndExtractUpdate(urlString: String) {
@@ -198,8 +207,9 @@ class KiroUpdateManager(private val context: Context) {
         val downloadConn = (URL(urlString).openConnection() as HttpURLConnection).apply {
             instanceFollowRedirects = true
             setRequestProperty("User-Agent", "KiroSanctuary-AndroidApp")
-            connectTimeout = 20000
-            readTimeout = 30000
+            setRequestProperty("Accept", "application/octet-stream, application/zip, */*")
+            connectTimeout = 25000
+            readTimeout = 35000
         }
 
         val canonicalStagingPath = stagingDir.canonicalPath
@@ -230,21 +240,18 @@ class KiroUpdateManager(private val context: Context) {
             }
         }
 
-        // Atomic swap staging -> updateDir
-        if (File(stagingDir, "index.html").exists()) {
+        // Locate index.html anywhere within the extracted staging directory
+        val indexFile = stagingDir.walkTopDown().firstOrNull { it.name == "index.html" && it.isFile }
+        if (indexFile != null && indexFile.parentFile != null) {
+            val contentDir = indexFile.parentFile!!
             if (updateDir.exists()) {
                 updateDir.deleteRecursively()
             }
-            stagingDir.renameTo(updateDir)
-        } else {
-            // Check if files were zipped inside a root folder (e.g. dist/index.html)
-            val subFolderIndex = stagingDir.walkTopDown().firstOrNull { it.name == "index.html" }
-            if (subFolderIndex != null && subFolderIndex.parentFile != null) {
-                val parent = subFolderIndex.parentFile!!
-                if (updateDir.exists()) updateDir.deleteRecursively()
-                parent.renameTo(updateDir)
-                stagingDir.deleteRecursively()
-            }
+            updateDir.mkdirs()
+
+            // Copy all extracted content into updateDir
+            contentDir.copyRecursively(updateDir, overwrite = true)
+            stagingDir.deleteRecursively()
         }
     }
 
